@@ -310,29 +310,38 @@ body.dark .top-box {
 session_start();
 require_once "dbconnect.php";
 
-if (isset($_SESSION['username'])) {
-    $username = $_SESSION['username'];
-} else {
-    $username = "Guest";
-}
+$username = "Guest"; // Default username
 
 if (isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
     // Retrieve the username from the user_table for the logged-in user
     $stmt = $conn->prepare("SELECT username FROM user_table WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows == 1) {
-        $row = $result->fetch_assoc();
-        // Assign the retrieved username to $username
-        $username = $row['username'];
+    if ($stmt) {
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            // Assign the retrieved username to $username
+            $username = $row['username'];
+        } else {
+            // Handle case where no user is found in the user_table
+            // You might want to log this or handle it differently based on your application's requirements
+        }
+        $stmt->close(); // Close statement
+    } else {
+        // Handle SQL statement preparation error
+        // You might want to log this or handle it differently based on your application's requirements
     }
+} else {
+    // Handle case where $_SESSION['username'] is not set
+    // You might want to log this or handle it differently based on your application's requirements
 }
 ?>
 
 <div class="welcome-text">Welcome, <?php echo $username; ?>!</div>
+
 
 
   </div>

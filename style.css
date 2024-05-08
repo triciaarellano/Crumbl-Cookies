@@ -462,7 +462,6 @@ body.dark .btn:hover {
   background-color: #ec7e96;
   color: #fff;
   border: none;
-  border-radius: 50%;
   padding: 8px 12px;
   cursor: pointer;
   transition: background-color 0.3s ease;
