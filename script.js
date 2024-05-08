@@ -4,24 +4,46 @@ const search = document.querySelector('.input-group input'),
     table_rows = document.querySelectorAll('tbody tr'),
     table_headings = document.querySelectorAll('thead th');
 
-// 1. Searching for specific data of HTML table
+// Searching for specific data of HTML table
 search.addEventListener('input', searchTable);
 
 function searchTable() {
+    const tbody = document.querySelector('tbody');
+    const matchedRows = [];
+
     table_rows.forEach((row, i) => {
         let table_data = row.textContent.toLowerCase(),
             search_data = search.value.toLowerCase();
 
+        if (table_data.indexOf(search_data) >= 0) {
+            matchedRows.push(row);
+        }
         row.classList.toggle('hide', table_data.indexOf(search_data) < 0);
         row.style.setProperty('--delay', i / 25 + 's');
-    })
+    });
+
+    // para maclear yung table rows
+    tbody.innerHTML = '';
+
+    // to append matched rows at the top
+    matchedRows.forEach(row => {
+        tbody.appendChild(row);
+    });
+
+    // to append remaining rows after matched rows
+    table_rows.forEach(row => {
+        if (!row.classList.contains('hide')) {
+            tbody.appendChild(row);
+        }
+    });
 
     document.querySelectorAll('tbody tr:not(.hide)').forEach((visible_row, i) => {
         visible_row.style.backgroundColor = (i % 2 == 0) ? 'transparent' : '#0000000b';
     });
 }
 
-// 2. Sorting | Ordering data of HTML table
+
+// Sorting | Ordering data of HTML table
 
 table_headings.forEach((head, i) => {
     let sort_asc = true;

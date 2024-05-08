@@ -20,18 +20,7 @@
 
   <style>
  
- /* .container {
-  display: flex;
-  flex-direction: column;
-  justify-content: left;
-  margin-left: 4%;
-  margin-top: 2%;
-  height: 120vh;
-  width: 60vw;
-  background-color: #f0f0f0;
-  transition: left 0.3s ease; /* not working 
-} 
-*/
+
 
 .right-container {
   position: absolute;
@@ -90,15 +79,9 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/*.right-box {
-  width: 350px;
-  height: 450px;
-  border-radius: 8px; 
-  margin: 20px;
-} */
 
 .top-box {
-  background: linear-gradient(135deg, #FF8BA0, #FFD8DF);
+  background: white;
   font-size: 32px;
   font-weight: 700;
   text-align: center;
@@ -306,44 +289,6 @@ body.dark .top-box {
       </div>
       </div>
 
-      <?php
-session_start();
-require_once "dbconnect.php";
-
-$username = "Guest"; // Default username
-
-if (isset($_SESSION['username'])) {
-    $username = $_SESSION['username'];
-    // Retrieve the username from the user_table for the logged-in user
-    $stmt = $conn->prepare("SELECT username FROM user_table WHERE username = ?");
-    if ($stmt) {
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows == 1) {
-            $row = $result->fetch_assoc();
-            // Assign the retrieved username to $username
-            $username = $row['username'];
-        } else {
-            // Handle case where no user is found in the user_table
-            // You might want to log this or handle it differently based on your application's requirements
-        }
-        $stmt->close(); // Close statement
-    } else {
-        // Handle SQL statement preparation error
-        // You might want to log this or handle it differently based on your application's requirements
-    }
-} else {
-    // Handle case where $_SESSION['username'] is not set
-    // You might want to log this or handle it differently based on your application's requirements
-}
-?>
-
-<div class="welcome-text">Welcome, <?php echo $username; ?>!</div>
-
-
-
   </div>
 
       <!-- <div class="right-box"> -->
@@ -398,7 +343,7 @@ if (isset($_SESSION['username'])) {
 
   <div class="text">
     <div class="dashboard-text">DASHBOARD</div>
-    <?php include "dbconnect.php"; ?>
+
   </div>
 
   <!--<div class="container"> -->
@@ -508,23 +453,7 @@ prevNextIcon.forEach(icon => {
     });
 });
 
-//logout
-document.getElementById("logoutBtn").addEventListener("click", function(event) {
-    event.preventDefault();
 
-    // Clear session data (client-side)
-    sessionStorage.clear(); // Clear sessionStorage
-    localStorage.clear(); // Clear localStorage
-
-    // pwede AJAX call to clear server-side session data
-
-    window.location.href = "login.php";
-  });
-
-//closing ng side bar
-  toggle.addEventListener("click", () => {
-    sidebar.classList.toggle("close");
-  });
 
   //para sa light and dark mode
   modeSwitch.addEventListener("click", () => {
