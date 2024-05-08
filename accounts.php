@@ -99,8 +99,10 @@
 
       <div class="bottom-content">
         <li class="">
-          <a href="#">
-            <i class='bx bx-log-out icon'></i>
+          <a href="login.php">
+            <i class='bx bx-log-out icon'>
+            
+            </i>
             <span class="text nav-text">Logout</span>
           </a>
         </li>
@@ -175,7 +177,7 @@
                     echo "<td>" . $fielddata['role'] . "</td>";
                     echo "<td>" . $fielddata['username'] . "</td>";
                     echo "<td>" . $fielddata['email'] . "</td>";
-                    echo "<td><button class='btn btn-primary'>Delete</button></td>";
+                    echo "<td><button class='button btn-primary'>Add as Admin<br><button class='btn btn-primary'>Delete</button></button></td>";
                     echo "</tr>";
                 }
                 

@@ -290,11 +290,11 @@ body.dark .mainbar-text {
 }
 
 .mainbar-text {
-  font-size: 45px; 
+  font-size: 35px; 
   font-weight: bold;
   color: var(--text-color); 
   margin-top: 10px; 
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
 body.dark .dashboard-header {
@@ -654,6 +654,17 @@ header .current-date{
   cursor: pointer;
 }
 
+.button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
 .btn:hover {
   background-color: #fce1e7;
 }
@@ -683,7 +694,7 @@ main.table {
     backdrop-filter: blur(7px);
     box-shadow: 0 .4rem .8rem #0005;
     border-radius: .8rem;
-    font-size: 22px;
+    font-size: 18px;
     overflow: hidden;
 }
 
