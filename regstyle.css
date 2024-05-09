@@ -1,203 +1,251 @@
 /* Import Google font - Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "fredoka", sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "fredoka", sans-serif;
 }
 
 .montserrat {
-  font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 300;
-  font-style: normal;
+	font-family: "Montserrat", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 300;
+	font-style: normal;
 }
 
 .fredoka {
-  font-family: "Fredoka", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 300;
-  font-style: normal;
+	font-family: "Fredoka", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 300;
+	font-style: normal;
 }
 
-
 :root {
-  /* ===== Colors ===== */
-  --body-color: #f095a8;
-  --sidebar-color: #fce1e7;
-  --primary-color: #f9f9f9;
-  --primary-color-light: white;
-  --primary-color-dark: #ff6486;
-  --toggle-color: #3a3b3c;
-  --text-color: black;
-  --secondary-text-color: #707070;
-  --third-text-color: #f095a8;
+	/* ===== Colors ===== */
+	--body-color: #f095a8;
+	--sidebar-color: #fce1e7;
+	--primary-color: #f9f9f9;
+	--primary-color-light: white;
+	--primary-color-dark: #ff6486;
+	--toggle-color: #3a3b3c;
+	--text-color: #333;
+	--secondary-text-color: #707070;
+	--third-text-color: #f095a8;
 }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  padding: 20px;
-  background-color: pink;
-  transition: var(--tran-05);
-  background-image: url('crumblbg1.png'); 
-  background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat;
+	min-height: 100vh;
+	display: flex;
+	padding: 20px;
+	background-color: pink;
+	transition: var(--tran-05);
+	background-image: url("crumblbg1.png");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
+/* -- REGISTRATION SESSION -- */
+
 .reg-container {
-    position: relative;
-    max-width: 600px;
-    width: 100%;
-    top: 10%;
-    left: 20%;
-    background: rgb(255, 255, 255); 
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(50px);
-  }  
-  
+	position: relative;
+	max-width: 600px;
+	width: 100%;
+	top: 10%;
+	left: 20%;
+	background: rgb(255, 255, 255);
+	padding: 25px;
+	border-radius: 8px;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(50px);
+}
+
 .reg-container header {
-  font-size: 1.5rem;
-  color: #333;
-  font-weight: 500;
-  text-align: center;
+	font-size: 1.5rem;
+	color: #333;
+	font-weight: 500;
+	text-align: center;
 }
 
 .reg-container .form {
-  margin-top: 30px;
+	margin-top: 30px;
 }
 
 .reg-name {
-  font-size: 36px; 
-  font-weight: bold;
-  color: var(--third-text-color); 
-  margin-top: 10px; 
-  margin-bottom: 30px;
-  text-align: center;
+	font-size: 36px;
+	font-weight: bold;
+	color: var(--third-text-color);
+	margin-top: 10px;
+	margin-bottom: 30px;
+	text-align: center;
 }
 
 .form .form-outline {
-  width: 100%;
-  margin-top: 20px;
+	width: 100%;
+	margin-top: 20px;
 }
 
 .form-outline label {
-  color: #333;
+	color: #333;
 }
 
 .form :where(.form-outline input, .select-box) {
-  position: relative;
-  height: 50px;
-  width: 100%;
-  outline: none;
-  font-size: 1rem;
-  color: #707070;
-  margin-top: 8px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 0 15px;
+	position: relative;
+	height: 50px;
+	width: 100%;
+	outline: none;
+	font-size: 1rem;
+	color: #707070;
+	margin-top: 8px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	padding: 0 15px;
 }
 
 .form-outline input:focus {
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .form .column {
-  display: flex;
-  column-gap: 15px;
+	display: flex;
+	column-gap: 15px;
 }
 
-
 .address :where(input, .select-box) {
-  margin-top: 15px;
+	margin-top: 15px;
 }
 
 .select-box select {
-  height: 100%;
-  width: 100%;
-  outline: none;
-  border: none;
-  color: #707070;
-  font-size: 1rem;
+	height: 100%;
+	width: 100%;
+	outline: none;
+	border: none;
+	color: #707070;
+	font-size: 1rem;
 }
 
-.div-login
-        {
-            font-size: 14.5px;
-            text-align: center;
-            margin: 20px 0 0;
-        }
-        
-        .div-login p a
-        {
-            color: #ff6486;
-            font-weight: 600;
-        }
+.div-login {
+	font-size: 14.5px;
+	text-align: center;
+	margin: 20px 0 0;
+}
+
+.div-login p a {
+	color: #ff6486;
+	font-weight: 600;
+}
 
 .button {
-  height: 55px;
-  width: 100%;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 400;
-  margin-top: 30px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: var(--body-color);
+	height: 55px;
+	width: 100%;
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 400;
+	margin-top: 30px;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	background-color: var(--body-color);
 }
 
 .button:hover {
-  background: var(--primary-color-dark);
+	background: var(--primary-color-dark);
 }
 
-/* -- TEXT BOXES !! -- */
+/* -- LOG IN SESSION !! -- */
 
+.log-container {
+	position: absolute;
+	max-width: 400px !important;
+	width: 100%;
+	top: 15%;
+	left: 15%;
+	background: rgb(255, 255, 255);
+	padding: 25px;
+	border-radius: 8px;
+	box-shadow: 0 6px 5px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(50px);
+}
+
+/* -- LOG OUT SESSION !! -- */
+
+.logout-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 70vh;
+	width: 50vw;
+}
+
+.logout-message {
+	text-align: center;
+	background-color: #fff;
+	color: #333;
+	padding: 60px;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.logout-message h2 {
+	font-size: 36px;
+	color: var(--third-text-color);
+	margin: 1rem 1rem;
+}
+
+.logout-message p {
+	margin-bottom: 20px;
+}
+
+.login-link {
+	display: inline-block;
+	color: #007bff;
+	text-decoration: none;
+}
+
+.login-link:hover {
+	text-decoration: underline;
+}
 
 /* -- UPLOAD IMAGE !! (tinanggal ko) -- */
 
-.upload{
-  width: 100px;
-  position: relative;
-  margin: auto;
+.upload {
+	width: 100px;
+	position: relative;
+	margin: auto;
 }
 
-.upload img{
-  border-radius: 50%;
-  border: 6px solid #eaeaea;
+.upload img {
+	border-radius: 50%;
+	border: 6px solid #eaeaea;
 }
 
-.upload .round{
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: #00B4FF;
-  width: 32px;
-  height: 32px;
-  line-height: 33px;
-  text-align: center;
-  border-radius: 50%;
-  overflow: hidden;
+.upload .round {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	background: #00b4ff;
+	width: 32px;
+	height: 32px;
+	line-height: 33px;
+	text-align: center;
+	border-radius: 50%;
+	overflow: hidden;
 }
 
-.upload .round input[type = "file"]{
-  position: absolute;
-  transform: scale(2);
-  opacity: 0;
+.upload .round input[type="file"] {
+	position: absolute;
+	transform: scale(2);
+	opacity: 0;
 }
 
-input[type=file]::-webkit-file-upload-button{
-    cursor: pointer;
+input[type="file"]::-webkit-file-upload-button {
+	cursor: pointer;
 }
 
 @media screen and (max-width: 500px) {
-  .form .column {
-    flex-wrap: wrap;
-  }
-
+	.form .column {
+		flex-wrap: wrap;
+	}
 }

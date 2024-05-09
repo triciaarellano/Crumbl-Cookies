@@ -19,7 +19,6 @@
   <!--CSS STYLING SEPARATE-->
 
   <style>
- 
 
 
 .right-container {
@@ -252,7 +251,7 @@ body.dark .top-box {
 
       <div class="bottom-content">
         <li class="">
-          <a href="login.php">
+          <a href="logout.php">
             <i class='bx bx-log-out icon'></i>
             <span class="text nav-text">Logout</span>
           </a>
@@ -395,7 +394,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const modeSwitch = document.querySelector(".toggle-switch");
   const modeText = document.querySelector(".mode-text");
   const viewButtons = document.querySelectorAll(".btn-primary");
-  const daysTag = document.querySelector(".days"),
+  const daysTag = document.querySelector(".days");
 
 //calendar
 currentDate = document.querySelector(".current-date"),
@@ -435,6 +434,10 @@ const renderCalendar = () => {
     currentDate.innerText = `${months[currMonth]} ${currYear}`;
     daysTag.innerHTML = liTag;
 }
+
+toggle.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+        });
 
 renderCalendar();
 prevNextIcon.forEach(icon => { 

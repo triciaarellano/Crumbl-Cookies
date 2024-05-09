@@ -5,14 +5,10 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!----======== CSS ======== -->
   <link rel="stylesheet" href="style.css">
-
-  <!----===== Boxicons CSS ===== -->
   <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!--<title>Dashboard Sidebar Menu</title>-->
 </head>
 
 <body>
@@ -99,7 +95,7 @@
 
       <div class="bottom-content">
         <li class="">
-          <a href="login.php">
+          <a href="logout.php">
             <i class='bx bx-log-out icon'>
             
             </i>
@@ -128,11 +124,11 @@
     <div class="dashboard-divider"></div>
     <div class="text">
 
-    <div class="mainbar-text">ACCOUNTS</div>
+    <div class="mainbar-text">Accounts</div>
 
-      <form action="accounts.php" method="post" class="search-form1">
+      <form action="accounts.php" method="post" class="search-form1"></form>
 
-      </form>
+
  <?php
       include "dbconnect.php";
 
@@ -147,6 +143,29 @@
       }
 
       $result = $conn->query($selectsql);
+
+      if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete'])) {
+        include "dbconnect.php";
+    
+        if(isset($_POST['user_id'])) {
+            $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+            
+            $delete_query = "DELETE FROM user_table WHERE user_id = '$user_id'";
+            if(mysqli_query($conn, $delete_query)) {
+                echo "<script>
+                  Swal.fire({
+                      title: 'Deleted!',
+                      text: 'Your file has been deleted!',
+                      icon: 'success'
+                      });
+                  </script>";
+
+            } else {
+                echo "Error deleting record: " . mysqli_error($conn);
+            }
+        }
+    }
+    
     
      // Check if table is not empty
     if ($result->num_rows > 0) {
@@ -154,8 +173,9 @@
     echo "<section class='table__header'>";
     
              echo "<div class='input-group'>";
-                 echo "<input type='search' name='search' class='search-input' placeholder='Search Data...'>";
+                 echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
              echo "</div>";
+             echo "<button id='refreshButton' class='btn-refresh'><i class='bx bx-refresh' style='color: #fff; font-family: Montserrat; font-size: 24px;'></i> Refresh</button>";
         echo "</section>";
          echo "<section class='table__body'>";
              echo "<table>";
@@ -177,43 +197,59 @@
                     echo "<td>" . $fielddata['role'] . "</td>";
                     echo "<td>" . $fielddata['username'] . "</td>";
                     echo "<td>" . $fielddata['email'] . "</td>";
-                    echo "<td><button class='button btn-primary'>Add as Admin<br><button class='btn btn-primary'>Delete</button></button></td>";
+
+                    echo "<td>";
+                    echo "<form action='' method='post'>";
+                    echo "<input type='hidden' name='user_id' value='" . $fielddata['user_id'] . "'>";
+                    echo "<button type='submit' name='delete' class='btn-delete btn-primary'>Delete</button>";
+                    echo "</form>";
+                    echo "</td>";
                     echo "</tr>";
                 }
+
                 
                 echo "</tbody>";
                 echo "</table>";
+
               } else {
                 echo "No records found";
               }
               ?>
+
          </section>
+
+         <script src='script.js'></script>
+
          <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const body = document.querySelector('body');
-      const sidebar = document.querySelector('nav');
-      const toggle = document.querySelector(".toggle");
-      const modeSwitch = document.querySelector(".toggle-switch");
-      const modeText = document.querySelector(".mode-text");
-      const viewButtons = document.querySelectorAll(".btn-primary");
+            document.addEventListener("DOMContentLoaded", function() {
+              const body = document.querySelector('body');
+              const sidebar = document.querySelector('nav');
+              const toggle = document.querySelector(".toggle");
+              const modeSwitch = document.querySelector(".toggle-switch");
+              const modeText = document.querySelector(".mode-text");
+              const viewButtons = document.querySelectorAll(".btn-primary");
 
 
-      toggle.addEventListener("click", () => {
-        sidebar.classList.toggle("close");
-      });
+              toggle.addEventListener("click", () => {
+                sidebar.classList.toggle("close");
+              });
 
-      modeSwitch.addEventListener("click", () => {
-        body.classList.toggle("dark");
-        if (body.classList.contains("dark")) {
-          modeText.innerText = "Light mode";
-        } else {
-          modeText.innerText = "Dark mode";
-        }
-      });
-    });
-  </script>
-     </main>
-  <script src='script.js'></script>
+              document.getElementById('refreshButton').addEventListener('click', function() {
+                location.reload();
+              });
+
+              modeSwitch.addEventListener("click", () => {
+                body.classList.toggle("dark");
+                if (body.classList.contains("dark")) {
+                  modeText.innerText = "Light mode";
+                } else {
+                  modeText.innerText = "Dark mode";
+                }
+              });
+            });
+
+          </script>
+  </main>
  
 </body>
  
