@@ -19,24 +19,27 @@
 
 .top-container,
 .bottom-container {
-  width: calc(100% - 20px); 
+  width: calc(100% - 10px); 
   display: flex;
   justify-content: center;
-  margin: 10px;
+  margin: 10px auto;
+  flex: 1; /* Take remaining space */
 }
 
 .top-container {
-  margin-top: 80px;
+  margin-top: 70px;
 }
 
 .middle-container {
-  width: 100%;
+  width: calc(100% - 10px); 
+  background-color: #f6f7fb;
   max-width: 1600px; /* Adjust the width as needed */
-  margin-right: 8rem; /* Adjust the margin-right to create space between the middle container and the table */
+  margin: 10px auto; /* Center the container horizontally */
   display: flex;
   justify-content: center;
-  align-items: center;
+  flex: 1; /* Take remaining space */ 
 }
+
 .top-box {
   width: 450px;
   height: 200px;
@@ -49,10 +52,14 @@
   border-radius: 8px; 
 }
 
-.bottom-box {
-  width: calc(100% - 900px); 
-  height: 200px;
+.stock-container {
+  width: 706px;
+  margin-right: 18px;
+  height: 373px;
   border-radius: 8px;
+  margin-top: 15px;
+  padding: 0; /* Reset padding */
+  justify-content: left;
 }
 
 .top-box {
@@ -80,26 +87,35 @@ body.dark .top-box {
   text-align: center;
 }
 
-.bottom-box {
+.stock-container {
   background-color: white;
   font-size: 32px;
   font-weight: 700;
   text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .top-box,
-.middle-box,
-.bottom-box {
+.middle-box {
   border-radius: 8px; 
   margin: 10px;
 }
 
 
+.top-box,
+.middle-box,
+.stock-container {
+  /* Add transition for scaling and other properties */
+  transition: transform 0.3s ease-out, background-color 0.3s ease-out;
+}
+
 .top-box:hover,
-.middle-box:hover,
-.bottom-box:hover {
+.middle-box:hover {
   transform: scale(1.05);
-  transition: transform 0.3s ease; 
+}
+
+.stock-container:hover {
+  transform: scale(1.02);
 }
 
 .right-text {
@@ -148,7 +164,7 @@ body.dark .top-box {
   font-weight: 400; 
   color: #333; 
   margin-left: 7rem; 
-  margin-top: 25px;
+  margin-top: 30px;
   line-height: 1.8rem;
   text-align: left;
 }
@@ -167,25 +183,28 @@ body.dark .top-box {
 }
 
 .product-number {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  display: inline-flex; /* Use inline-flex to keep it inline but flexible */
+  align-items: center; /* Align items vertically */
+  justify-content: center;
+  margin: 10px;
 }
 
 .number {
   font-size: 50px;
   font-weight: bold;
   color: #333;
-  margin-top: 15px; 
-  margin-right: 35px; 
+  margin: 0; /* Reset margin */
+  padding-right: 10px; /* Add padding instead of margin */
   text-align: right;
+  line-height: 1; /* Ensure consistent line height */
+  margin-top: 10px; 
 }
 
 .item-text {
   font-size: 18px;
   color: #333;
+  margin: 0; /* Reset margin */
   margin-top: 30px;
-  margin-right: 35px; 
 }
 
 .trans-text {
@@ -198,12 +217,13 @@ body.dark .top-box {
 }
 
 .table-container {
-  width: 100%; /* Change width to 100% */
+  width: 706px;
   max-width: 900px; /* Add max-width to limit the width of the table */
   height: auto; 
   max-height: 450px; 
   display: flex; 
-  justify-content: flex-start;
+  margin: 0; /* Reset margin */
+  padding: 0; /* Reset padding */
 }
 
 .table {
@@ -228,71 +248,6 @@ body.dark .top-box {
   background-color: #f9f9f9;
 }
 
-.table__body {
-	width: 95%;
-	max-height: calc(89% - 1.6rem);
-	background-color: #fffb;
-	border: 2px solid gainsboro;
-
-	margin: 0.8rem auto;
-	border-radius: 0.6rem;
-
-	overflow: auto;
-	overflow: overlay;
-}
-
-.table__body::-webkit-scrollbar {
-	width: 0.3rem;
-	height: 0.5rem;
-	background-color: gainsboro;
-}
-
-.table__body::-webkit-scrollbar-thumb {
-	border-radius: 0.5rem;
-	background-color: #0004;
-	visibility: hidden;
-}
-
-.table__body:hover::-webkit-scrollbar-thumb {
-	visibility: visible;
-}
-
-table {
-	width: 100%;
-}
-
-table,
-th,
-td {
-	border-collapse: collapse;
-	padding: 1rem;
-	text-align: left;
-}
-
-thead th {
-	padding: 1.5rem;
-	position: sticky;
-	top: 0;
-	left: 0;
-	background-color: #fefffe;
-	cursor: pointer;
-	text-transform: capitalize;
-	color: var(--toggle-color);
-	z-index: 2;
-}
-
-tbody tr:nth-child(even) {
-	background-color: #0000000b;
-}
-
-tbody tr {
-	--delay: 0.1s;
-	transition: 0.5s ease-in-out var(--delay), background-color 0s;
-}
-
-thead th:hover {
-	color: #fc6782;
-}
 
 
 </style>
@@ -323,7 +278,7 @@ thead th:hover {
 
         <ul class="menu-links">
           <li class="nav-link">
-            <a href="overview.php">
+            <a href="admin-overview.php">
               <i class='bx bx-home-alt icon'></i>
               <span class="text nav-text">Overview</span>
             </a>
@@ -565,7 +520,7 @@ thead th:hover {
   </div>
 
   <!-- INVENTORY -->
-<div class="bottom-box low-stock-alert">
+<div class="stock-container">
     <div class="product-text">Low Stock Alert</div>
     </div>
 
