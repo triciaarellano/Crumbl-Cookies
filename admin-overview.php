@@ -9,12 +9,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-  
-  <!----======== CSS ======== -->
   <link rel="stylesheet" href="style.css">
-
-  <!----===== Boxicons CSS ===== -->
   <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+  
 
   <!--CSS STYLING SEPARATE-->
 
@@ -162,6 +159,15 @@ body.dark .top-box {
   margin-left: 20px;
 }
 
+.circle {
+    height: 60px;
+    width: 60px;
+    background: #ff8ba0;
+    color: #fff;
+    font-size: 2.5rem;
+    border-radius: 50%;
+    right: 20px;
+}
 
 </style>
 
@@ -347,34 +353,39 @@ body.dark .top-box {
 
   <!--<div class="container"> -->
 
-    <div class="top-container">
+  <div class="top-container">
 
-      <div class="top-box">
+    <div class="top-box">
+    <div class="circle">
+        <i class="bx bxs-cart" style="color: #fff; font-size: 20px; margin-top: 13px; margin-left: 13px;"></i>
+      </div>
       PRODUCTS
-      </div>
-      <div class="top-box">
-      INVENTORY
-      </div>
-      <div class="top-box">
-      ARCHIVES
-      </div>
     </div>
 
-    <div class="middle-container">
-      <div class="middle-box">
-      TRANSACTIONS
-      </div>
+    <div class="top-box">
+      <i class='bx bxs-archive'></i> INVENTORY
     </div>
 
-    <div class="bottom-container">
-
-      <div class="bottom-box">
-        SALES RECORD
-      </div>
-      <div class="bottom-box">
-        AUDIT TRAIL
-      </div>
+    <div class="top-box">
+      <i class='bx bx-folder'></i> ARCHIVES
     </div>
+
+  </div>
+
+  <div class="middle-container">
+    <div class="middle-box">
+      <i class='bx bx-wallet'></i> TRANSACTIONS
+    </div>
+  </div>
+
+  <div class="bottom-container">
+    <div class="bottom-box">
+      <i class='bx bx-bar-chart-alt'></i> SALES RECORD
+    </div>
+    <div class="bottom-box">
+      <i class='bx bx-book'></i> AUDIT TRAIL
+    </div>
+  </div>
 
   <!-- </div> -->
   <script>
