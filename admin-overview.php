@@ -17,38 +17,28 @@
 
   <style>
 
-
-.right-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center; 
-  height: auto;
-  width: 25vw; 
-  background-color: rgba(255, 255, 255, 0);
-  /*border: 1px solid gray; */
-  transition: right 0.3s ease; /* not working */
-}
-
 .top-container,
 .bottom-container {
+  width: calc(100% - 20px); 
   display: flex;
-  justify-content: left;
-  margin-left: 75px;
+  justify-content: center;
+  margin: 10px;
+}
+
+.top-container {
+  margin-top: 80px;
 }
 
 .middle-container {
+  width: 100%;
+  max-width: 1600px; /* Adjust the width as needed */
+  margin-right: 8rem; /* Adjust the margin-right to create space between the middle container and the table */
   display: flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
-  margin-left: 75px;
 }
-
 .top-box {
-  width: 350px;
+  width: 450px;
   height: 200px;
   border-radius: 8px; 
 }
@@ -60,40 +50,18 @@
 }
 
 .bottom-box {
-  width: 540px;
+  width: calc(100% - 900px); 
   height: 200px;
-  border-radius: 8px; 
+  border-radius: 8px;
 }
-
-.account-container {
-  background-color: #ccccff;
-  width: 350px;
-  height: 150px;
-  border-radius: 8px; 
-  margin-top: 35px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
 
 .top-box {
+  position: relative;
   background: white;
   font-size: 32px;
   font-weight: 700;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.right-box {
-  background-color: #ccffcc; 
-  font-size: 32px;
-  font-weight: 700;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  top: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
 }
 
 body.dark .top-box {
@@ -113,7 +81,7 @@ body.dark .top-box {
 }
 
 .bottom-box {
-  background-color: #ccccff;
+  background-color: white;
   font-size: 32px;
   font-weight: 700;
   text-align: center;
@@ -122,6 +90,7 @@ body.dark .top-box {
 .top-box,
 .middle-box,
 .bottom-box {
+  border-radius: 8px; 
   margin: 10px;
 }
 
@@ -160,14 +129,171 @@ body.dark .top-box {
 }
 
 .circle {
-    height: 60px;
-    width: 60px;
-    background: #ff8ba0;
-    color: #fff;
-    font-size: 2.5rem;
-    border-radius: 50%;
-    right: 20px;
+  position: absolute;
+  top: 30px; 
+  left: 30px;
+  height: 60px;
+  width: 60px; 
+  background: #ff8ba0;
+  color: #fff;
+  font-size: 1.2rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.product-text {
+  font-size: 28px; 
+  font-weight: 400; 
+  color: #333; 
+  margin-left: 7rem; 
+  margin-top: 25px;
+  line-height: 1.8rem;
+  text-align: left;
+}
+
+.small-text {
+  font-size: 18px; 
+  font-weight: 400; 
+  color: #333; 
+}
+
+.large-text {
+  font-size: 28px; 
+  font-weight: 400; 
+  color: #333; 
+  margin-top: 5px;
+}
+
+.product-number {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.number {
+  font-size: 50px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 15px; 
+  margin-right: 35px; 
+  text-align: right;
+}
+
+.item-text {
+  font-size: 18px;
+  color: #333;
+  margin-top: 30px;
+  margin-right: 35px; 
+}
+
+.trans-text {
+  font-size: 28px; 
+  font-weight: 400; 
+  color: #333; 
+  margin-top: 5px;
+  margin-left: 20px;
+  text-align: left;
+}
+
+.table-container {
+  width: 100%; /* Change width to 100% */
+  max-width: 900px; /* Add max-width to limit the width of the table */
+  height: auto; 
+  max-height: 450px; 
+  display: flex; 
+  justify-content: flex-start;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 10px;
+  text-align: center;
+}
+
+.table th {
+  color: #333;
+}
+
+.table tbody tr:hover {
+  background-color: #f2f2f2;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table__body {
+	width: 95%;
+	max-height: calc(89% - 1.6rem);
+	background-color: #fffb;
+	border: 2px solid gainsboro;
+
+	margin: 0.8rem auto;
+	border-radius: 0.6rem;
+
+	overflow: auto;
+	overflow: overlay;
+}
+
+.table__body::-webkit-scrollbar {
+	width: 0.3rem;
+	height: 0.5rem;
+	background-color: gainsboro;
+}
+
+.table__body::-webkit-scrollbar-thumb {
+	border-radius: 0.5rem;
+	background-color: #0004;
+	visibility: hidden;
+}
+
+.table__body:hover::-webkit-scrollbar-thumb {
+	visibility: visible;
+}
+
+table {
+	width: 100%;
+}
+
+table,
+th,
+td {
+	border-collapse: collapse;
+	padding: 1rem;
+	text-align: left;
+}
+
+thead th {
+	padding: 1.5rem;
+	position: sticky;
+	top: 0;
+	left: 0;
+	background-color: #fefffe;
+	cursor: pointer;
+	text-transform: capitalize;
+	color: var(--toggle-color);
+	z-index: 2;
+}
+
+tbody tr:nth-child(even) {
+	background-color: #0000000b;
+}
+
+tbody tr {
+	--delay: 0.1s;
+	transition: 0.5s ease-in-out var(--delay), background-color 0s;
+}
+
+thead th:hover {
+	color: #fc6782;
+}
+
 
 </style>
 
@@ -175,7 +301,7 @@ body.dark .top-box {
 
 <body>
 
-  <nav class="sidebar close">
+  <nav class="sidebar">
     <header>
 
     <div class="image-text">
@@ -281,22 +407,10 @@ body.dark .top-box {
   </nav>
 
   <section class="home">
-
+<!--
   <div class="right-container">
 
-    <div class="account-container">
-     
-      <div class="upload">
-        <img src="noprofil.jpg" id="preview_img" width="100" height="100" alt="">
-        <div class="round">
-            <input type="file" name="upload_img" id="" accept="images" onchange="previewImg(event)">
-            <i class="fa fa-plus" style="color: #fff; font-size: 24px; margin-top: 5px;"></i>
-      </div>
-      </div>
-
-  </div>
-
-      <!-- <div class="right-box"> -->
+   
       <div class="wrapper">
       <header>
         <p class="current-date"></p>
@@ -319,32 +433,21 @@ body.dark .top-box {
       </div>
     </div>
 
-      <!-- </div> 
-      <div class="right-box">
-      INVENTORY
-      </div> -->
 
   </div> 
-<!--
-   <div class="right-text">
-      EVERY
-      <br>
-      LAST
-      <br>
-      CRUMB.
-    </div> -->
-
   </div>
+-->
 
   <div class="dashboard-header">
 
-    <form action="admin-overview.php" method="post" class="search-form">
-      <div class="search-box">
+   <form action="admin-overview.php" method="post" class="search-form">
+    
+      <!--<div class="search-box">
         <input type="text" name="search" class="search-input" placeholder="Search...">
         <button type="submit" class="search-button"><i class="bx bx-search" style="font-size: 24px; margin-top: 5px;"></i></button>
-      </div>
+      </div> -->
     </form>
-  </div>
+  </div> 
 
   <div class="text">
     <div class="dashboard-text">DASHBOARD</div>
@@ -355,39 +458,132 @@ body.dark .top-box {
 
   <div class="top-container">
 
+  <!-- PRODUCTS -->
+  <div class="top-box">
+
+  <div class="circle">
+    <i class="bx bxs-cart" style="color: #fff; font-size: 40px; margin-top: 2px; margin-left: 0px;"></i>
+  </div>
+
+  <div class="product-text">
+    <span class="small-text">OUR</span><br>
+    <span class="large-text">PRODUCTS</span>
+  </div>
+
+  <div class="product-number">
+    <div class="number">28</div>
+    <span class="item-text">items</span>
+  </div>
+
+</div>
+
+    <!-- SALES RECORD -->
     <div class="top-box">
     <div class="circle">
-        <i class="bx bxs-cart" style="color: #fff; font-size: 20px; margin-top: 13px; margin-left: 13px;"></i>
-      </div>
-      PRODUCTS
+    <i class="bx bx-bar-chart-alt" style="color: #fff; font-size: 40px; margin-top: 2px; margin-left: 0px;"></i>
+  </div>
+
+  <div class="product-text">
+    <span class="small-text">TOTAL</span><br>
+    <span class="large-text">EARNINGS</span>
+  </div>
+
+  <div class="product-number">
+    <div class="number">8,560</div>
+    <span class="item-text">pesos</span>
+  </div>
     </div>
 
+    <!-- AUDIT TRAIL -->
     <div class="top-box">
-      <i class='bx bxs-archive'></i> INVENTORY
-    </div>
+    <div class="circle">
+    <i class="bx bx-user" style="color: #fff; font-size: 40px; margin-top: 2px; margin-left: 0px;"></i>
+  </div>
 
-    <div class="top-box">
-      <i class='bx bx-folder'></i> ARCHIVES
+  <div class="product-text">
+    <span class="small-text">TODAY'S</span><br>
+    <span class="large-text">VISITORS</span>
+  </div>
+
+  <div class="product-number">
+    <div class="number">35</div>
+    <span class="item-text">users</span>
+  </div>
     </div>
 
   </div>
 
   <div class="middle-container">
-    <div class="middle-box">
-      <i class='bx bx-wallet'></i> TRANSACTIONS
+
+  <!-- TRANSACTIONS -->
+  <div class="table-container">
+    <?php
+      include "dbconnect.php";
+
+      $selectsql = "SELECT * FROM inven_sales";
+
+      // Check if the search input is clicked and not null, change $selectsql syntax
+      if (isset($_POST['search']) && $_POST['search'] != NULL) {
+        $searchinput = $_POST['search'];
+        $selectsql = "SELECT * FROM transaction_table WHERE transaction_id LIKE '%$searchinput%' OR product_id LIKE '%$searchinput%' OR transaction_date LIKE '%$searchinput%'"; 
+      } else {
+        $selectsql = "SELECT * FROM transaction_table";
+      }
+
+      $result = $conn->query($selectsql);
+
+      // Check if table is not empty
+      if ($result->num_rows > 0) {
+        echo "<div class='table' id='transaction_table'>";
+        echo "<div class='table__body'>";
+        echo "<table>";
+        echo "<thead>";
+        echo "<tr>";
+        echo "<th>Transaction ID</th>";
+        echo "<th>Product ID</th>";
+        echo "<th>Quantity</th>";
+        echo "<th>Date</span></th>";
+        echo "</tr>";
+        echo "</thead>";
+        echo "<tbody>";
+        foreach ($result as $fielddata) {
+          echo "<tr>";
+          echo "<td>" . $fielddata['transaction_id'] . "</td>";
+          echo "<td>" . $fielddata['product_id'] . "</td>";
+          echo "<td>" . $fielddata['quantity_sold'] . "</td>";
+          echo "<td>" . $fielddata['transaction_date'] . "</td>";
+          echo "</tr>";
+        }
+        echo "</tbody>";
+        echo "</table>";
+        echo "</div>"; 
+        echo "</div>"; 
+      } else {
+        echo "<p>No records found</p>";
+      }
+    ?>
+  </div>
+
+  <!-- INVENTORY -->
+<div class="bottom-box low-stock-alert">
+    <div class="product-text">Low Stock Alert</div>
     </div>
+
+</div>
+
   </div>
 
   <div class="bottom-container">
+
+
+    <!-- ARCHIVES 
     <div class="bottom-box">
-      <i class='bx bx-bar-chart-alt'></i> SALES RECORD
+    <i class='bx bx-folder'></i> ARCHIVES
     </div>
-    <div class="bottom-box">
-      <i class='bx bx-book'></i> AUDIT TRAIL
-    </div>
-  </div>
+  </div> -->
 
   <!-- </div> -->
+  
   <script>
         function previewImg(event){
             var display = document.getElementById("preview_img");
@@ -396,6 +592,8 @@ body.dark .top-box {
     </script>
  
 </section>
+
+<script src='script.js'></script>
 
   <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -479,7 +677,6 @@ prevNextIcon.forEach(icon => {
     }
   });
 });
-
 
   </script>
 

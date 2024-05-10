@@ -169,7 +169,7 @@
     
      // Check if table is not empty
     if ($result->num_rows > 0) {
-    echo "<main class='table' id='customers_table'>";
+    echo "<main class='table' id='user_table'>";
     echo "<section class='table__header'>";
     
              echo "<div class='input-group'>";
@@ -185,6 +185,7 @@
                      echo "<th>Full Name <span class='icon-arrow'>&UpArrow;</span></th>";
                      echo "<th>Role <span class='icon-arrow'>&UpArrow;</span></th>";
                      echo "<th>Username <span class='icon-arrow'>&UpArrow;</span></th>";
+                     echo "<th>Password <span class='icon-arrow'>&UpArrow;</span></th>";
                      echo "<th>Email <span class='icon-arrow'>&UpArrow;</span></th>";
                      echo "<th>Action</th>";
                     echo "</tr>";
@@ -196,6 +197,7 @@
                     echo "<td>" . $fielddata['full_name'] . "</td>";
                     echo "<td>" . $fielddata['role'] . "</td>";
                     echo "<td>" . $fielddata['username'] . "</td>";
+                    echo "<td>" . $fielddata['password'] . "</td>";
                     echo "<td>" . $fielddata['email'] . "</td>";
 
                     echo "<td>";
