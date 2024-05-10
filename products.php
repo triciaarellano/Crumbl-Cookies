@@ -123,60 +123,81 @@
   </nav>
 
   <section class="home">
-  <div class="dashboard-header">Hi there, Admin!</div>
   <div class="dashboard-divider"></div>
   <div class="text">
 
-  <div class="mainbar-text">PRODUCTS</div>
+  <div class="mainbar-text">Products</div>
   
     <form action="products.php" method="post" class="search-form">
       
-    <div class="search-box">
+    <!-- <div class="search-box">
         <input type="text" name="search" class="search-input" placeholder="Search...">
         <button type="submit" class="search-button"><i class="bx bx-search" style = "font-size: 24px; margin-top: 5px;"></i></button>
-    </div>
+    </div> -->
 
     </form>
 
     
     <?php
-    include "dbconnect.php";
-    
-    $selectsql = "SELECT * FROM inven_sales";
-    
-    // Check if the search input is clicked and not null, change $selectsql syntax
-    if(isset($_POST['search']) && $_POST['search'] != NULL){
-        $searchinput = $_POST['search'];
-        $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'"; //cHANGE PA 
-    } else {
-        $selectsql = "SELECT * FROM product_table";
-    }
-    
-    $result = $conn->query($selectsql);
-    
-    // Check if table is not empty
-    if ($result->num_rows > 0) {
-      echo "<div class='container'>";
-      foreach ($result as $fielddata) {
-  ?>      
-          <div class="fielddata-item">
-              <div class="row">
-                  <div class="col">
-                      <div class="fielddata-details">
-                          <h2 class="fielddata-name"><?php echo $fielddata['product_name'] ?></h2>
-                          <p class="fielddata-email"><?php echo $fielddata['description'] ?></p>
-                          <button class="btn btn-primary">View</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-  <?php
-      }
-      echo "</div>"; 
+include "dbconnect.php";
+
+$selectsql = "SELECT * FROM inven_sales";
+
+// Check if the search input is clicked and not null, change $selectsql syntax
+if(isset($_POST['search']) && $_POST['search'] != NULL){
+    $searchinput = $_POST['search'];
+    $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'"; //cHANGE PA 
+} else {
+    $selectsql = "SELECT * FROM product_table";
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // Retrieve form data
+  $product_name = $_POST['product_name'];
+  $description = $_POST['description'];
+  $img = "images/";
+  
+  // Insert data into database
+  $insert_sql = "INSERT INTO product_table (product_name, description, img) VALUES ('$product_name', '$description', '$img')";
+  
+  if ($conn->query($insert_sql) === TRUE) {
+      echo "New record created successfully";
   } else {
-      echo "No records found";
+      echo "Error: " . $insert_sql . "<br>" . $conn->error;
   }
-  ?>
+  
+  // Close the database connection
+  $conn->close();
+}
+
+$result = $conn->query($selectsql);
+
+// Check if table is not empty
+if ($result->num_rows > 0) {
+    echo "<div class='container'>";
+    foreach ($result as $fielddata) {
+        ?>      
+        <div class="fielddata-item">
+            <div class="row">
+                <div class="col">
+                    <div class="fielddata-details">
+
+                        <img src="<?php echo $fielddata['img']; ?>" alt="Product Image" class="fielddata-image">
+                        <h2 class="fielddata-prodname"><?php echo $fielddata['product_name'] ?></h2>
+                        <p class="fielddata-desc"><?php echo $fielddata['description'] ?></p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    echo "</div>"; 
+} else {
+    echo "No records found";
+}
+?>
+
 
 </section>
 

@@ -1,1 +1,0 @@
-SELECT * FROM inven_sales.transaction_table;

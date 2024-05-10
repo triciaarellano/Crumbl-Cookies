@@ -355,7 +355,7 @@ body.dark .home .text {
 	color: var(--text-color);
 }
 
-body.dark .container {
+/* body.dark .container {
 	display: flex;
 	flex-wrap: wrap;
 	margin-left: auto;
@@ -367,7 +367,7 @@ body.dark .container {
 	border-radius: 20px;
 	align-items: center;
 	justify-content: center;
-}
+} */
 
 body.dark .fielddata-item {
 	background-color: var(--primary-color);
@@ -473,7 +473,7 @@ body.dark .btn:hover {
 	background-color: #ec7e96;
 }
 
-.container {
+/* .container {
 	display: flex;
 	flex-wrap: wrap;
 	margin-left: auto;
@@ -485,7 +485,7 @@ body.dark .btn:hover {
 	border-radius: 20px;
 	align-items: center;
 	justify-content: center;
-}
+} */
 
 /* basta yung calendar */
 .wrapper {
@@ -580,7 +580,6 @@ header .current-date {
 
 .fielddata-table {
 	margin-top: 8%;
-	border-collapse: collapse;
 	width: 100%;
 	text-align: center;
 }
@@ -588,7 +587,6 @@ header .current-date {
 .fielddata-table th,
 .fielddata-table td {
 	padding: 8px;
-	border: 1px solid #ddd;
 }
 
 .fielddata-table th {
@@ -605,7 +603,7 @@ header .current-date {
 	padding: 10px;
 	height: 30vh;
 	width: calc(20% - 60px);
-	margin: 0px 20px 40px 20px;
+	margin: 80px 0px -40px 20px; /* Adjust the margin values as needed */
 	display: inline-block;
 	box-shadow: 0 4px 6px rgba(0.1, 0, 0, 0.1);
 	text-align: center;
@@ -617,11 +615,9 @@ header .current-date {
 	width: 100px;
 	height: 100px;
 	margin-top: 20px;
-	border: 2px solid black;
 	border-radius: 50%;
 	justify-content: center;
 	align-items: center;
-	margin-bottom: 10px;
 }
 
 .fielddata-details {
@@ -631,14 +627,14 @@ header .current-date {
 	text-align: center;
 }
 
-.fielddata-name {
+.fielddata-prodname {
 	font-size: 22px;
 	font-weight: bold;
 	text-align: center;
-	margin-top: 40%;
+	margin-top: 15%;
 }
 
-.fielddata-email {
+.fielddata-desc {
 	font-size: 22px;
 	font-style: italic;
 	color: #555;
