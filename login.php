@@ -70,6 +70,19 @@ if (isset($_POST['sub'])) {
     // Condition if valid login
     if ($loginresult && $loginresult->num_rows == 1) {
         $_SESSION['username'] = $username;
+        
+        // Insert login action into logs_table
+        $user_data = $loginresult->fetch_assoc();
+        if (isset($user_data['user_id'])) {
+            $user_id = $user_data['user_id'];
+            $logsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES ('$user_id', 'Logged IN', NOW())";
+            if (!$conn->query($logsql)) {
+                echo "Error inserting log entry: " . $conn->error;
+            }
+        } else {
+            echo "User ID not found.";
+        }
+        
         header("Location: admin-overview.php");
         exit;
     } else {
@@ -83,6 +96,8 @@ if (isset($_POST['sub'])) {
     }
 }
 ?>
+
+
 
 </body>
 </html>

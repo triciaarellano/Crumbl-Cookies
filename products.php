@@ -182,7 +182,6 @@ if ($result->num_rows > 0) {
                 <div class="col">
                     <div class="fielddata-details">
 
-                        <img src="<?php echo $fielddata['img']; ?>" alt="Product Image" class="fielddata-image">
                         <h2 class="fielddata-prodname"><?php echo $fielddata['product_name'] ?></h2>
                         <p class="fielddata-desc"><?php echo $fielddata['description'] ?></p>
 

@@ -526,25 +526,7 @@ body.dark .top-box {
 
 </div>
 
-  </div>
 
-  <div class="bottom-container">
-
-
-    <!-- ARCHIVES 
-    <div class="bottom-box">
-    <i class='bx bx-folder'></i> ARCHIVES
-    </div>
-  </div> -->
-
-  <!-- </div> -->
-  
-  <script>
-        function previewImg(event){
-            var display = document.getElementById("preview_img");
-            display.src = URL.createObjectURL(event.target.files[0]);
-        }
-    </script>
  
 </section>
 
