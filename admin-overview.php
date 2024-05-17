@@ -256,6 +256,16 @@ body.dark .top-box {
 
 <body>
 
+<?php
+
+require "dbconnect.php";
+session_start();
+
+$fullname = $_SESSION['full_name'];
+$type = $_SESSION['role'];
+
+?>
+
   <nav class="sidebar">
     <header>
 
@@ -406,6 +416,7 @@ body.dark .top-box {
 
   <div class="text">
     <div class="dashboard-text">DASHBOARD</div>
+    <h1> Welcome <?php echo $type.", ".$fullname ?> </h1>
 
   </div>
 

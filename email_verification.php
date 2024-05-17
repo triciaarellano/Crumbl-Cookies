@@ -30,7 +30,6 @@ function send_verification($fullname,$email,$otp){
         $mail->send();
         ?>
             <script>
-            alert("Email successfully sent!!");
             window.location.href = "otp.php"; // Redirect to email_verification.php
         </script>
         <?php

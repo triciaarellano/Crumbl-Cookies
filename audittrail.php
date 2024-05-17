@@ -94,6 +94,7 @@
       </div>
 
       <div class="bottom-content">
+
         <li class="">
           <a href="logout.php">     
             <i class='bx bx-log-out icon'>
@@ -153,32 +154,6 @@ if (isset($_POST['sub'])) {
         $logsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES ($user_id, 'Logged IN', NOW())";
         $conn->query($logsql);
     }
-}
-
-if (isset($_POST['logout-icon'])) {
-  $username = $_POST['username'];
-  $password = md5($_POST['password']); //encrypted
-
-  $logoutsql = "SELECT * FROM user_table WHERE username = '".$username."' AND password = '".$password."'";
-  $result = $conn->query($logoutsql);
-
-  //check if there is a matching record
-  if ($result->num_rows == 1) {
-      $fielddata = $result->fetch_assoc();
-      $user_type = $fielddata['role']; // will get the user type of the matching record
-      //user's full name
-      $fullname = $fielddata['fullname'];
-      $user_id = $_SESSION['user_id'] = $fielddata['User_ID'];
-
-      $_SESSION['user'] = $fullname; //user's fullname inserted to a session variable
-      $_SESSION['type'] = $user_type;
-
-      $logoutsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES ($user_id, 'Logged OUT', NOW())";
-      $conn->query($logoutsql);
-
-      $_SESSION = array();
-      session_destroy();
-  }
 }
 
 

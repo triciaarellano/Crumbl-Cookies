@@ -129,94 +129,112 @@
       <form action="accounts.php" method="post" class="search-form1"></form>
 
 
- <?php
-      include "dbconnect.php";
+      <?php
+include "dbconnect.php";
 
-      $selectsql = "SELECT * FROM inven_sales";
+// Default SQL query to fetch only active users
+$selectsql = "SELECT * FROM user_table WHERE status = 'active'";
 
-      // Check if the search input is clicked and not null, change $selectsql syntax
-      if (isset($_POST['search']) && $_POST['search'] != NULL) {
-        $searchinput = $_POST['search'];
-        $selectsql = "SELECT * FROM user_table WHERE user_id LIKE '%$searchinput%' OR full_name LIKE '%$searchinput%' OR email LIKE '%$searchinput%'"; //cHANGE PA 
-      } else {
-        $selectsql = "SELECT * FROM user_table";
-      }
+// Check if the search input is clicked and not null, change $selectsql syntax
+if (isset($_POST['search']) && $_POST['search'] != NULL) {
+    $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
+    $selectsql = "SELECT * FROM user_table WHERE status = 'active' AND (user_id LIKE '%$searchinput%' OR full_name LIKE '%$searchinput%' OR email LIKE '%$searchinput%')";
+}
 
-      $result = $conn->query($selectsql);
+$result = $conn->query($selectsql);
 
-      if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete'])) {
-        include "dbconnect.php";
-    
-        if(isset($_POST['user_id'])) {
-            $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
-            
-            $delete_query = "DELETE FROM user_table WHERE user_id = '$user_id'";
-            if(mysqli_query($conn, $delete_query)) {
-                echo "<script>
-                  Swal.fire({
-                      title: 'Deleted!',
-                      text: 'Your file has been deleted!',
-                      icon: 'success'
-                      });
-                  </script>";
-
-            } else {
-                echo "Error deleting record: " . mysqli_error($conn);
-            }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['delete'])) {
+        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+        $delete_query = "UPDATE user_table SET status = 'inactive' WHERE user_id = '$user_id'";
+        if (mysqli_query($conn, $delete_query)) {
+            echo "<script>
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'User has been set to inactive!',
+                    icon: 'success'
+                });
+            </script>";
+        } else {
+            echo "Error updating record: " . mysqli_error($conn);
         }
     }
-    
-    
-     // Check if table is not empty
-    if ($result->num_rows > 0) {
+
+    if (isset($_POST['promote_admin'])) {
+        $promote_user = mysqli_real_escape_string($conn, $_POST['promote_admin']);
+        $updatesql = "UPDATE user_table SET role = 'Admin' WHERE user_id = '$promote_user'";
+        if ($conn->query($updatesql) === TRUE) {
+            echo "User promoted to admin successfully.";
+        } else {
+            echo "Error promoting user to admin: " . $conn->error;
+        }
+    }
+
+    if (isset($_POST['activate'])) {
+        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+        $activate_query = "UPDATE user_table SET status = 'active' WHERE user_id = '$user_id'";
+        if (mysqli_query($conn, $activate_query)) {
+            echo "<script>
+                Swal.fire({
+                    title: 'Activated!',
+                    text: 'User has been set to active!',
+                    icon: 'success'
+                });
+            </script>";
+        } else {
+            echo "Error updating record: " . mysqli_error($conn);
+        }
+    }
+}
+
+// Check if table is not empty
+if ($result->num_rows > 0) {
     echo "<main class='table' id='user_table'>";
     echo "<section class='table__header'>";
-    
-             echo "<div class='input-group'>";
-                 echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
-             echo "</div>";
-             echo "<button id='refreshButton' class='btn-refresh'><i class='bx bx-refresh' style='color: #fff; font-family: Montserrat; font-size: 24px;'></i> Refresh</button>";
-        echo "</section>";
-         echo "<section class='table__body'>";
-             echo "<table>";
-                 echo "<thead>";
-                     echo "<tr>";
-                     echo "<th>Account ID <span class='icon-arrow'>&UpArrow;</span></th>";
-                     echo "<th>Full Name <span class='icon-arrow'>&UpArrow;</span></th>";
-                     echo "<th>Role <span class='icon-arrow'>&UpArrow;</span></th>";
-                     echo "<th>Username <span class='icon-arrow'>&UpArrow;</span></th>";
-                     echo "<th>Password <span class='icon-arrow'>&UpArrow;</span></th>";
-                     echo "<th>Email <span class='icon-arrow'>&UpArrow;</span></th>";
-                     echo "<th>Action</th>";
-                    echo "</tr>";
-                 echo "</thead>";
-                 echo "<tbody>";
-                 foreach ($result as $fielddata) {
-                    echo "<tr>";
-                    echo "<td>" . $fielddata['user_id'] . "</td>";
-                    echo "<td>" . $fielddata['full_name'] . "</td>";
-                    echo "<td>" . $fielddata['role'] . "</td>";
-                    echo "<td>" . $fielddata['username'] . "</td>";
-                    echo "<td>" . $fielddata['password'] . "</td>";
-                    echo "<td>" . $fielddata['email'] . "</td>";
+    echo "<div class='input-group'>";
+    echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
+    echo "</div>";
+    echo "<button id='refreshButton' class='btn-refresh'><i class='bx bx-refresh' style='color: #fff; font-family: Montserrat; font-size: 24px;'></i> Refresh</button>";
+    echo "</section>";
+    echo "<section class='table__body'>";
+    echo "<table>";
+    echo "<thead>";
+    echo "<tr>";
+    echo "<th>Account ID <span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Full Name <span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Role <span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Username <span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Email <span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Action <span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "</tr>";
+    echo "</thead>";
+    echo "<tbody>";
 
-                    echo "<td>";
-                    echo "<form action='' method='post'>";
-                    echo "<input type='hidden' name='user_id' value='" . $fielddata['user_id'] . "'>";
-                    echo "<button type='submit' name='delete' class='btn-delete btn-primary'>Delete</button>";
-                    echo "</form>";
-                    echo "</td>";
-                    echo "</tr>";
-                }
+    foreach ($result as $fielddata) {
+        echo "<tr>";
+        echo "<td>" . $fielddata['user_id'] . "</td>";
+        echo "<td>" . $fielddata['full_name'] . "</td>";
+        echo "<td>" . $fielddata['role'] . "</td>";
+        echo "<td>" . $fielddata['username'] . "</td>";
+        echo "<td>" . $fielddata['email'] . "</td>";
+        echo "<td>" . $fielddata['status'] . "</td>";
+        // echo "<td>";
+        // echo "<form action='' method='post'>";
+        // echo "<input type='hidden' name='user_id' value='" . $fielddata['user_id'] . "'>";
+        // echo "<button type='submit' name='promote_admin' value='" . $fielddata['user_id'] . "' class='admin-button bx bxs-user-plus'></button>";
+        // echo "<button type='submit' name='delete' class='delete-button bx bxs-trash'></button>";
+        // echo "<button type='submit' name='activate' class='activate-button bx bxs-user-check'></button>";
+        // echo "</form>";
+        // echo "</td>";
+        echo "</tr>";
+    }
+    echo "</tbody>";
+    echo "</table>";
+} else {
+    echo "No records found";
+}
+?>
 
-                
-                echo "</tbody>";
-                echo "</table>";
-
-              } else {
-                echo "No records found";
-              }
-              ?>
 
          </section>
 
