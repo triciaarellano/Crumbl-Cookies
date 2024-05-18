@@ -10,24 +10,14 @@ if (isset($_POST['sub'])) {
     $username = $_POST['username'];
     $password = md5($_POST['password']);
 
+    $status = "Inactive";
+
 
     $otp = rand(000000,999999); //random otp
 
 
-    if (isset($_POST['role'])) {
-        $role = $_POST['role'];
-        if ($role === 'staff') {
-            $usertype = "Staff account";
-        } elseif ($role === 'admin') {
-            $usertype = "Admin account";
-        }
-    } else {
-       
-    }
-
-
-    $insertsql = "INSERT INTO user_table (full_name, role, email, username, password, otp)
-                  VALUES ('$fullname', 'Employee', '$email', '$username', '$password','$otp')";
+    $insertsql = "INSERT INTO user_table (full_name, role, email, username, password, otp, status)
+                  VALUES ('$fullname', 'Employee', '$email', '$username', '$password','$otp','$status')";
 
 
     $result = $conn->query($insertsql);
@@ -96,7 +86,8 @@ body {
 #video-background {
   position: absolute; 
   top: 0; 
-  left: 0; 
+  left: 0;
+  width: 100%;
 }
 
 .login-modal {

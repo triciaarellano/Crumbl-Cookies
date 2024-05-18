@@ -6,14 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
+
 
 <body>
 
-  <nav class="sidebar close">
+<nav class="sidebar close">
     <header>
 
       <div class="image-text">
@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <i class='bx bx-chevron-right toggle'></i>
+      <i class="bi bi-chevron-right toggle"></i>
     </header>
 
     <div class="menu-bar">
@@ -36,77 +36,74 @@
         <ul class="menu-links">
           <li class="nav-link">
             <a href="admin-overview.php">
-              <i class='bx bx-home-alt icon'></i>
+              <i class="bi bi-house-door icon"></i>
               <span class="text nav-text">Overview</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="accounts.php">
-              <i class='bx bx-user icon'></i>
+              <i class="bi bi-person icon"></i>
               <span class="text nav-text">Accounts</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="products.php">
-              <i class='bx bx-cart icon'></i>
+              <i class="bi bi-cart icon"></i>
               <span class="text nav-text">Products</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="archives.php">
-              <i class='bx bx-book-bookmark icon'></i>
+              <i class="bi bi-bookmark icon"></i>
               <span class="text nav-text">Archives</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="inventory.php">
-              <i class='bx bx-cube icon'></i>
+              <i class="bi bi-box-seam icon"></i>
               <span class="text nav-text">Inventory</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="transactions.php">
-              <i class='bx bx-wallet icon'></i>
+              <i class="bi bi-wallet icon"></i>
               <span class="text nav-text">Transactions</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="salesrecord.php">
-              <i class='bx bx-cabinet icon'></i>
+              <i class="bi bi-journal icon"></i>
               <span class="text nav-text">Sales Record</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="audittrail.php">
-              <i class='bx bx-bar-chart-alt-2 icon'></i>
+              <i class="bi bi-bar-chart icon"></i>
               <span class="text nav-text">Audit Trail</span>
             </a>
           </li>
-
         </ul>
       </div>
 
       <div class="bottom-content">
-        <li class="">
+        <li>
           <a href="logout.php">
-            <i class='bx bx-log-out icon'>
-            
-            </i>
+            <i class="bi bi-box-arrow-right icon"></i>
             <span class="text nav-text">Logout</span>
           </a>
         </li>
 
         <li class="mode">
           <div class="sun-moon">
-            <i class='bx bx-moon icon moon'></i>
-            <i class='bx bx-sun icon sun'></i>
+            <i class="bi bi-moon icon moon"></i>
+            <i class="bi bi-sun icon sun"></i>
           </div>
           <span class="mode-text text">Dark mode</span>
 
@@ -114,10 +111,8 @@
             <span class="switch"></span>
           </div>
         </li>
-
       </div>
     </div>
-
   </nav>
 
   <section class="home">

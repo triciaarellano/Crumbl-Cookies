@@ -30,7 +30,8 @@ body {
 #video-background {
   position: absolute; 
   top: 0; 
-  left: 0; 
+  left: 0;
+  width: 100%;
 }
 
 .login-modal {
@@ -337,7 +338,7 @@ form button:hover {
 
         </div>
         
-      <button>Verify OTP</button>
+      <button type="submit" name="sub" id="sub">Verify OTP</button>
 
     </form>
    

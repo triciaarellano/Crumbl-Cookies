@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,11 +5,9 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
   <link rel="stylesheet" href="style.css">
-  <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
-  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!--CSS STYLING SEPARATE-->
 
@@ -248,6 +244,110 @@ body.dark .top-box {
   background-color: #f9f9f9;
 }
 
+.wrapper {
+  height: 100vh;
+  text-align: center;
+  position: relative;
+}
+
+.wrapper button {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.loader {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100vh;
+  transition: width 0s 1.4s ease;
+}
+
+.loader__icon {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+
+.loader__icon svg {
+  transform-origin: 0 0;
+}
+
+.loader__tile {
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 20%;
+  background-color: #ff6486;
+  transition: width .7s ease;
+}
+
+.loader__tile:nth-child(1) {
+  top: calc(0 * 20%);
+  transition-delay: 0s;
+}
+
+.loader__tile:nth-child(2) {
+  top: calc(1 * 20%);
+  transition-delay: 0.2s;
+}
+
+.loader__tile:nth-child(3) {
+  top: calc(2 * 20%);
+  transition-delay: 0.4s;
+}
+
+.loader__tile:nth-child(4) {
+  top: calc(3 * 20%);
+  transition-delay: 0.6s;
+}
+
+.loader__tile:nth-child(5) {
+  top: calc(4 * 20%);
+  transition-delay: 0.8s;
+}
+
+.loader--active {
+  width: 100%;
+  transition-delay: 0s;
+}
+
+.loader--active .loader__icon {
+  opacity: 1;
+  transition: opacity .5s 1.4s ease;
+}
+
+.loader--active .loader__tile {
+  width: 100%;
+}
+
+.loader--active .loader__tile:nth-child(1) {
+  transition-delay: 0s;
+}
+
+.loader--active .loader__tile:nth-child(2) {
+  transition-delay: 0.2s;
+}
+
+.loader--active .loader__tile:nth-child(3) {
+  transition-delay: 0.4s;
+}
+
+.loader--active .loader__tile:nth-child(4) {
+  transition-delay: 0.6s;
+}
+
+.loader--active .loader__tile:nth-child(5) {
+  transition-delay: 0.8s;
+}
+
 
 
 </style>
@@ -257,30 +357,47 @@ body.dark .top-box {
 <body>
 
 <?php
-
-require "dbconnect.php";
 session_start();
+require "dbconnect.php";
 
-$fullname = $_SESSION['full_name'];
-$type = $_SESSION['role'];
+    $fullname = $_SESSION['full_name'];
+    $type = $_SESSION['role'];
 
 ?>
 
-  <nav class="sidebar">
+<div class="wrapper">
+    <button class="btn" type="button">START ORDERING</button>
+    <div class="loader loader--active">
+      <div class="loader__icon">
+        <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+          <path opacity="0.2" fill="#fff" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
+          <path fill="#fff" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0C22.32,8.481,24.301,9.057,26.013,10.047z"></path>
+          <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"></animateTransform>
+        </svg>
+      </div>
+      <div class="loader__tile"></div>
+      <div class="loader__tile"></div>
+      <div class="loader__tile"></div>
+      <div class="loader__tile"></div>
+      <div class="loader__tile"></div>
+    </div>
+
+
+<nav class="sidebar close">
     <header>
 
-    <div class="image-text">
+      <div class="image-text">
         <span class="image">
           <img src="logoonly.png" alt="">
         </span>
-        
-      <div class="text logo-text">
+
+        <div class="text logo-text">
           <span class="name">Crumbl Cookies</span>
           <span class="profession">Admin</span>
         </div>
       </div>
 
-      <i class='bx bx-chevron-right toggle'></i>
+      <i class="bi bi-chevron-right toggle"></i>
     </header>
 
     <div class="menu-bar">
@@ -289,75 +406,74 @@ $type = $_SESSION['role'];
         <ul class="menu-links">
           <li class="nav-link">
             <a href="admin-overview.php">
-              <i class='bx bx-home-alt icon'></i>
+              <i class="bi bi-house-door icon"></i>
               <span class="text nav-text">Overview</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="accounts.php">
-              <i class='bx bx-user icon'></i>
+              <i class="bi bi-person icon"></i>
               <span class="text nav-text">Accounts</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="products.php">
-              <i class='bx bx-cart icon'></i>
+              <i class="bi bi-cart icon"></i>
               <span class="text nav-text">Products</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="archives.php">
-              <i class='bx bx-book-bookmark icon'></i>
+              <i class="bi bi-bookmark icon"></i>
               <span class="text nav-text">Archives</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="inventory.php">
-              <i class='bx bx-cube icon'></i>
+              <i class="bi bi-box-seam icon"></i>
               <span class="text nav-text">Inventory</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="transactions.php">
-              <i class='bx bx-wallet icon'></i>
+              <i class="bi bi-wallet icon"></i>
               <span class="text nav-text">Transactions</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="salesrecord.php">
-              <i class='bx bx-cabinet icon'></i>
+              <i class="bi bi-journal icon"></i>
               <span class="text nav-text">Sales Record</span>
             </a>
           </li>
 
           <li class="nav-link">
             <a href="audittrail.php">
-              <i class='bx bx-bar-chart-alt-2 icon'></i>
+              <i class="bi bi-bar-chart icon"></i>
               <span class="text nav-text">Audit Trail</span>
             </a>
           </li>
-
         </ul>
       </div>
 
       <div class="bottom-content">
-        <li class="">
+        <li>
           <a href="logout.php">
-            <i class='bx bx-log-out icon'></i>
+            <i class="bi bi-box-arrow-right icon"></i>
             <span class="text nav-text">Logout</span>
           </a>
         </li>
 
         <li class="mode">
           <div class="sun-moon">
-            <i class='bx bx-moon icon moon'></i>
-            <i class='bx bx-sun icon sun'></i>
+            <i class="bi bi-moon icon moon"></i>
+            <i class="bi bi-sun icon sun"></i>
           </div>
           <span class="mode-text text">Dark mode</span>
 
@@ -365,10 +481,8 @@ $type = $_SESSION['role'];
             <span class="switch"></span>
           </div>
         </li>
-
       </div>
     </div>
-
   </nav>
 
   <section class="home">
@@ -428,7 +542,7 @@ $type = $_SESSION['role'];
   <div class="top-box">
 
   <div class="circle">
-    <i class="bx bxs-cart" style="color: #fff; font-size: 40px; margin-top: 2px; margin-left: 0px;"></i>
+    <i class="bi bi-cart" style="color: #fff; font-size: 30px; margin-top: 2px; margin-left: 0px;"></i>
   </div>
 
   <div class="product-text">
@@ -446,7 +560,7 @@ $type = $_SESSION['role'];
     <!-- SALES RECORD -->
     <div class="top-box">
     <div class="circle">
-    <i class="bx bx-bar-chart-alt" style="color: #fff; font-size: 40px; margin-top: 2px; margin-left: 0px;"></i>
+    <i class="bi bi-bar-chart" style="color: #fff; font-size: 35px; margin-top: 2px; margin-left: 0px;"></i>
   </div>
 
   <div class="product-text">
@@ -463,7 +577,7 @@ $type = $_SESSION['role'];
     <!-- AUDIT TRAIL -->
     <div class="top-box">
     <div class="circle">
-    <i class="bx bx-user" style="color: #fff; font-size: 40px; margin-top: 2px; margin-left: 0px;"></i>
+    <i class="bi bi-person" style="color: #fff; font-size: 40px; margin-top: 2px; margin-left: 0px;"></i>
   </div>
 
   <div class="product-text">
@@ -611,6 +725,24 @@ prevNextIcon.forEach(icon => {
         }
         renderCalendar(); 
     });
+});
+
+ var $loader = document.querySelector('.loader');
+var $content = document.querySelector('.content');
+var $button = document.querySelector('.btn');
+
+window.onload = function() {
+  $loader.classList.remove('loader--active');
+};
+
+$button.addEventListener('click', function () {
+  $loader.classList.add('loader--active');
+  
+  window.setTimeout(function () {
+    $loader.classList.remove('loader--active');
+    $content.classList.add('show');
+    $button.remove(); // Remove the button after the loader completes
+  }, 5000);
 });
 
 
