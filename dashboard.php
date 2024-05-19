@@ -146,11 +146,30 @@ body {
 	 flex-shrink: 0;
 	 padding: 30px;
 }
+ .search-bar {
+	 height: 34px;
+	 display: flex;
+	 width: 100%;
+	 max-width: 450px;
+}
+ .search-bar input {
+	 width: 100%;
+	 height: 100%;
+	 border: none;
+	 background-color: #e4e4e4a9;
+	 border-radius: 8px;
+	 font-family: var(--body-font);
+	 font-size: 14px;
+	 font-weight: 500;
+	 padding: 0 40px 0 16px;
+	 box-shadow: 0 0 0 2px rgba(134, 140, 160, 0.02);
+	 color: #ff6486;
+}
 
 .user-settings-container {
       display: flex;
 	  position: relative;
-	  left: 89%;
+	  left: 60%;
     }
 
     .user-settings {
@@ -235,10 +254,11 @@ body {
 	 font-size: 30px;
 	 color: #333;
 	 font-weight: 700;
+	 margin-top: 30px;
 	 padding-bottom: 20px;
-	 position: absolute;
-	 top: 5%;
-	 left: 17%;
+	 position: sticky;
+	 top: 0;
+	 left: 0;
 	 background: linear-gradient(
 		to bottom,
 		#f6f7fb 0%, 
@@ -401,270 +421,6 @@ body {
 	 border-radius: 10px;
 }
 
-/* -- TABLE -- */
-
-
-main.table {
-	width: calc(100vw - 200px);
-	max-width: 100%;
-	width: 80vw;
-	height: 85vh;
-	margin-top: 30px;
-
-	font-size: 16px;
-	overflow: hidden;
-}
-
-.table__header {
-	position: relative;
-	width: 100%;
-	height: 10%;
-	padding: 0.8rem 1rem;
-
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.table__header .input-group {
-	 width: 45%;
-	 height: 100%;
-	 border: none;
-   margin-left: 20px;
-	 background-color: #e4e4e4a9;
-	 border-radius: 8px;
-	 font-family: var(--body-font);
-	 font-size: 14px;
-	 font-weight: 500;
-	 padding: 0 40px 0 16px;
-	 box-shadow: 0 0 0 2px rgba(134, 140, 160, 0.02);
-	 color: #ff6486;
-}
-
-.table__header .input-group:hover {
-
-	box-shadow: 0 0.1rem 0.4rem #0002;
-}
-
-.table__header .input-group input {
-	width: 100%;
-	padding: 0 0.5rem 0 0.3rem;
-	background-color: transparent;
-	border: none;
-	outline: none;
-}
-
-.btn-refresh {
-	position: relative;
-	padding: 1px 16px;
-	font-size: 14px;
-	background-color: #f095a8;
-	color: #fff;
-	border: none;
-	border-radius: 1rem;
-	cursor: pointer;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	margin-bottom: -30px;
-	margin-right: 1.6rem;
-	transition: 0.3s;
-}
-
-.btn-refresh:hover {
-	box-shadow: 0 0.1rem 0.4rem #0002;
-}
-
-.btn-refresh .bx {
-	margin-right: 10px;
-}
-
-.table__body {
-	width: 95%;
-	max-height: calc(89% - 1.6rem);
-	background-color: #fffb;
-	border: 2px solid gainsboro;
-
-	margin: 0.8rem auto;
-	border-radius: 0.6rem;
-
-	overflow: auto;
-	overflow: overlay;
-}
-
-.table__body::-webkit-scrollbar {
-	width: 0.3rem;
-	height: 0.5rem;
-	background-color: gainsboro;
-}
-
-.table__body::-webkit-scrollbar-thumb {
-	border-radius: 0.5rem;
-	background-color: #0004;
-	visibility: hidden;
-}
-
-.table__body:hover::-webkit-scrollbar-thumb {
-	visibility: visible;
-}
-
-table {
-	width: 100%;
-}
-
-table,
-th,
-td {
-	border-collapse: collapse;
-	padding: 1rem;
-	text-align: left;
-}
-
-thead th {
-	padding: 1.5rem;
-	position: sticky;
-	top: 0;
-	left: 0;
-	background-color: #fefffe;
-	cursor: pointer;
-	text-transform: capitalize;
-	color: var(--toggle-color);
-	z-index: 2;
-}
-
-th::after {
-	content: "";
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 2px;
-	background-color: gainsboro;
-	z-index: -1;
-}
-
-tbody tr:nth-child(even) {
-	background-color: #0000000b;
-}
-
-tbody tr {
-	--delay: 0.1s;
-	transition: 0.5s ease-in-out var(--delay), background-color 0s;
-}
-
-tbody tr.hide {
-	opacity: 0;
-	transform: translateX(100%);
-}
-
-tbody tr:hover {
-	background-color: #fce1e7 !important;
-}
-
-tbody tr td,
-tbody tr td p,
-tbody tr td img {
-	transition: 0.2s ease-in-out;
-}
-
-tbody tr.hide td,
-tbody tr.hide td p {
-	padding: 0;
-	font: 0 / 0 sans-serif;
-	transition: 0.2s ease-in-out 0.5s;
-}
-
-tbody tr.hide td img {
-	width: 0;
-	height: 0;
-	transition: 0.2s ease-in-out 0.5s;
-}
-
-@media (max-width: 1000px) {
-	td:not(:first-of-type) {
-		min-width: 12.1rem;
-	}
-}
-
-thead th span.icon-arrow {
-	display: inline-block;
-	width: 1.3rem;
-	height: 1.3rem;
-	border-radius: 50%;
-	border: 1.4px solid transparent;
-
-	text-align: center;
-	font-size: 1rem;
-
-	margin-left: 0.5rem;
-	transition: 0.2s ease-in-out;
-}
-
-thead th:hover span.icon-arrow {
-	border: 1.4px solid #fc6782;
-}
-
-thead th:hover {
-	color: #fc6782;
-}
-
-thead th.active span.icon-arrow {
-	background-color: #fc6782;
-	color: #fff;
-}
-
-thead th.asc span.icon-arrow {
-	transform: rotate(180deg);
-}
-
-thead th.active,
-tbody td.active {
-	color: #fc6782;
-}
-
-/* -- MODAL -- */
-
-.modal-content {
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-  background-color: #007bff;
-  color: white;
-}
-
-.modal-title {
-  font-weight: bold;
-  font-size: 1.5rem;
-}
-
-.modal-header .btn-close {
-  filter: brightness(0) invert(1);
-}
-
-.modal-body {
-  padding: 20px;
-  background-color: #f8f9fa;
-}
-
-.modal-footer {
-  background-color: #e9ecef;
-  border-top: none;
-  padding: 15px;
-}
-
-.modal-footer .btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
-}
-
-.modal-footer .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-</style>
  
 </style>
 </head>
@@ -678,11 +434,11 @@ tbody td.active {
   <div class="side-wrapper">
    <div class="side-title">CATEGORY</div>
    <div class="side-menu">
-    <a class="sidebar-link" href="dashboard.php">
+    <a class="sidebar-link overview is-active" href="dashboard.php">
      <i class="bi bi-house-door icon"></i>
      Overview
     </a>
-    <a class="sidebar-link is-active" href="accounts.php">
+    <a class="sidebar-link trending" href="accounts.php">
      <i class="bi bi-people"></i>
      Accounts
     </a>
@@ -726,6 +482,9 @@ tbody td.active {
 
  <div class="wrapper">
   <div class="header">
+   <div class="search-bar">
+    <input type="text" placeholder="Search">
+   </div>
 
    <div class="user-settings-container">
       <div class="user-settings">
@@ -749,137 +508,31 @@ tbody td.active {
 
 
   <div class="main-container">
-   <div class="main-header anim" style="--delay: 0s">Accounts</div>
-</div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
+   <div class="main-header anim" style="--delay: 0s">Dashboard</div>
+   <div class="main-blogs">
+    <div class="main-blog anim" style="--delay: .1s">
+     <div class="main-blog__title">Welcome, Admin!</div>
+     <div class="main-blog__author">
+      <div class="author-img__wrapper">
+       
       </div>
+      <div class="author-detail">
+ 
+      </div>
+     </div>
     </div>
+
+    <div class="main-blog anim" style="--delay: .2s">
+     <div class="main-blog__title">Skateboard Tips You need to know</div>
+     <div class="main-blog__author tips">
+      <div class="author-img__wrapper">
+       
+   
   </div>
+ </div>
 
-
-      <form action="accounts.php" method="post" class="search-form1"></form>
-
-
-      <?php
-include "dbconnect.php";
-
-// Default SQL query to fetch only active users
-$selectsql = "SELECT * FROM user_table WHERE status = 'active'";
-
-// Check if the search input is clicked and not null, change $selectsql syntax
-if (isset($_POST['search']) && $_POST['search'] != NULL) {
-    $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
-    $selectsql = "SELECT * FROM user_table WHERE status = 'active' AND (user_id LIKE '%$searchinput%' OR full_name LIKE '%$searchinput%' OR email LIKE '%$searchinput%')";
-}
-
-$result = $conn->query($selectsql);
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['delete'])) {
-        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
-        $delete_query = "UPDATE user_table SET status = 'inactive' WHERE user_id = '$user_id'";
-        if (mysqli_query($conn, $delete_query)) {
-            echo "<script>
-                Swal.fire({
-                    title: 'Deleted!',
-                    text: 'User has been set to inactive!',
-                    icon: 'success'
-                });
-            </script>";
-        } else {
-            echo "Error updating record: " . mysqli_error($conn);
-        }
-    }
-
-    if (isset($_POST['promote_admin'])) {
-        $promote_user = mysqli_real_escape_string($conn, $_POST['promote_admin']);
-        $updatesql = "UPDATE user_table SET role = 'Admin' WHERE user_id = '$promote_user'";
-        if ($conn->query($updatesql) === TRUE) {
-            echo "User promoted to admin successfully.";
-        } else {
-            echo "Error promoting user to admin: " . $conn->error;
-        }
-    }
-
-    if (isset($_POST['activate'])) {
-        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
-        $activate_query = "UPDATE user_table SET status = 'active' WHERE user_id = '$user_id'";
-        if (mysqli_query($conn, $activate_query)) {
-            echo "<script>
-                Swal.fire({
-                    title: 'Activated!',
-                    text: 'User has been set to active!',
-                    icon: 'success'
-                });
-            </script>";
-        } else {
-            echo "Error updating record: " . mysqli_error($conn);
-        }
-    }
-}
-
-// Check if table is not empty
-if ($result->num_rows > 0) {
-    echo "<main class='table anim' style='--delay: .2s' id='user_table'>";
-    echo "<section class='table__header'>";
-    echo "<div class='input-group'>";
-    echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
-    echo "</div>";
-    echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Add Account</button>";
-    echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise' style='color: #fff; font-family: Montserrat; font-size: 20px; background: transparent;'></i> Refresh</button>";
-    echo "</section>";
-    echo "<section class='table__body'>";
-    echo "<table>";
-    echo "<thead>";
-    echo "<tr>";
-    echo "<th>Account ID <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Full Name <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Role <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Username <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Email <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Status <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "</tr>";
-    echo "</thead>";
-    echo "<tbody>";
-
-    foreach ($result as $fielddata) {
-        echo "<tr>";
-        echo "<td>" . $fielddata['user_id'] . "</td>";
-        echo "<td>" . $fielddata['full_name'] . "</td>";
-        echo "<td>" . $fielddata['role'] . "</td>";
-        echo "<td>" . $fielddata['username'] . "</td>";
-        echo "<td>" . $fielddata['email'] . "</td>";
-        echo "<td>" . $fielddata['status'] . "</td>";
-        echo "</tr>";
-    }
-    echo "</tbody>";
-    echo "</table>";
-} else {
-    echo "No records found";
-}
-?>
-
-         </section>
-
-         <script src='script.js'></script>
-
-         <script>
-         document.addEventListener("DOMContentLoaded", function() {
+<script>
+document.addEventListener("DOMContentLoaded", function() {
 
 const userSettings = document.querySelector('.user-settings');
 const dropdownMenu = document.querySelector('.dropdown-menu');
@@ -934,20 +587,13 @@ const dropdownMenu = document.querySelector('.dropdown-menu');
   }
 
   // add click event listeners to logo, logo-expand, and overview
-  document.querySelectorAll(".logo, .logo-expand, .sidebar-link").forEach(function(element) {
+  document.querySelectorAll(".logo, .logo-expand, .overview").forEach(function(element) {
     element.addEventListener("click", handleLogoClick);
   });
 
 });
 
-  document.getElementById('refreshButton').addEventListener('click', function() {
-    location.reload();
-  });
-
-
-          </script>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
-</body>
- 
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
 </html>
