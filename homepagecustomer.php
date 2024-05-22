@@ -7,171 +7,188 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     body {
-  background-color: #eee;
-}
+      background-color: #eee;
+    }
 
-.wrapper {
-  height: 100vh;
-  text-align: center;
-  position: relative;
-}
+    .wrapper {
+      height: 100vh;
+      text-align: center;
+      position: relative;
+    }
 
-.wrapper button {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
+    .wrapper button {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+    }
 
-.loader {
-  position: fixed;
-  z-index: 999;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 100vh;
-  transition: width 0s 1.4s ease;
-}
+    .loader {
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100vh;
+      transition: width 0s 1.4s ease;
+    }
 
-.loader__icon {
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  opacity: 0;
-  transition: opacity .5s ease;
-}
+    .loader__icon {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
 
-.loader__icon svg {
-  transform-origin: 0 0;
-}
+    .loader__icon svg {
+      transform-origin: 0 0;
+    }
 
-.loader__tile {
-  position: absolute;
-  left: 0;
-  width: 0;
-  height: 20%;
-  background-color: #ff6486;
-  transition: width .7s ease;
-}
+    .loader__tile {
+      position: absolute;
+      left: 0;
+      width: 0;
+      height: 20%;
+      background-color: #ff6486;
+      transition: width .7s ease;
+    }
 
-.loader__tile:nth-child(1) {
-  top: calc(0 * 20%);
-  transition-delay: 0s;
-}
+    .loader__tile:nth-child(1) {
+      top: calc(0 * 20%);
+      transition-delay: 0s;
+    }
 
-.loader__tile:nth-child(2) {
-  top: calc(1 * 20%);
-  transition-delay: 0.2s;
-}
+    .loader__tile:nth-child(2) {
+      top: calc(1 * 20%);
+      transition-delay: 0.2s;
+    }
 
-.loader__tile:nth-child(3) {
-  top: calc(2 * 20%);
-  transition-delay: 0.4s;
-}
+    .loader__tile:nth-child(3) {
+      top: calc(2 * 20%);
+      transition-delay: 0.4s;
+    }
 
-.loader__tile:nth-child(4) {
-  top: calc(3 * 20%);
-  transition-delay: 0.6s;
-}
+    .loader__tile:nth-child(4) {
+      top: calc(3 * 20%);
+      transition-delay: 0.6s;
+    }
 
-.loader__tile:nth-child(5) {
-  top: calc(4 * 20%);
-  transition-delay: 0.8s;
-}
+    .loader__tile:nth-child(5) {
+      top: calc(4 * 20%);
+      transition-delay: 0.8s;
+    }
 
-.loader--active {
-  width: 100%;
-  transition-delay: 0s;
-}
+    .loader--active {
+      width: 100%;
+      transition-delay: 0s;
+    }
 
-.loader--active .loader__icon {
-  opacity: 1;
-  transition: opacity .5s 1.4s ease;
-}
+    .loader--active .loader__icon {
+      opacity: 1;
+      transition: opacity .5s 1.4s ease;
+    }
 
-.loader--active .loader__tile {
-  width: 100%;
-}
+    .loader--active .loader__tile {
+      width: 100%;
+    }
 
-.loader--active .loader__tile:nth-child(1) {
-  transition-delay: 0s;
-}
+    .loader--active .loader__tile:nth-child(1) {
+      transition-delay: 0s;
+    }
 
-.loader--active .loader__tile:nth-child(2) {
-  transition-delay: 0.2s;
-}
+    .loader--active .loader__tile:nth-child(2) {
+      transition-delay: 0.2s;
+    }
 
-.loader--active .loader__tile:nth-child(3) {
-  transition-delay: 0.4s;
-}
+    .loader--active .loader__tile:nth-child(3) {
+      transition-delay: 0.4s;
+    }
 
-.loader--active .loader__tile:nth-child(4) {
-  transition-delay: 0.6s;
-}
+    .loader--active .loader__tile:nth-child(4) {
+      transition-delay: 0.6s;
+    }
 
-.loader--active .loader__tile:nth-child(5) {
-  transition-delay: 0.8s;
-}
+    .loader--active .loader__tile:nth-child(5) {
+      transition-delay: 0.8s;
+    }
 
-.content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  opacity: 0;
-  transform: translateY(100%);
-  transition: opacity 1s ease, transform 1s ease;
-}
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: opacity 1s ease, transform 1s ease;
+    }
 
-.content.show {
-  opacity: 1;
-  transform: translateY(0);
-}
+    .content.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-.flex-container {
-  width: 150px;
-  height: 200px;
-  background-color: #f095a8;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 1.5rem;
-  padding: 10px;
-  box-sizing: border-box;
-}
+    .flex-container {
+      width: 150px;
+      height: 200px;
+      background-color: #f095a8;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 1.5rem;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
 
-.product-image {
-  width: 80%;
-  height: auto;
-  margin-bottom: 10px;
-}
+    .flex-container:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
 
-.product-name {
-  font-size: 1.2rem;
-  margin-bottom: 5px;
-}
+    .product-image {
+      width: 80%;
+      height: auto;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
 
-.flex-container button {
-  background-color: #fff;
-  color: #007AE5;
-  border: none;
-  padding: 5px;
-  margin: 2px;
-  cursor: pointer;
-}
+    .product-name {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
 
-.flex-container span.quantity {
-  font-size: 2rem;
-}
-</style>
+    .flex-container button {
+      background-color: #fff;
+      color: #007AE5;
+      border: none;
+      padding: 5px 10px;
+      margin: 2px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .flex-container button:hover {
+      background-color: #007AE5;
+      color: #fff;
+    }
+
+    .flex-container span.quantity {
+      font-size: 2rem;
+    }
+  </style>
 </head>
 <body>
   <div class="wrapper">
@@ -251,40 +268,39 @@
   </div>
   <script>
     var $loader = document.querySelector('.loader');
-var $content = document.querySelector('.content');
-var $button = document.querySelector('.btn');
+    var $content = document.querySelector('.content');
+    var $button = document.querySelector('.btn');
 
-window.onload = function() {
-  $loader.classList.remove('loader--active');
-};
+    window.onload = function() {
+      $loader.classList.remove('loader--active');
+    };
 
-$button.addEventListener('click', function () {
-  $loader.classList.add('loader--active');
-  
-  window.setTimeout(function () {
-    $loader.classList.remove('loader--active');
-    $content.classList.add('show');
-    $button.remove(); // Remove the button after the loader completes
-  }, 5000);
-});
+    $button.addEventListener('click', function () {
+      $loader.classList.add('loader--active');
+      
+      window.setTimeout(function () {
+        $loader.classList.remove('loader--active');
+        $content.classList.add('show');
+        $button.remove(); // Remove the button after the loader completes
+      }, 5000);
+    });
 
-document.querySelectorAll('.increment').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var quantity = btn.previousElementSibling;
-    quantity.textContent = parseInt(quantity.textContent) + 1;
-  });
-});
+    document.querySelectorAll('.increment').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var quantity = btn.previousElementSibling;
+        quantity.textContent = parseInt(quantity.textContent) + 1;
+      });
+    });
 
-document.querySelectorAll('.decrement').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var quantity = btn.nextElementSibling;
-    var currentValue = parseInt(quantity.textContent);
-    if (currentValue > 0) {
-      quantity.textContent = currentValue - 1;
-    }
-  });
-});
-
+    document.querySelectorAll('.decrement').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var quantity = btn.nextElementSibling;
+        var currentValue = parseInt(quantity.textContent);
+        if (currentValue > 0) {
+          quantity.textContent = currentValue - 1;
+        }
+      });
+    });
   </script>
 </body>
 </html>

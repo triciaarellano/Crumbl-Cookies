@@ -1,25 +1,16 @@
 <!doctype html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
 
-  <style>
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
- 
- * {
-	 outline: none;
-}
-
- html {
-	 -webkit-font-smoothing: antialiased;
-}
-
-body {
+    <style>
+      body {
     background-color: var(--theme-bg);
     width: 100%;
     height: 100%;
@@ -30,400 +21,9 @@ body {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     position: absolute;
 }
-
-:root {
-    --body-font: "Inter", sans-serif;
-    --theme-bg: #f6f7fb; 
-    --body-color: #333; 
-    --button-bg: #fdfbff; 
-    --border-color: #000;
-    --delay: 0s;
-}
-
- .sidebar {
-	 width: 15%;
-	 height: 100%;
-	 padding: 30px;
-	 display: flex;
-	 flex-direction: column;
-	 flex-shrink: 0;
-	 transition-duration: 0.2s;
-	 overflow-y: auto;
-	 overflow-x: hidden;
-}
-
-.sidebar .logo img {
-    width: 200px; 
-    height: 100px; 
-	margin-top: -1.5rem;
-	margin-left: -1rem;
-    flex-shrink: 0;
-    color: #333;
-    align-items: left;
-    justify-content: left;
-	object-fit: cover;
-}
-
- .sidebar-link:hover, .sidebar-link.is-active {
-	 color: #ff6486;
-	 font-weight: 600;
-}
-
- .sidebar-link:hover:nth-child(2n + 1) svg, .sidebar-link.is-active:nth-child(2n + 1) svg {
-	 background: #ff7551;
-}
-
- .sidebar-link:hover:nth-child(2n) svg, .sidebar-link.is-active:nth-child(2n) svg {
-	 background: #32a7e2;
-}
-
- .sidebar-link:hover:nth-child(2n + 3) svg, .sidebar-link.is-active:nth-child(2n + 3) svg {
-	 background: #6c5ecf;
-}
-
- .sidebar.collapse {
-	 width: 90px;
-	 border-right: 1px solid var(--border-color);
-}
-
- @keyframes bottom {
-	 0% {
-		 transform: translateY(100px);
-		 opacity: 0;
-	}
-	 100% {
-		 opacity: 1;
-		 transform: none;
-	}
-}
- .side-menu {
-	 display: flex;
-	 flex-direction: column;
-}
- .side-menu a {
-	 display: flex;
-	 align-items: center;
-	 text-decoration: none;
-	 color: var(--body-color);
-}
- .side-menu a + a {
-	 margin-top: 26px;
-}
-
-.bi {
-  font-family: "bootstrap-icons";
-  font-size: 1.5rem;
-  color: inherit;
-  margin-right: 0.75rem;
-}
-
-.bi:hover {
-  color: #ff6486; 
-}
-
- .side-title {
-	 font-size: 12px;
-	 letter-spacing: 0.07em;
-	 margin-bottom: 24px;
-	 color: #333;
-}
- .side-wrapper {
-	 border-bottom: 1px solid var(--border-color);
-	 padding: 36px 0;
-	 width: 145px;
-}
- .side-wrapper + .side-wrapper {
-	 border-bottom: none;
-}
- .wrapper {
-	 display: flex;
-	 flex-direction: column;
-	 flex-grow: 1;
-}
- .header {
-	 display: flex;
-	 align-items: center;
-	 flex-shrink: 0;
-	 padding: 30px;
-}
- .search-bar {
-	 height: 34px;
-	 display: flex;
-	 width: 100%;
-	 max-width: 450px;
-}
- .search-bar input {
-	 width: 100%;
-	 height: 100%;
-	 border: none;
-	 background-color: #e4e4e4a9;
-	 border-radius: 8px;
-	 font-family: var(--body-font);
-	 font-size: 14px;
-	 font-weight: 500;
-	 padding: 0 40px 0 16px;
-	 box-shadow: 0 0 0 2px rgba(134, 140, 160, 0.02);
-	 color: #ff6486;
-}
-
-.user-settings-container {
-      display: flex;
-	  position: relative;
-	  left: 60%;
-    }
-
-    .user-settings {
-      position: relative;
-      display: flex;
-      align-items: center;
-      margin-left: 20px;
-      cursor: pointer;
-    }
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: white;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 9999;
-    }
-
-    .dropdown-menu a {
-      display: block;
-      padding: 8px 16px;
-      color: black;
-      text-decoration: none;
-    }
-
-    .dropdown-menu a:hover {
-      background-color: #f1f1f1;
-    }
-
-    .notify {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .notification {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 8px;
-      height: 8px;
-      background-color: red;
-      border-radius: 50%;
-    }
-
- @media screen and (max-width: 575px) {
-	 .user-settings .notify .notification {
-		 display: none;
-	}
-}
- .user-img {
-	 width: 30px;
-	 height: 30px;
-	 flex-shrink: 0;
-	 object-fit: cover;
-	 border-radius: 50%;
-}
- .user-name {
-	 color: #ff6486;
-	 font-size: 14px;
-	 margin: 0 6px 0 12px;
-}
- @media screen and (max-width: 575px) {
-	 .user-name {
-		 display: none;
-	}
-}
- .main-container {
-	 display: flex;
-	 flex-direction: column;
-	 padding: 0 30px 30px;
-	 flex-grow: 1;
-	 overflow: auto;
-}
- .anim {
-	 animation: bottom 0.8s var(--delay) both;
-}
- .main-header {
-	 font-size: 30px;
-	 color: #333;
-	 font-weight: 700;
-	 margin-top: 30px;
-	 padding-bottom: 20px;
-	 position: sticky;
-	 top: 0;
-	 left: 0;
-	 background: linear-gradient(
-		to bottom,
-		#f6f7fb 0%, 
-		#f6f7fb 78%, 
-		rgb(31 29 43 / 0%) 100%
-		);
-
-	 z-index: 11;
-}
- .small-header {
-	 font-size: 24px;
-	 font-weight: 500;
-	 color: #333;
-	 margin: 30px 0 20px;
-}
- .main-blogs {
-	 display: flex;
-	 align-items: center;
-}
- .main-blog__author {
-	 display: flex;
-	 align-items: center;
-	 padding-bottom: 10px;
-}
- .main-blog__author.tips {
-	 flex-direction: column-reverse;
-	 align-items: flex-start;
-}
- .main-blog__title {
-	 font-size: 25px;
-	 max-width: 12ch;
-	 font-weight: 600;
-	 letter-spacing: 1px;
-	 color: #333;
-	 margin-bottom: 30px;
-}
- .main-blog {
-	 background-color: #31abbd;
-	 display: flex;
-	 flex-direction: column;
-	 width: 65%;
-	 padding: 30px;
-	 border-radius: 20px;
-	 align-self: stretch;
-	 overflow: hidden;
-	 position: relative;
-	 transition: background 0.3s;
-	 background-repeat: no-repeat;
-}
- .main-blog + .main-blog {
-	 margin-left: 20px;
-	 width: 35%;
-	 background-color: #31abbd;
-}
- .main-blog + .main-blog .author-img {
-	 border-color: #000;
-	 margin-top: 14px;
-}
- .main-blog + .main-blog .author-img__wrapper svg {
-	 border-color: #ffe6b2;
-	 color: #e7bb7d;
-}
- .main-blog + .main-blog .author-detail {
-	 margin-left: 0;
-}
- @media screen and (max-width: 905px) {
-	 .main-blog, .main-blog + .main-blog {
-		 width: 50%;
-		 padding: 30px;
-	}
-	 .main-blog {
-		 background-size: cover;
-		 background-position-x: center;
-		 background-blend-mode: overlay;
-	}
-}
-
- .author-img {
-	 width: 52px;
-	 height: 52px;
-	 border: 1px solid #000;
-	 padding: 4px;
-	 border-radius: 50%;
-	 object-fit: cover;
-}
- .author-img__wrapper {
-	 position: relative;
-	 flex-shrink: 0;
-}
- .author-img__wrapper svg {
-	 width: 16px;
-	 padding: 2px;
-	 background-color: #333;
-	 color: #0daabc;
-	 border-radius: 50%;
-	 border: 2px solid #0daabc;
-	 position: absolute;
-	 bottom: 5px;
-	 right: 0;
-}
- .author-name {
-	 font-size: 15px;
-	 color: #333;
-	 font-weight: 500;
-	 margin-bottom: 8px;
-}
- .author-info {
-	 font-size: 13px;
-	 font-weight: 400;
-	 color: #333;
-}
- .author-detail {
-	 margin-left: 16px;
-}
-
- @media screen and (max-width: 475px) {
-	 .main-blog__title {
-		 font-size: 20px;
-	}
-	 .author-name {
-		 font-size: 14px;
-	}
-	 .main-blog__author {
-		 flex-direction: column-reverse;
-		 align-items: flex-start;
-	}
-	 .author-detail {
-		 margin-left: 0;
-	}
-	 .main-blog .author-img {
-		 margin-top: 14px;
-	}
-	 .main-container {
-		 padding: 0 20px 20px;
-	}
-	 .header {
-		 padding: 20px;
-	}
-	 .sidebar.collapse {
-		 width: 40px;
-	}
-	 .sidebar {
-		 align-items: center;
-	}
-	 body {
-		 padding: 0;
-	}
-	 .container {
-		 height: 100vh;
-		 border-radius: 0;
-		 max-height: 100%;
-	}
-}
- ::-webkit-scrollbar {
-	 width: 6px;
-	 border-radius: 10px;
-}
- ::-webkit-scrollbar-thumb {
-	 background-color: #000;
-	 border-radius: 10px;
-}
-
- 
 </style>
 </head>
+
   <body>
   
   <div class="sidebar">
@@ -447,7 +47,7 @@ body {
      Products
     </a>
     <a class="sidebar-link" href="archives.php">
-     <i class="bi bi-bookmark-fill"></i>
+     <i class="bi bi-bookmark"></i>
      Archives
     </a>
     <a class="sidebar-link" href="inventory.php">
@@ -480,8 +80,8 @@ body {
  </div>
 
 
- <div class="wrapper">
-  <div class="header">
+ <div class="wrapper-top">
+  <div class="header-dashboard">
    <div class="search-bar">
     <input type="text" placeholder="Search">
    </div>
@@ -508,90 +108,281 @@ body {
 
 
   <div class="main-container">
-   <div class="main-header anim" style="--delay: 0s">Dashboard</div>
-   <div class="main-blogs">
-    <div class="main-blog anim" style="--delay: .1s">
-     <div class="main-blog__title">Welcome, Admin!</div>
-     <div class="main-blog__author">
-      <div class="author-img__wrapper">
-       
+    <div class="main-header anim" style="--delay: 0s">Dashboard</div>
+    <div class="main-welcome">
+        <div class="main-block anim" style="--delay: .1s">
+            <div class="main-block__title">Welcome, Admin!</div>
+            <div class="main-block__contents">
+
+                <div id="day" class="day"></div>
+                <div id="clock" class="clock"></div>
+
+            </div>
+        </div>
+
+        <div class="wrapper anim" style="--delay: .2s">
+      <header>
+        <p class="current-date"></p>
+        <div class="icons">
+          <span id="prev" class="bi bi-chevron-left"></span>
+          <span id="next" class="bi bi-chevron-right"></span>
+        </div>
+      </header>
+      <div class="calendar">
+        <ul class="weeks">
+          <li>Sun</li>
+          <li>Mon</li>
+          <li>Tue</li>
+          <li>Wed</li>
+          <li>Thu</li>
+          <li>Fri</li>
+          <li>Sat</li>
+        </ul>
+        <ul class="days"></ul>
       </div>
-      <div class="author-detail">
- 
-      </div>
-     </div>
     </div>
 
-    <div class="main-blog anim" style="--delay: .2s">
-     <div class="main-blog__title">Skateboard Tips You need to know</div>
-     <div class="main-blog__author tips">
-      <div class="author-img__wrapper">
-       
-   
-  </div>
- </div>
+</div>
+
+<div class="sub-container">
+
+    <div class="sub-categories">
+
+        <div class="sub-block anim" style="--delay: .3s;">
+
+        <div class="circle" style="background-color: #aafadb;">
+              <i class="bi bi-cart" style="color: #fff; font-size: 30px; margin-left: 12px; margin-bottom: 4px;"></i>
+        </div>
+
+            <div class="sub-block__title">
+                <div class="small-text">
+                  OUR
+                </div>
+                <div class="large-text">
+                  PRODUCTS
+                </div>
+          </div>
+
+            <div class="sub-block__contents">
+                <div class="product-number">
+                    <div class="number">28</div>
+                    <span class="item-text">items</span>
+                  </div>
+              </div>
+
+        </div>
+
+        <div class="sub-block anim" style="--delay: .4s">
+
+            <div class="circle" style="background-color: #ffb0bf;">
+              <i class="bi bi-bar-chart" style="color: #fff; font-size: 30px; margin-left: 12px; margin-bottom: 4px;"></i>
+            </div>
+        
+            <div class="sub-block__title">
+                <div class="small-text">
+                  TOTAL
+                </div>
+                <div class="large-text">
+                  EARNINGS
+                </div>
+          </div>
+
+            <div class="sub-block__contents">
+                <div class="product-number">
+                    <div class="number">5,403</div>
+                    <span class="item-text">pesos</span>
+                  </div>
+              </div>
+
+        </div>
+
+        <div class="sub-block anim" style="--delay: .5s">
+            
+        <div class="circle" style="background-color: #c8b1ff;">
+              <i class="bi bi-person" style="color: #fff; font-size: 30px; margin-left: 12px; margin-bottom: 4px;"></i>
+            </div>
+        
+            <div class="sub-block__title">
+                <div class="small-text">
+                  TODAY'S
+                </div>
+                <div class="large-text">
+                  VISITORS
+                </div>
+          </div>
+
+            <div class="sub-block__contents">
+                <div class="product-number">
+                    <div class="number">48</div>
+                    <span class="item-text">users</span>
+                  </div>
+              </div>
+
+            </div>
+    </div>
+</div>
+
+<div class="bottom-table-container">
+
+    <div class="bottom-categories">
+        <div class="bottom-block anim" style="--delay: .6s">
+            <div class="bottom-block__title"> Products</div>
+            <div class="bottom-block__contents">
+
+            </div>
+        </div>
+
+        <div class="bottom-block anim" style="--delay: .7s">
+            <div class="bottom-block__title">Sales</div>
+            <div class="bottom-block__contents">
+
+            </div>
+        </div>
+
+</div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+  // Variables and Constants
+  
+  const daysTag = document.querySelector(".days");
+  const currentDate = document.querySelector(".current-date");
+  const prevNextIcon = document.querySelectorAll(".icons span");
 
-const userSettings = document.querySelector('.user-settings');
-const dropdownMenu = document.querySelector('.dropdown-menu');
+  let date = new Date();
+  let currYear = date.getFullYear();
+  let currMonth = date.getMonth();
+
+  const months = ["January", "February", "March", "April", "May", "June", "July",
+                  "August", "September", "October", "November", "December"];
+
+  // User Settings Dropdown Toggle
+  const userSettings = document.querySelector('.user-settings');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
   
   userSettings.addEventListener('click', function() {
     dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
   });
 
-  // Close the dropdown if the user clicks outside of it
   window.addEventListener('click', function(event) {
     if (!userSettings.contains(event.target)) {
       dropdownMenu.style.display = 'none';
     }
   });
 
-  // to handle sidebar link click
+  // Sidebar Link Active State
   function handleSidebarLinkClick(event) {
-    // remove 'is-active' class from all sidebar links
+    // Remove 'is-active' class from all sidebar links
     document.querySelectorAll(".sidebar-link").forEach(function(link) {
       link.classList.remove("is-active");
     });
-    // add 'is-active' class to the clicked sidebar link
+    // Add 'is-active' class to the clicked sidebar link
     event.target.classList.add("is-active");
   }
 
-  // add click event listeners to all sidebar links
+  // Add click event listeners to all sidebar links
   document.querySelectorAll(".sidebar-link").forEach(function(link) {
     link.addEventListener("click", handleSidebarLinkClick);
   });
 
-  // to handle window resize
+  // Sidebar Collapse Handling
   function handleWindowResize() {
-    // If window width is greater than 1090px
+    const sidebar = document.querySelector(".sidebar");
     if (window.innerWidth > 1090) {
-      // remove 'collapse' class from sidebar
-      document.querySelector(".sidebar").classList.remove("collapse");
+      sidebar.classList.remove("collapse");
     } else {
-      // add 'collapse' class to sidebar
-      document.querySelector(".sidebar").classList.add("collapse");
+      sidebar.classList.add("collapse");
     }
   }
 
   window.addEventListener("resize", handleWindowResize);
-  handleWindowResize();
+  handleWindowResize(); // Initial check
 
-  // to handle logo, logo-expand, and overview click
+  // Main Container Show/Hide Handling
   function handleLogoClick() {
-    // remove 'show' class from main container
-    document.querySelector(".main-container").classList.remove("show");
-    // scroll main container to top
-    document.querySelector(".main-container").scrollTop = 0;
+    const mainContainer = document.querySelector(".main-container");
+    mainContainer.classList.remove("show");
+    mainContainer.scrollTop = 0;
   }
 
-  // add click event listeners to logo, logo-expand, and overview
+  // Add click event listeners to logo, logo-expand, and overview
   document.querySelectorAll(".logo, .logo-expand, .overview").forEach(function(element) {
     element.addEventListener("click", handleLogoClick);
   });
 
+  // Real-Time Clock
+  function updateClockAndDay() {
+    const clockElement = document.getElementById('clock');
+    const dayElement = document.getElementById('day');
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    const hoursString = hours.toString().padStart(2, '0');
+    clockElement.textContent = `${hoursString}:${minutes}:${seconds} ${ampm}`;
+    const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
+    dayElement.textContent = dayOfWeek;
+  }
+
+  setInterval(updateClockAndDay, 1000);
+  updateClockAndDay(); // Initial call to set the clock and day immediately
+
+
+  // Calendar
+  const renderCalendar = () => {
+    const firstDayofMonth = new Date(currYear, currMonth, 1).getDay();
+    const lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate();
+    const lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay();
+    const lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate();
+
+    let liTag = "";
+
+    for (let i = firstDayofMonth; i > 0; i--) { 
+      liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
+    }
+
+    for (let i = 1; i <= lastDateofMonth; i++) {
+      let isToday = i === date.getDate() && currMonth === new Date().getMonth() 
+                    && currYear === new Date().getFullYear() ? "active" : "";
+      liTag += `<li class="${isToday}">${i}</li>`;
+    }
+
+    for (let i = lastDayofMonth; i < 6; i++) { 
+      liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`;
+    }
+    
+    currentDate.innerText = `${months[currMonth]} ${currYear}`;
+    daysTag.innerHTML = liTag;
+  }
+
+  renderCalendar();
+
+  prevNextIcon.forEach(icon => {
+    icon.addEventListener("click", () => { 
+      currMonth = icon.id === "prev" ? currMonth - 1 : currMonth + 1;
+
+      if (currMonth < 0 || currMonth > 11) { 
+        date = new Date(currYear, currMonth, new Date().getDate());
+        currYear = date.getFullYear();
+        currMonth = date.getMonth();
+      } else {
+        date = new Date();
+      }
+      
+      renderCalendar();
+    });
+  });
+
+  // Sidebar Toggle
+  toggle.addEventListener("click", () => {
+    sidebar.classList.toggle("close");
+  });
 });
+
 
 </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

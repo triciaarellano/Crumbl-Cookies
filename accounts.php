@@ -3,21 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Dashboard</title>
+    <title>Accounts</title>
+    <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
- 
- * {
-	 outline: none;
-}
-
- html {
-	 -webkit-font-smoothing: antialiased;
-}
 
 body {
     background-color: var(--theme-bg);
@@ -31,115 +24,6 @@ body {
     position: absolute;
 }
 
-:root {
-    --body-font: "Inter", sans-serif;
-    --theme-bg: #f6f7fb; 
-    --body-color: #333; 
-    --button-bg: #fdfbff; 
-    --border-color: #000;
-    --delay: 0s;
-}
-
- .sidebar {
-	 width: 15%;
-	 height: 100%;
-	 padding: 30px;
-	 display: flex;
-	 flex-direction: column;
-	 flex-shrink: 0;
-	 transition-duration: 0.2s;
-	 overflow-y: auto;
-	 overflow-x: hidden;
-}
-
-.sidebar .logo img {
-    width: 200px; 
-    height: 100px; 
-	margin-top: -1.5rem;
-	margin-left: -1rem;
-    flex-shrink: 0;
-    color: #333;
-    align-items: left;
-    justify-content: left;
-	object-fit: cover;
-}
-
- .sidebar-link:hover, .sidebar-link.is-active {
-	 color: #ff6486;
-	 font-weight: 600;
-}
-
- .sidebar-link:hover:nth-child(2n + 1) svg, .sidebar-link.is-active:nth-child(2n + 1) svg {
-	 background: #ff7551;
-}
-
- .sidebar-link:hover:nth-child(2n) svg, .sidebar-link.is-active:nth-child(2n) svg {
-	 background: #32a7e2;
-}
-
- .sidebar-link:hover:nth-child(2n + 3) svg, .sidebar-link.is-active:nth-child(2n + 3) svg {
-	 background: #6c5ecf;
-}
-
- .sidebar.collapse {
-	 width: 90px;
-	 border-right: 1px solid var(--border-color);
-}
-
- @keyframes bottom {
-	 0% {
-		 transform: translateY(100px);
-		 opacity: 0;
-	}
-	 100% {
-		 opacity: 1;
-		 transform: none;
-	}
-}
- .side-menu {
-	 display: flex;
-	 flex-direction: column;
-}
- .side-menu a {
-	 display: flex;
-	 align-items: center;
-	 text-decoration: none;
-	 color: var(--body-color);
-}
- .side-menu a + a {
-	 margin-top: 26px;
-}
-
-.bi {
-  font-family: "bootstrap-icons";
-  font-size: 1.5rem;
-  color: inherit;
-  margin-right: 0.75rem;
-}
-
-.bi:hover {
-  color: #ff6486; 
-}
-
- .side-title {
-	 font-size: 12px;
-	 letter-spacing: 0.07em;
-	 margin-bottom: 24px;
-	 color: #333;
-}
- .side-wrapper {
-	 border-bottom: 1px solid var(--border-color);
-	 padding: 36px 0;
-	 width: 145px;
-}
- .side-wrapper + .side-wrapper {
-	 border-bottom: none;
-}
- .wrapper {
-	 display: flex;
-	 flex-direction: column;
-	 flex-grow: 1;
-}
  .header {
 	 display: flex;
 	 align-items: center;
@@ -199,35 +83,6 @@ body {
       border-radius: 50%;
     }
 
- @media screen and (max-width: 575px) {
-	 .user-settings .notify .notification {
-		 display: none;
-	}
-}
- .user-img {
-	 width: 30px;
-	 height: 30px;
-	 flex-shrink: 0;
-	 object-fit: cover;
-	 border-radius: 50%;
-}
- .user-name {
-	 color: #ff6486;
-	 font-size: 14px;
-	 margin: 0 6px 0 12px;
-}
- @media screen and (max-width: 575px) {
-	 .user-name {
-		 display: none;
-	}
-}
- .main-container {
-	 display: flex;
-	 flex-direction: column;
-	 padding: 0 30px 30px;
-	 flex-grow: 1;
-	 overflow: auto;
-}
  .anim {
 	 animation: bottom 0.8s var(--delay) both;
 }
@@ -248,158 +103,7 @@ body {
 
 	 z-index: 11;
 }
- .small-header {
-	 font-size: 24px;
-	 font-weight: 500;
-	 color: #333;
-	 margin: 30px 0 20px;
-}
- .main-blogs {
-	 display: flex;
-	 align-items: center;
-}
- .main-blog__author {
-	 display: flex;
-	 align-items: center;
-	 padding-bottom: 10px;
-}
- .main-blog__author.tips {
-	 flex-direction: column-reverse;
-	 align-items: flex-start;
-}
- .main-blog__title {
-	 font-size: 25px;
-	 max-width: 12ch;
-	 font-weight: 600;
-	 letter-spacing: 1px;
-	 color: #333;
-	 margin-bottom: 30px;
-}
- .main-blog {
-	 background-color: #31abbd;
-	 display: flex;
-	 flex-direction: column;
-	 width: 65%;
-	 padding: 30px;
-	 border-radius: 20px;
-	 align-self: stretch;
-	 overflow: hidden;
-	 position: relative;
-	 transition: background 0.3s;
-	 background-repeat: no-repeat;
-}
- .main-blog + .main-blog {
-	 margin-left: 20px;
-	 width: 35%;
-	 background-color: #31abbd;
-}
- .main-blog + .main-blog .author-img {
-	 border-color: #000;
-	 margin-top: 14px;
-}
- .main-blog + .main-blog .author-img__wrapper svg {
-	 border-color: #ffe6b2;
-	 color: #e7bb7d;
-}
- .main-blog + .main-blog .author-detail {
-	 margin-left: 0;
-}
- @media screen and (max-width: 905px) {
-	 .main-blog, .main-blog + .main-blog {
-		 width: 50%;
-		 padding: 30px;
-	}
-	 .main-blog {
-		 background-size: cover;
-		 background-position-x: center;
-		 background-blend-mode: overlay;
-	}
-}
 
- .author-img {
-	 width: 52px;
-	 height: 52px;
-	 border: 1px solid #000;
-	 padding: 4px;
-	 border-radius: 50%;
-	 object-fit: cover;
-}
- .author-img__wrapper {
-	 position: relative;
-	 flex-shrink: 0;
-}
- .author-img__wrapper svg {
-	 width: 16px;
-	 padding: 2px;
-	 background-color: #333;
-	 color: #0daabc;
-	 border-radius: 50%;
-	 border: 2px solid #0daabc;
-	 position: absolute;
-	 bottom: 5px;
-	 right: 0;
-}
- .author-name {
-	 font-size: 15px;
-	 color: #333;
-	 font-weight: 500;
-	 margin-bottom: 8px;
-}
- .author-info {
-	 font-size: 13px;
-	 font-weight: 400;
-	 color: #333;
-}
- .author-detail {
-	 margin-left: 16px;
-}
-
- @media screen and (max-width: 475px) {
-	 .main-blog__title {
-		 font-size: 20px;
-	}
-	 .author-name {
-		 font-size: 14px;
-	}
-	 .main-blog__author {
-		 flex-direction: column-reverse;
-		 align-items: flex-start;
-	}
-	 .author-detail {
-		 margin-left: 0;
-	}
-	 .main-blog .author-img {
-		 margin-top: 14px;
-	}
-	 .main-container {
-		 padding: 0 20px 20px;
-	}
-	 .header {
-		 padding: 20px;
-	}
-	 .sidebar.collapse {
-		 width: 40px;
-	}
-	 .sidebar {
-		 align-items: center;
-	}
-	 body {
-		 padding: 0;
-	}
-	 .container {
-		 height: 100vh;
-		 border-radius: 0;
-		 max-height: 100%;
-	}
-}
- ::-webkit-scrollbar {
-	 width: 6px;
-	 border-radius: 10px;
-}
- ::-webkit-scrollbar-thumb {
-	 background-color: #000;
-	 border-radius: 10px;
-}
 
 /* -- TABLE -- */
 
@@ -417,13 +121,11 @@ main.table {
 
 .table__header {
 	position: relative;
-	width: 100%;
+	width: 99%;
 	height: 10%;
-	padding: 0.8rem 1rem;
-
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
+  justify-content: flex-start;
 }
 
 .table__header .input-group {
@@ -452,31 +154,7 @@ main.table {
 	background-color: transparent;
 	border: none;
 	outline: none;
-}
-
-.btn-refresh {
-	position: relative;
-	padding: 1px 16px;
-	font-size: 14px;
-	background-color: #f095a8;
-	color: #fff;
-	border: none;
-	border-radius: 1rem;
-	cursor: pointer;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	margin-bottom: -30px;
-	margin-right: 1.6rem;
-	transition: 0.3s;
-}
-
-.btn-refresh:hover {
-	box-shadow: 0 0.1rem 0.4rem #0002;
-}
-
-.btn-refresh .bx {
-	margin-right: 10px;
+  color: #ff6486;
 }
 
 .table__body {
@@ -631,7 +309,7 @@ tbody td.active {
 }
 
 .modal-header {
-  background-color: #007bff;
+  background-color: #f095a8;
   color: white;
 }
 
@@ -650,20 +328,57 @@ tbody td.active {
 }
 
 .modal-footer {
-  background-color: #e9ecef;
+  background-color: transparent;
   border-top: none;
   padding: 15px;
 }
 
 .modal-footer .btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
+  background-color: #ff5151;
+  border-color: #f095a8;
 }
 
-.modal-footer .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
+.modal-footer .btn-pink {
+  background-color: transparent;
+  border-color: transparent;
 }
+
+.btn-pink {
+            background-color: #f095a8;
+            padding: 10px;
+            margin-top: 20px;
+            margin-left: 40px;
+            color: #eee;
+            font-family: '', sans-serif;
+            font-size: 17px;
+        }
+
+.btn-pink:hover {
+            background-color: #f095a8;
+            color: #eee;
+        }
+
+.btn-refresh {
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    width: 4rem;
+    height: 3rem; 
+    display: flex;
+    justify-content: flex-end; 
+    margin-top: 20px;
+}
+
+.btn-refresh i {
+    background-color: transparent;
+    border: none;
+    color: #f095a8;
+    font-family: '', sans-serif;
+    font-size: 25px;
+    line-height: 0;
+    margin-top: 5px;
+}
+
 </style>
  
 </style>
@@ -691,7 +406,7 @@ tbody td.active {
      Products
     </a>
     <a class="sidebar-link" href="archives.php">
-     <i class="bi bi-bookmark-fill"></i>
+     <i class="bi bi-bookmark"></i>
      Archives
     </a>
     <a class="sidebar-link" href="inventory.php">
@@ -711,6 +426,7 @@ tbody td.active {
      Audit Trail
     </a>
    </div>
+   
   </div>
   <div class="side-wrapper">
    <div class="side-menu">
@@ -724,7 +440,7 @@ tbody td.active {
  </div>
 
 
- <div class="wrapper">
+ <div class="wrapper-table">
   <div class="header">
 
    <div class="user-settings-container">
@@ -752,24 +468,42 @@ tbody td.active {
    <div class="main-header anim" style="--delay: 0s">Accounts</div>
 </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Structure -->
+<div class="modal fade" id="pinkModal" tabindex="-1" aria-labelledby="pinkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="pinkModalLabel">Add Account</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form Inside Modal -->
+                <form action="accounts.php" method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">User Type</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="admin">Admin</option>
+                            <option value="employee">Employee</option>
+                            <option value="cashier">Cashier</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 
 
       <form action="accounts.php" method="post" class="search-form1"></form>
@@ -788,6 +522,31 @@ if (isset($_POST['search']) && $_POST['search'] != NULL) {
 }
 
 $result = $conn->query($selectsql);
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // Validate and sanitize inputs
+  $username = mysqli_real_escape_string($conn, $_POST['username']);
+  $password = mysqli_real_escape_string($conn, $_POST['password']);
+  $user_type = mysqli_real_escape_string($conn, $_POST['role']);
+
+  // Hash the password before storing (consider using password_hash in real applications)
+  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+  // Insert user into database
+  $insertsql = "INSERT INTO user_table (username, password, role, status) VALUES ('$username', '$hashed_password', '$user_type', 'active')";
+
+  if (mysqli_query($conn, $insertsql)) {
+      echo "<script>
+          Swal.fire({
+              title: 'Success!',
+              text: 'User has been created successfully!',
+              icon: 'success'
+          });
+      </script>";
+  } else {
+      echo "Error: " . $insertsql . "<br>" . mysqli_error($conn);
+  }
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['delete'])) {
@@ -835,13 +594,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Check if table is not empty
 if ($result->num_rows > 0) {
-    echo "<main class='table anim' style='--delay: .2s' id='user_table'>";
-    echo "<section class='table__header'>";
+    echo "<main class='table anim' style='--delay: .4s' id='user_table'>";
+    echo "<section class='table__header anim' style='--delay: .2s'>";
     echo "<div class='input-group'>";
     echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
     echo "</div>";
-    echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Add Account</button>";
-    echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise' style='color: #fff; font-family: Montserrat; font-size: 20px; background: transparent;'></i> Refresh</button>";
+    echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Account</button>";
+    echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
     echo "</section>";
     echo "<section class='table__body'>";
     echo "<table>";
