@@ -624,6 +624,15 @@ if ($result->num_rows > 0) {
         echo "<td>" . $fielddata['username'] . "</td>";
         echo "<td>" . $fielddata['email'] . "</td>";
         echo "<td>" . $fielddata['status'] . "</td>";
+        echo "<td>";
+        echo "<form action='' method='post'>";
+        echo "<input type='hidden' name='user_id' value='" . $fielddata['user_id'] . "'>";
+        echo "<button type='submit' name='promote_admin' value='" . $fielddata['user_id'] . "' class='admin-button bx bxs-user-plus'></button>";
+        echo "<button type='submit' name='delete' class='delete-button bx bxs-trash'></button>";
+        echo "<button type='submit' name='activate' class='activate-button bx bxs-user-check'></button>";
+        echo "</form>";
+        echo "</td>";
+
         echo "</tr>";
     }
     echo "</tbody>";

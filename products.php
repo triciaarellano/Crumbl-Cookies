@@ -17,11 +17,11 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
-    overflow: hidden;
+    overflow: scroll;
     font-size: 15px;
     font-weight: 500;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    position: absolute;
+    position: relative;
 }
 
  .header {
@@ -86,6 +86,7 @@ body {
  .anim {
 	 animation: bottom 0.8s var(--delay) both;
 }
+
  .main-header {
 	 font-size: 30px;
 	 color: #333;
@@ -116,7 +117,7 @@ main.table {
 	margin-top: 30px;
 
 	font-size: 16px;
-	overflow: hidden;
+	overflow: scroll;
 }
 
 .table__header {
@@ -397,11 +398,11 @@ tbody td.active {
      <i class="bi bi-house-door icon"></i>
      Overview
     </a>
-    <a class="sidebar-link is-active" href="accounts.php">
+    <a class="sidebar-link" href="accounts.php">
      <i class="bi bi-people"></i>
      Accounts
     </a>
-    <a class="sidebar-link" href="products.php">
+    <a class="sidebar-link is-active" href="products.php">
      <i class="bi bi-cart icon"></i>
      Products
     </a>
@@ -473,27 +474,34 @@ tbody td.active {
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="pinkModalLabel">Add Account</h1>
+                <h1 class="modal-title fs-5" id="pinkModalLabel">Add Products</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- Form Inside Modal -->
-                <form action="accounts.php" method="post">
+                <form action="products.php" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <label for="upload_img" class="form-label">Product Image</label>
+                        <input type="file" class="form-control" id="upload_img" name="upload_img" accept="image/*" onchange="previewImg(event)">
+                        <img src="" alt="" id="preview_img" width="200" height="200">
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <label for="product_name" class="form-label">Product name</label>
+                        <input type="text" class="form-control" id="product_name" name="product_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="role" class="form-label">User Type</label>
-                        <select class="form-select" id="role" name="role" required>
-                            <option value="admin">Admin</option>
-                            <option value="employee">Employee</option>
-                            <option value="cashier">Cashier</option>
-                        </select>
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="text" class="form-control" id="price" name="price" required>
+                        </div>
+                        <div class="col">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="text" class="form-control" id="quantity" name="quantity" required>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -504,7 +512,6 @@ tbody td.active {
         </div>
     </div>
 </div>
-
 
       <form action="products.php" method="post" class="search-form1"></form>
 
@@ -518,30 +525,78 @@ $selectsql = "SELECT * FROM inven_sales";
 
 // Check if the search input is clicked and not null, change $selectsql syntax
 if(isset($_POST['search']) && $_POST['search'] != NULL){
-    $searchinput = $_POST['search'];
-    $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'"; //cHANGE PA
+  $searchinput = $_POST['search'];
+  $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'"; //cHANGE PA
 } else {
-    $selectsql = "SELECT * FROM product_table";
+  $selectsql = "SELECT * FROM product_table";
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // Retrieve form data
-  $product_name = $_POST['product_name'];
-  $description = $_POST['description'];
-  $img = "images/";
- 
-  // Insert data into database
-  $insert_sql = "INSERT INTO product_table (product_name, description, img) VALUES ('$product_name', '$description', '$img')";
- 
-  if ($conn->query($insert_sql) === TRUE) {
-      echo "New record created successfully";
-  } else {
-      echo "Error: " . $insert_sql . "<br>" . $conn->error;
+  // Validate and sanitize inputs
+  $productname = mysqli_real_escape_string($conn, $_POST['product_name']);
+  $description = mysqli_real_escape_string($conn, $_POST['description']);
+  $price = mysqli_real_escape_string($conn, $_POST['price']);
+  $quantity = mysqli_real_escape_string($conn, $_POST['quantity']);
+  
+  // Upload image
+  $target_dir = "uploads/";
+  $target_file = $target_dir . basename($_FILES["upload_img"]["name"]);
+  $uploadOk = 1;
+  $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+  // Check if image file is a actual image or fake image
+  if(isset($_POST["submit"])) {
+      $check = getimagesize($_FILES["upload_img"]["tmp_name"]);
+      if($check !== false) {
+          echo "File is an image - " . $check["mime"] . ".";
+          $uploadOk = 1;
+      } else {
+          echo "File is not an image.";
+          $uploadOk = 0;
+      }
   }
- 
-  // Close the database connection
-  $conn->close();
+
+  // Check if file already exists
+  if (file_exists($target_file)) {
+      echo "Sorry, file already exists.";
+      $uploadOk = 0;
+  }
+
+
+
+  // Allow certain file formats
+  if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+  && $imageFileType != "gif" ) {
+      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+      $uploadOk = 0;
+  }
+
+  // Check if $uploadOk is set to 0 by an error
+  if ($uploadOk == 0) {
+      echo "Sorry, your file was not uploaded.";
+  // if everything is ok, try to upload file
+  } else {
+      if (move_uploaded_file($_FILES["upload_img"]["tmp_name"], $target_file)) {
+          echo "The file ". htmlspecialchars( basename( $_FILES["upload_img"]["name"])). " has been uploaded.";
+      } else {
+          echo "Sorry, there was an error uploading your file.";
+      }
+  }
+
+  // Insert product into database
+  $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, img) VALUES ('$productname', '$description', '$price', '$quantity', '$target_file')";
+
+  if (mysqli_query($conn, $insertsql)) {
+      echo "<script>
+          Swal.fire({
+              title: 'Success!',
+              text: 'Product has been added successfully!',
+              icon: 'success'
+          });
+      </script>";
+  } else {
+      echo "Error: " . $insertsql . "<br>" . mysqli_error($conn);
+  }
 }
 
 
@@ -550,30 +605,32 @@ $result = $conn->query($selectsql);
 
 // Check if table is not empty
 if ($result->num_rows > 0) {
-    echo "<div class='container'>";
-    foreach ($result as $fielddata) {
-        ?>      
-        <div class="fielddata-item">
-            <div class="row">
-                <div class="col">
-                    <div class="fielddata-details">
+  echo "<main class='table anim' style='--delay: .4s' id='user_table'>";
+  echo "<section class='table__header anim' style='--delay: .2s'>";
+  echo "<div class='input-group'>";
+  echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
+  echo "</div>";
+  echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Product</button>";
+  echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
+  echo "</section>";
 
-
-                        <h2 class="fielddata-prodname"><?php echo $fielddata['product_name'] ?></h2>
-                        <p class="fielddata-desc"><?php echo $fielddata['description'] ?></p>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <?php
-    }
-    echo "</div>";
+  echo "<div class='container'>";
+  foreach ($result as $fielddata) {
+      ?>      
+      <div class="fielddata-item">
+          <div class="fielddata-details">
+              <img src="<?php echo $fielddata['img']; ?>" alt="Product Image" style="width: 200px; height: 200px; object-fit: cover;">
+              <h2 class="fielddata-prodname"><?php echo $fielddata['product_name'] ?></h2>
+              <p class="fielddata-desc"><?php echo $fielddata['description'] ?></p>
+          </div>
+      </div>
+      <?php
+  }
+  echo "</div>";
+  echo "</main>";
 } else {
-    echo "No records found";
+  echo "No records found";
 }
-
 ?>
 
          </section>
@@ -646,6 +703,11 @@ const dropdownMenu = document.querySelector('.dropdown-menu');
     location.reload();
   });
 
+  //preview image
+  function previewImg(event){
+            var display = document.getElementById("preview_img");
+            display.src = URL.createObjectURL(event.target.files[0]);
+        }
 
           </script>
   </main>
