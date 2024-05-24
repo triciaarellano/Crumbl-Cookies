@@ -106,12 +106,19 @@
     </div>
   </div>
 
+  <?php 
+  include "dbconnect.php";
+  session_start();
 
+  $fullname = $_SESSION['full_name'];
+  $type = $_SESSION['role'];
+
+  ?>
   <div class="main-container">
     <div class="main-header anim" style="--delay: 0s">Dashboard</div>
     <div class="main-welcome">
         <div class="main-block anim" style="--delay: .1s">
-            <div class="main-block__title">Welcome, Admin!</div>
+            <div class="main-block__title">Welcome,  <br><?php echo $type." ".$fullname."!"?></div>
             <div class="main-block__contents">
 
                 <div id="day" class="day"></div>
@@ -165,8 +172,16 @@
 
             <div class="sub-block__contents">
                 <div class="product-number">
-                    <div class="number">28</div>
-                    <span class="item-text">items</span>
+                <?php 
+
+                    $product_count_query = "SELECT * FROM product_table WHERE product_id";
+                    $product_query = mysqli_query($conn, $product_count_query);
+                    if ($product_total = mysqli_num_rows($product_query)) {
+                      echo "<div class='number'>" . $product_total . "</div> <div class='item-text'>items</div>";
+                    } else {
+                    }
+
+                    ?>
                   </div>
               </div>
 
@@ -204,42 +219,75 @@
         
             <div class="sub-block__title">
                 <div class="small-text">
-                  TODAY'S
+                  TOTAL
                 </div>
                 <div class="large-text">
-                  VISITORS
+                  USERS
                 </div>
           </div>
 
             <div class="sub-block__contents">
                 <div class="product-number">
-                    <div class="number">48</div>
-                    <span class="item-text">users</span>
+
+                <?php 
+
+            $user_count_query = "SELECT * FROM user_table WHERE status = 'Active'";
+            $user_query = mysqli_query($conn, $user_count_query);
+            if ($user_total = mysqli_num_rows($user_query)) {
+              echo "<div class='number'>" . $user_total . "</div> <div class='item-text'>users</div>";
+            } else {
+            }
+
+            ?>
                   </div>
               </div>
 
             </div>
     </div>
 </div>
-
+      
 <div class="bottom-table-container">
 
     <div class="bottom-categories">
-        <div class="bottom-block anim" style="--delay: .6s">
-            <div class="bottom-block__title"> Products</div>
-            <div class="bottom-block__contents">
+      <?php
+    $selectsql = "SELECT transaction_id, product_id, price, quantity_sold, transaction_date FROM join_transaction_table";
+$result = $conn->query($selectsql);
+?>
 
-            </div>
-        </div>
+<div class="bottom-block anim" style="--delay: .6s">
+    <div class="bottom-block__title">Transactions</div>
+    <div class="bottom-block__contents">
+        <?php
+        if ($result->num_rows > 0) {
+            echo '<table border="1">';
+            echo '<tr><th>Transaction ID</th><th>Product ID</th><th>Price</th><th>Quantity Sold</th><th>Transaction Date</th></tr>';
+            while($row = $result->fetch_assoc()) {
+                echo '<tr>';
+                echo '<td>' . $row["transaction_id"] . '</td>';
+                echo '<td>' . $row["product_id"] . '</td>';
+                echo '<td>' . $row["price"] . '</td>';
+                echo '<td>' . $row["quantity_sold"] . '</td>';
+                echo '<td>' . $row["transaction_date"] . '</td>';
+                echo '</tr>';
+            }
+            echo '</table>';
+        } else {
+            echo "0 results";
+        }
+        $conn->close();
+        ?>
+    </div>
+</div>
 
         <div class="bottom-block anim" style="--delay: .7s">
-            <div class="bottom-block__title">Sales</div>
+            <div class="bottom-block__title">Low Inventory Alert!</div>
             <div class="bottom-block__contents">
 
             </div>
         </div>
 
 </div>
+</form>
 
 
 <script>

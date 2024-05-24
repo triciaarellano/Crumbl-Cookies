@@ -107,18 +107,6 @@ body {
 
 /* -- TABLE -- */
 
-
-main.table {
-	width: calc(100vw - 200px);
-	max-width: 100%;
-	width: 80vw;
-	height: 85vh;
-	margin-top: 30px;
-
-	font-size: 16px;
-	overflow: hidden;
-}
-
 .table__header {
 	position: relative;
 	width: 99%;
@@ -126,6 +114,7 @@ main.table {
 	display: flex;
 	align-items: center;
   justify-content: flex-start;
+  background-color: transparent;
 }
 
 .table__header .input-group {
@@ -210,6 +199,7 @@ thead th {
 	z-index: 2;
 }
 
+
 th::after {
 	content: "";
 	position: absolute;
@@ -222,7 +212,7 @@ th::after {
 }
 
 tbody tr:nth-child(even) {
-	background-color: #0000000b;
+	background-color: white;
 }
 
 tbody tr {
@@ -249,12 +239,6 @@ tbody tr.hide td,
 tbody tr.hide td p {
 	padding: 0;
 	font: 0 / 0 sans-serif;
-	transition: 0.2s ease-in-out 0.5s;
-}
-
-tbody tr.hide td img {
-	width: 0;
-	height: 0;
 	transition: 0.2s ease-in-out 0.5s;
 }
 
@@ -379,6 +363,30 @@ tbody td.active {
     margin-top: 5px;
 }
 
+.modal-footer .btn-secondary {
+  background-color: #ff5151;
+  border-color: #f095a8;
+}
+
+.modal-footer .btn-primary {
+  margin-right: -15px;
+  border-color: transparent;
+}
+
+/* -- COLLAPSE CARD -- */
+
+.card {
+  background-color: pink;
+}
+
+.active-status {
+  color: green;
+}
+
+.form-label {
+  color: #333;
+}
+
 </style>
  
 </style>
@@ -479,25 +487,39 @@ tbody td.active {
             <div class="modal-body">
                 <!-- Form Inside Modal -->
                 <form action="accounts.php" method="post">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                <div class="mb-3">
+                        <label for="full_name" class="form-label">Full name</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" required>
                     </div>
                     <div class="mb-3">
                         <label for="role" class="form-label">User Type</label>
                         <select class="form-select" id="role" name="role" required>
-                            <option value="admin">Admin</option>
-                            <option value="employee">Employee</option>
-                            <option value="cashier">Cashier</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Employee">Employee</option>
+                            <option value="Cashier">Cashier</option>
                         </select>
+                    </div>
+                    <div class="row">
+                    <div class="col">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    </div>
+                    <div class="col">
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary" name="sub" id="sub">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -508,186 +530,248 @@ tbody td.active {
 
 <?php
 include "dbconnect.php";
+require_once "email_verification.php";
 
-// Handle edit form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
-    $user_id = mysqli_real_escape_string($conn, $_POST['edit_user_id']);
-    $fullname = mysqli_real_escape_string($conn, $_POST['edit_fullname']);
-    $username = mysqli_real_escape_string($conn, $_POST['edit_username']);
-    $email = mysqli_real_escape_string($conn, $_POST['edit_email']);
+if (isset($_POST['sub'])) {
+  $fullname = $_POST['full_name'];
+  $username= $_POST['username'];
+  $password = md5($_POST['password']);
+  $email = $_POST['email'];
+  $user_type = $_POST['role'];
+  $status = "Inactive";
+  $otp = rand(000000, 999999); // random otp
 
-    $update_query = "UPDATE user_table SET full_name = '$fullname', username = '$username', email = '$email' WHERE user_id = '$user_id'";
-    if (mysqli_query($conn, $update_query)) {
-        echo "<script>
-            Swal.fire({
-                title: 'Updated!',
-                text: 'User information has been updated!',
-                icon: 'success'
-            });
-        </script>";
-    } else {
-        echo "Error updating record: " . mysqli_error($conn);
-    }
+  $usersql = "SELECT * FROM user_table WHERE username = '$username'";
+  $user_result = $conn->query($usersql);
+
+  if ($user_result->num_rows == 0) {
+      $insertsql = "INSERT INTO user_table (full_name, role, username, password, email, otp, status)
+                    VALUES ('$fullname', '$user_type', '$username', '$password', '$email', '$otp', '$status')";
+      $result = $conn->query($insertsql);
+
+      if ($result === TRUE) {
+          send_verification($fullname, $email, $otp);
+      } else {
+          echo $conn->error;
+      }
+  } else {
+      ?>
+      <script>
+          Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Successfully added",
+              showConfirmButton: false,
+              timer: 1500
+          });
+      </script>
+      <?php
+  }
+
+  // Now execute your select query to fetch active users
+  $selectsql = "SELECT * FROM user_table WHERE status = 'active'";
+  $result = $conn->query($selectsql);
 }
 
-// Default SQL query to fetch only active users
-$selectsql = "SELECT * FROM user_table WHERE status = 'active'";
+    // Handle edit form submission
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
+      $edituser_id = mysqli_real_escape_string($conn, $_POST['edit_user_id']);
+      $editfullname = mysqli_real_escape_string($conn, $_POST['edit_fullname']);
+      $editrole = mysqli_real_escape_string($conn, $_POST['edit_role']);
+      $editusername = mysqli_real_escape_string($conn, $_POST['edit_username']);
+      $editemail = mysqli_real_escape_string($conn, $_POST['edit_email']);
 
-// Check if the search input is clicked and not null, change $selectsql syntax
-if (isset($_POST['search']) && $_POST['search'] != NULL) {
-    $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
-    $selectsql = "SELECT * FROM user_table WHERE status = 'active' AND (user_id LIKE '%$searchinput%' OR full_name LIKE '%$searchinput%' OR email LIKE '%$searchinput%')";
-}
+      $update_query = "UPDATE user_table SET full_name = '$editfullname', role = '$editrole', username = '$editusername', email = '$editemail' WHERE user_id = '$edituser_id'";
+      if (mysqli_query($conn, $update_query)) {
+          echo "<script>
+              Swal.fire({
+                  title: 'Updated!',
+                  text: 'User information has been updated!',
+                  icon: 'success'
+              });
+          </script>";
+      } else {
+          echo "Error updating record: " . mysqli_error($conn);
+      }
+  }
 
-$result = $conn->query($selectsql);
+  // Default SQL query to fetch only active users
+  $selectsql = "SELECT * FROM user_table WHERE status = 'active' ORDER BY user_id DESC";
 
-// Check if table is not empty
-if ($result->num_rows > 0) {
-    echo "<main class='table anim' style='--delay: .4s' id='user_table'>";
-    echo "<section class='table__header anim' style='--delay: .2s'>";
-    echo "<div class='input-group'>";
-    echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
-    echo "</div>";
-    echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Account</button>";
-    echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
-    echo "</section>";
-    echo "<section class='table__body'>";
-    echo "<table>";
-    echo "<thead>";
-    echo "<tr>";
-    echo "<th>Account ID <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Full Name <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Role <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Username <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Email <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Status <span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Action</th>";
-    echo "</tr>";
-    echo "</thead>";
-    echo "<tbody>";
+  // Check if the search input is clicked and not null, change $selectsql syntax
+  if (isset($_POST['search']) && $_POST['search'] != NULL) {
+      $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
+      $selectsql = "SELECT * FROM user_table WHERE status = 'active' AND (user_id LIKE '%$searchinput%' OR full_name LIKE '%$searchinput%' OR email LIKE '%$searchinput%')";
+  }
 
-    foreach ($result as $fielddata) {
-        echo "<tr>";
-        echo "<td>" . $fielddata['user_id'] . "</td>";
-        echo "<td>" . $fielddata['full_name'] . "</td>";
-        echo "<td>" . $fielddata['role'] . "</td>";
-        echo "<td>" . $fielddata['username'] . "</td>";
-        echo "<td>" . $fielddata['email'] . "</td>";
-        echo "<td>" . $fielddata['status'] . "</td>";
-        echo "<td>";
-        echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['user_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['user_id'] . "'><i class='bi bi-pencil-square'></i></button>"; 
-        echo "</td>";
-        echo "</tr>";
+  $result = $conn->query($selectsql);
 
-        // Edit form collapse for each user
-        echo "<tr>";
-        echo "<td colspan='7' class='border-0'>";
-        echo "<div class='collapse' id='collapseEdit_" . $fielddata['user_id'] . "'>";
-        echo "<div class='card card-body'>";
-        echo "<form action='' method='post'>";
-        echo "<div class='mb-3'>";
-        echo "<label for='edit_fullname' class='form-label'>Full Name</label>";
-        echo "<input type='text' class='form-control' id='edit_fullname' name='edit_fullname' value='" . $fielddata['full_name'] . "'>";
-        echo "</div>";
-        echo "<div class='mb-3'>";
-        echo "<label for='edit_username' class='form-label'>Username</label>";
-        echo "<input type='text' class='form-control' id='edit_username' name='edit_username' value='" . $fielddata['username'] . "'>";
-        echo "</div>";
-        echo "<div class='mb-3'>";
-        echo "<label for='edit_email' class='form-label'>Email address</label>";
-        echo "<input type='email' class='form-control' id='edit_email' name='edit_email' value='" . $fielddata['email'] . "'>";
-        echo "</div>";
-        echo "<input type='hidden' name='edit_user_id' value='" . $fielddata['user_id'] . "'>";
-        echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
-        echo "</form>";
-        echo "</div>";
-        echo "</div>";
-        echo "</td>";
-        echo "</tr>";
-    }
+  // Check if table is not empty
+  if ($result->num_rows > 0) {
+      echo "<main class='table anim' style='--delay: .4s' id='user_table'>";
+      echo "<section class='table__header anim' style='--delay: .2s'>";
+      echo "<div class='input-group'>";
+      echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
+      echo "</div>";
+      echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Account</button>";
+      echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
+      echo "</section>";
+      echo "<section class='table__body'>";
+      echo "<table>";
+      echo "<thead>";
+      echo "<tr>";
+      echo "<th>Account ID <span class='icon-arrow'>&UpArrow;</span></th>";
+      echo "<th>Full Name <span class='icon-arrow'>&UpArrow;</span></th>";
+      echo "<th>Role <span class='icon-arrow'>&UpArrow;</span></th>";
+      echo "<th>Username <span class='icon-arrow'>&UpArrow;</span></th>";
+      echo "<th>Email <span class='icon-arrow'>&UpArrow;</span></th>";
+      echo "<th>Status</th>";
+      echo "<th>Action</th>";
+      echo "</tr>";
+      echo "</thead>";
+      echo "<tbody>";
 
-    echo "</tbody>";
-    echo "</table>";
-    echo "</section>";
-    echo "</main>";
-} else {
-    echo "No records found";
-}
+      foreach ($result as $fielddata) {
+          echo "<tr>";
+          echo "<td>" . $fielddata['user_id'] . "</td>";
+          echo "<td>" . $fielddata['full_name'] . "</td>";
+          echo "<td>" . $fielddata['role'] . "</td>";
+          echo "<td>" . $fielddata['username'] . "</td>";
+          echo "<td>" . $fielddata['email'] . "</td>";
+          echo "<td class='active-status'>" . $fielddata['status'] . "</td>";
+          echo "<td>";
+          echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['user_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['user_id'] . "'><i class='bi bi-pencil-square'></i></button>";
+          echo "</td>";
+          echo "</tr>";
+
+          // Edit form collapse for each user
+          echo "<tr>";
+          echo "<td colspan='7' class='border-0'>";
+          echo "<div class='collapse' id='collapseEdit_" . $fielddata['user_id'] . "'>";
+          echo "<div class='card card-body'>";
+          echo "<form action='' method='post'>";
+          echo "<div class='mb-3'>";
+          echo "<label for='edit_fullname' class='form-label'>Full Name</label>";
+          echo "<input type='text' class='form-control' id='edit_fullname' name='edit_fullname' value='" . $fielddata['full_name'] . "'>";
+          echo "</div>";
+          echo "<div class='mb-3'>";
+          echo "<div class='row'>";
+          echo "<div class='col-md-6'>";
+          echo "<label for='edit_username' class='form-label'>Username</label>";
+          echo "<input type='text' class='form-control' id='edit_username' name='edit_username' value='" . $fielddata['username'] . "'>";
+          echo "</div>";
+          echo "<div class='col-md-6'>";
+          echo "<label for='edit_role' class='form-label'>User Type</label>";
+          echo "<select class='form-select' id='edit_role' name='edit_role'>";
+          echo "<option value='Admin'" . ($fielddata['role'] == 'Admin' ? ' selected' : '') . ">Admin</option>";
+          echo "<option value='Employee'" . ($fielddata['role'] == 'Employee' ? ' selected' : '') . ">Employee</option>";
+          echo "<option value='Cashier'" . ($fielddata['role'] == 'Cashier' ? ' selected' : '') . ">Cashier</option>";
+          echo "</select>";
+          echo "</div>";
+          echo "</div>"; // close .row
+          echo "</div>"; // close mb3
+          echo "<div class='mb-3'>";
+          echo "<label for='edit_email' class='form-label'>Email address</label>";
+          echo "<input type='email' class='form-control' id='edit_email' name='edit_email' value='" . $fielddata['email'] . "'>";
+          echo "</div>";
+          echo "<input type='hidden' name='edit_user_id' value='" . $fielddata['user_id'] . "'>";
+          echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
+          echo "</form>";
+          echo "</div>";
+          echo "</div>";
+          echo "</td>";
+          echo "</tr>";
+      }
+
+      echo "</tbody>";
+      echo "</table>";
+      echo "</section>";
+      echo "</main>";
+  } else {
+      echo "No records found";
+  }
+
 ?>
 
 
          <script src='script.js'></script>
 
          <script>
-         document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
 
-const userSettings = document.querySelector('.user-settings');
-const dropdownMenu = document.querySelector('.dropdown-menu');
-  
-  userSettings.addEventListener('click', function() {
-    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-  });
+    // Element selectors
+    const userSettings = document.querySelector('.user-settings');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    const sidebarLinks = document.querySelectorAll(".sidebar-link");
+    const sidebar = document.querySelector(".sidebar");
+    const mainContainer = document.querySelector(".main-container");
+    const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
 
-  // Close the dropdown if the user clicks outside of it
-  window.addEventListener('click', function(event) {
-    if (!userSettings.contains(event.target)) {
-      dropdownMenu.style.display = 'none';
-    }
-  });
-
-  // to handle sidebar link click
-  function handleSidebarLinkClick(event) {
-    // remove 'is-active' class from all sidebar links
-    document.querySelectorAll(".sidebar-link").forEach(function(link) {
-      link.classList.remove("is-active");
+    // Toggle dropdown menu visibility
+    userSettings.addEventListener('click', function() {
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
-    // add 'is-active' class to the clicked sidebar link
-    event.target.classList.add("is-active");
-  }
 
-  // add click event listeners to all sidebar links
-  document.querySelectorAll(".sidebar-link").forEach(function(link) {
-    link.addEventListener("click", handleSidebarLinkClick);
-  });
+    // Close the dropdown if the user clicks outside of it
+    window.addEventListener('click', function(event) {
+        if (!userSettings.contains(event.target)) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
 
-  // to handle window resize
-  function handleWindowResize() {
-    // If window width is greater than 1090px
-    if (window.innerWidth > 1090) {
-      // remove 'collapse' class from sidebar
-      document.querySelector(".sidebar").classList.remove("collapse");
-    } else {
-      // add 'collapse' class to sidebar
-      document.querySelector(".sidebar").classList.add("collapse");
+    // Handle sidebar link click
+    function handleSidebarLinkClick(event) {
+        // Remove 'is-active' class from all sidebar links
+        sidebarLinks.forEach(function(link) {
+            link.classList.remove("is-active");
+        });
+        // Add 'is-active' class to the clicked sidebar link
+        event.target.classList.add("is-active");
     }
-  }
 
-  window.addEventListener("resize", handleWindowResize);
-  handleWindowResize();
+    // Add click event listeners to all sidebar links
+    sidebarLinks.forEach(function(link) {
+        link.addEventListener("click", handleSidebarLinkClick);
+    });
 
-  // to handle logo, logo-expand, and overview click
-  function handleLogoClick() {
-    // remove 'show' class from main container
-    document.querySelector(".main-container").classList.remove("show");
-    // scroll main container to top
-    document.querySelector(".main-container").scrollTop = 0;
-  }
+    // Handle window resize
+    function handleWindowResize() {
+        // Toggle 'collapse' class based on window width
+        if (window.innerWidth > 1090) {
+            sidebar.classList.remove("collapse");
+        } else {
+            sidebar.classList.add("collapse");
+        }
+    }
 
-  // add click event listeners to logo, logo-expand, and overview
-  document.querySelectorAll(".logo, .logo-expand, .sidebar-link").forEach(function(element) {
-    element.addEventListener("click", handleLogoClick);
-  });
+    // Add resize event listener and initial call
+    window.addEventListener("resize", handleWindowResize);
+    handleWindowResize();
+
+    // Handle logo, logo-expand, and overview click
+    function handleLogoClick() {
+        // Remove 'show' class and scroll main container to top
+        mainContainer.classList.remove("show");
+        mainContainer.scrollTop = 0;
+    }
+
+    // Add click event listeners to logo elements
+    logoElements.forEach(function(element) {
+        element.addEventListener("click", handleLogoClick);
+    });
 
 });
 
-  document.getElementById('refreshButton').addEventListener('click', function() {
+// Refresh button functionality
+document.getElementById('refreshButton').addEventListener('click', function() {
     location.reload();
-  });
+});
+</script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-          </script>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
+        
+  
 </body>
  
 </html>

@@ -1,5 +1,5 @@
 const search = document.querySelector(".input-group input"),
-	table_rows = document.querySelectorAll("tbody tr"),
+	table_rows = document.querySelectorAll("tbody tr:not(.collapse)"),
 	table_headings = document.querySelectorAll("thead th");
 
 // pang search
