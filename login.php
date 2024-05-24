@@ -40,7 +40,7 @@ if (isset($_POST['sub'])) {
             echo "User ID not found.";
         }
         
-        header("Location: admin-overview.php");
+        header("Location: dashboard.php");
         exit;
     } else {
         echo "<script>

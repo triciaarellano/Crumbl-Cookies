@@ -506,11 +506,29 @@ tbody td.active {
 </div>
 
 
-      <form action="accounts.php" method="post" class="search-form1"></form>
-
-
-      <?php
+<?php
 include "dbconnect.php";
+
+// Handle edit form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
+    $user_id = mysqli_real_escape_string($conn, $_POST['edit_user_id']);
+    $fullname = mysqli_real_escape_string($conn, $_POST['edit_fullname']);
+    $username = mysqli_real_escape_string($conn, $_POST['edit_username']);
+    $email = mysqli_real_escape_string($conn, $_POST['edit_email']);
+
+    $update_query = "UPDATE user_table SET full_name = '$fullname', username = '$username', email = '$email' WHERE user_id = '$user_id'";
+    if (mysqli_query($conn, $update_query)) {
+        echo "<script>
+            Swal.fire({
+                title: 'Updated!',
+                text: 'User information has been updated!',
+                icon: 'success'
+            });
+        </script>";
+    } else {
+        echo "Error updating record: " . mysqli_error($conn);
+    }
+}
 
 // Default SQL query to fetch only active users
 $selectsql = "SELECT * FROM user_table WHERE status = 'active'";
@@ -522,75 +540,6 @@ if (isset($_POST['search']) && $_POST['search'] != NULL) {
 }
 
 $result = $conn->query($selectsql);
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // Validate and sanitize inputs
-  $username = mysqli_real_escape_string($conn, $_POST['username']);
-  $password = mysqli_real_escape_string($conn, $_POST['password']);
-  $user_type = mysqli_real_escape_string($conn, $_POST['role']);
-
-  // Hash the password before storing (consider using password_hash in real applications)
-  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-  // Insert user into database
-  $insertsql = "INSERT INTO user_table (username, password, role, status) VALUES ('$username', '$hashed_password', '$user_type', 'active')";
-
-  if (mysqli_query($conn, $insertsql)) {
-      echo "<script>
-          Swal.fire({
-              title: 'Success!',
-              text: 'User has been created successfully!',
-              icon: 'success'
-          });
-      </script>";
-  } else {
-      echo "Error: " . $insertsql . "<br>" . mysqli_error($conn);
-  }
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['delete'])) {
-        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
-        $delete_query = "UPDATE user_table SET status = 'inactive' WHERE user_id = '$user_id'";
-        if (mysqli_query($conn, $delete_query)) {
-            echo "<script>
-                Swal.fire({
-                    title: 'Deleted!',
-                    text: 'User has been set to inactive!',
-                    icon: 'success'
-                });
-            </script>";
-        } else {
-            echo "Error updating record: " . mysqli_error($conn);
-        }
-    }
-
-    if (isset($_POST['promote_admin'])) {
-        $promote_user = mysqli_real_escape_string($conn, $_POST['promote_admin']);
-        $updatesql = "UPDATE user_table SET role = 'Admin' WHERE user_id = '$promote_user'";
-        if ($conn->query($updatesql) === TRUE) {
-            echo "User promoted to admin successfully.";
-        } else {
-            echo "Error promoting user to admin: " . $conn->error;
-        }
-    }
-
-    if (isset($_POST['activate'])) {
-        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
-        $activate_query = "UPDATE user_table SET status = 'active' WHERE user_id = '$user_id'";
-        if (mysqli_query($conn, $activate_query)) {
-            echo "<script>
-                Swal.fire({
-                    title: 'Activated!',
-                    text: 'User has been set to active!',
-                    icon: 'success'
-                });
-            </script>";
-        } else {
-            echo "Error updating record: " . mysqli_error($conn);
-        }
-    }
-}
 
 // Check if table is not empty
 if ($result->num_rows > 0) {
@@ -612,6 +561,7 @@ if ($result->num_rows > 0) {
     echo "<th>Username <span class='icon-arrow'>&UpArrow;</span></th>";
     echo "<th>Email <span class='icon-arrow'>&UpArrow;</span></th>";
     echo "<th>Status <span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Action</th>";
     echo "</tr>";
     echo "</thead>";
     echo "<tbody>";
@@ -625,24 +575,46 @@ if ($result->num_rows > 0) {
         echo "<td>" . $fielddata['email'] . "</td>";
         echo "<td>" . $fielddata['status'] . "</td>";
         echo "<td>";
-        echo "<form action='' method='post'>";
-        echo "<input type='hidden' name='user_id' value='" . $fielddata['user_id'] . "'>";
-        echo "<button type='submit' name='promote_admin' value='" . $fielddata['user_id'] . "' class='admin-button bx bxs-user-plus'></button>";
-        echo "<button type='submit' name='delete' class='delete-button bx bxs-trash'></button>";
-        echo "<button type='submit' name='activate' class='activate-button bx bxs-user-check'></button>";
-        echo "</form>";
+        echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['user_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['user_id'] . "'><i class='bi bi-pencil-square'></i></button>"; 
         echo "</td>";
+        echo "</tr>";
 
+        // Edit form collapse for each user
+        echo "<tr>";
+        echo "<td colspan='7' class='border-0'>";
+        echo "<div class='collapse' id='collapseEdit_" . $fielddata['user_id'] . "'>";
+        echo "<div class='card card-body'>";
+        echo "<form action='' method='post'>";
+        echo "<div class='mb-3'>";
+        echo "<label for='edit_fullname' class='form-label'>Full Name</label>";
+        echo "<input type='text' class='form-control' id='edit_fullname' name='edit_fullname' value='" . $fielddata['full_name'] . "'>";
+        echo "</div>";
+        echo "<div class='mb-3'>";
+        echo "<label for='edit_username' class='form-label'>Username</label>";
+        echo "<input type='text' class='form-control' id='edit_username' name='edit_username' value='" . $fielddata['username'] . "'>";
+        echo "</div>";
+        echo "<div class='mb-3'>";
+        echo "<label for='edit_email' class='form-label'>Email address</label>";
+        echo "<input type='email' class='form-control' id='edit_email' name='edit_email' value='" . $fielddata['email'] . "'>";
+        echo "</div>";
+        echo "<input type='hidden' name='edit_user_id' value='" . $fielddata['user_id'] . "'>";
+        echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
+        echo "</form>";
+        echo "</div>";
+        echo "</div>";
+        echo "</td>";
         echo "</tr>";
     }
+
     echo "</tbody>";
     echo "</table>";
+    echo "</section>";
+    echo "</main>";
 } else {
     echo "No records found";
 }
 ?>
 
-         </section>
 
          <script src='script.js'></script>
 

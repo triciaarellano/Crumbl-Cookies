@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Accounts</title>
+    <title>Products</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -129,177 +129,6 @@ main.table {
   justify-content: flex-start;
 }
 
-.table__header .input-group {
-	 width: 45%;
-	 height: 100%;
-	 border: none;
-   margin-left: 20px;
-	 background-color: #e4e4e4a9;
-	 border-radius: 8px;
-	 font-family: var(--body-font);
-	 font-size: 14px;
-	 font-weight: 500;
-	 padding: 0 40px 0 16px;
-	 box-shadow: 0 0 0 2px rgba(134, 140, 160, 0.02);
-	 color: #ff6486;
-}
-
-.table__header .input-group:hover {
-
-	box-shadow: 0 0.1rem 0.4rem #0002;
-}
-
-.table__header .input-group input {
-	width: 100%;
-	padding: 0 0.5rem 0 0.3rem;
-	background-color: transparent;
-	border: none;
-	outline: none;
-  color: #ff6486;
-}
-
-.table__body {
-	width: 95%;
-	max-height: calc(89% - 1.6rem);
-	background-color: #fffb;
-	border: 2px solid gainsboro;
-
-	margin: 0.8rem auto;
-	border-radius: 0.6rem;
-
-	overflow: auto;
-	overflow: overlay;
-}
-
-.table__body::-webkit-scrollbar {
-	width: 0.3rem;
-	height: 0.5rem;
-	background-color: gainsboro;
-}
-
-.table__body::-webkit-scrollbar-thumb {
-	border-radius: 0.5rem;
-	background-color: #0004;
-	visibility: hidden;
-}
-
-.table__body:hover::-webkit-scrollbar-thumb {
-	visibility: visible;
-}
-
-table {
-	width: 100%;
-}
-
-table,
-th,
-td {
-	border-collapse: collapse;
-	padding: 1rem;
-	text-align: left;
-}
-
-thead th {
-	padding: 1.5rem;
-	position: sticky;
-	top: 0;
-	left: 0;
-	background-color: #fefffe;
-	cursor: pointer;
-	text-transform: capitalize;
-	color: var(--toggle-color);
-	z-index: 2;
-}
-
-th::after {
-	content: "";
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 2px;
-	background-color: gainsboro;
-	z-index: -1;
-}
-
-tbody tr:nth-child(even) {
-	background-color: #0000000b;
-}
-
-tbody tr {
-	--delay: 0.1s;
-	transition: 0.5s ease-in-out var(--delay), background-color 0s;
-}
-
-tbody tr.hide {
-	opacity: 0;
-	transform: translateX(100%);
-}
-
-tbody tr:hover {
-	background-color: #fce1e7 !important;
-}
-
-tbody tr td,
-tbody tr td p,
-tbody tr td img {
-	transition: 0.2s ease-in-out;
-}
-
-tbody tr.hide td,
-tbody tr.hide td p {
-	padding: 0;
-	font: 0 / 0 sans-serif;
-	transition: 0.2s ease-in-out 0.5s;
-}
-
-tbody tr.hide td img {
-	width: 0;
-	height: 0;
-	transition: 0.2s ease-in-out 0.5s;
-}
-
-@media (max-width: 1000px) {
-	td:not(:first-of-type) {
-		min-width: 12.1rem;
-	}
-}
-
-thead th span.icon-arrow {
-	display: inline-block;
-	width: 1.3rem;
-	height: 1.3rem;
-	border-radius: 50%;
-	border: 1.4px solid transparent;
-
-	text-align: center;
-	font-size: 1rem;
-
-	margin-left: 0.5rem;
-	transition: 0.2s ease-in-out;
-}
-
-thead th:hover span.icon-arrow {
-	border: 1.4px solid #fc6782;
-}
-
-thead th:hover {
-	color: #fc6782;
-}
-
-thead th.active span.icon-arrow {
-	background-color: #fc6782;
-	color: #fff;
-}
-
-thead th.asc span.icon-arrow {
-	transform: rotate(180deg);
-}
-
-thead th.active,
-tbody td.active {
-	color: #fc6782;
-}
 
 /* -- MODAL -- */
 
@@ -334,23 +163,23 @@ tbody td.active {
   padding: 15px;
 }
 
+/* -- CLOSE -- */
 .modal-footer .btn-secondary {
   background-color: #ff5151;
   border-color: #f095a8;
 }
 
-.modal-footer .btn-pink {
-  background-color: transparent;
+.modal-footer .btn-primary {
+  margin-right: -15px;
   border-color: transparent;
 }
 
 .btn-pink {
             background-color: #f095a8;
-            padding: 10px;
-            margin-top: 20px;
+            width: 15%;
             margin-left: 40px;
             color: #eee;
-            font-family: '', sans-serif;
+            font-family: 'Poppins', sans-serif;
             font-size: 17px;
         }
 
@@ -364,10 +193,8 @@ tbody td.active {
     border: none;
     border-radius: 5px;
     width: 4rem;
-    height: 3rem; 
     display: flex;
-    justify-content: flex-end; 
-    margin-top: 20px;
+    justify-content: flex-start; 
 }
 
 .btn-refresh i {
@@ -377,7 +204,47 @@ tbody td.active {
     font-family: '', sans-serif;
     font-size: 25px;
     line-height: 0;
-    margin-top: 5px;
+    margin-top: 14px;
+    margin-left: 12px;
+}
+
+.controls {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    width: 80%;
+    height: 50px;
+}
+
+.search-input {
+   width: 45%;
+	 border: none;
+   margin-left: 40px;
+	 background-color: #e4e4e4a9;
+	 border-radius: 8px;
+	 font-family: var(--body-font);
+	 font-size: 14px;
+	 font-weight: 500;
+	 padding: 0 40px 0 16px;
+	 box-shadow: 0 0 0 2px rgba(134, 140, 160, 0.02);
+	 color: #ff6486;
+}
+
+.search-input:hover {
+
+box-shadow: 0 0.1rem 0.4rem #0002;
+}
+
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 10px;
+    justify-content: center;
+    background-color: transparent;
+    overflow-y: auto;
+    max-height: calc(94.6vh - 200px); 
 }
 
 </style>
@@ -469,6 +336,12 @@ tbody td.active {
    <div class="main-header anim" style="--delay: 0s">Products</div>
 </div>
 
+<div class="controls anim" style="--delay: .1s">
+        <input type="search" name="search" class="search-input" placeholder="Search Products">
+        <button type="button" class="btn btn-pink bi bi-plus" data-bs-toggle="modal" data-bs-target="#pinkModal"> Add Product</button>
+        <button id="refreshButton" class="btn-refresh"><i class="bi bi-arrow-clockwise"></i></button>
+    </div>
+
 <!-- Modal Structure -->
 <div class="modal fade" id="pinkModal" tabindex="-1" aria-labelledby="pinkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -482,8 +355,9 @@ tbody td.active {
                 <form action="products.php" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="upload_img" class="form-label">Product Image</label>
+                        <img src="" alt="" id="preview_img" width="200" height="200" class="img-upload">
                         <input type="file" class="form-control" id="upload_img" name="upload_img" accept="image/*" onchange="previewImg(event)">
-                        <img src="" alt="" id="preview_img" width="200" height="200">
+
                     </div>
                     <div class="mb-3">
                         <label for="product_name" class="form-label">Product name</label>
@@ -513,23 +387,19 @@ tbody td.active {
     </div>
 </div>
 
-      <form action="products.php" method="post" class="search-form1"></form>
+      <form action="products.php" method="post" class="search-input"></form>
 
-
+      <div class="product-container anim" style="--delay: .3s">
       <?php
 include "dbconnect.php";
 
 
-$selectsql = "SELECT * FROM inven_sales";
+ $selectsql = "SELECT * FROM product_table";
 
-
-// Check if the search input is clicked and not null, change $selectsql syntax
-if(isset($_POST['search']) && $_POST['search'] != NULL){
-  $searchinput = $_POST['search'];
-  $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'"; //cHANGE PA
-} else {
-  $selectsql = "SELECT * FROM product_table";
-}
+    if (isset($_POST['search']) && !empty($_POST['search'])) {
+        $searchinput = $_POST['search'];
+        $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'";
+    }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Validate and sanitize inputs
@@ -544,45 +414,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $uploadOk = 1;
   $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
-  // Check if image file is a actual image or fake image
-  if(isset($_POST["submit"])) {
-      $check = getimagesize($_FILES["upload_img"]["tmp_name"]);
-      if($check !== false) {
-          echo "File is an image - " . $check["mime"] . ".";
-          $uploadOk = 1;
-      } else {
-          echo "File is not an image.";
-          $uploadOk = 0;
-      }
-  }
-
-  // Check if file already exists
-  if (file_exists($target_file)) {
-      echo "Sorry, file already exists.";
-      $uploadOk = 0;
-  }
-
-
-
-  // Allow certain file formats
-  if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-  && $imageFileType != "gif" ) {
-      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-      $uploadOk = 0;
-  }
-
-  // Check if $uploadOk is set to 0 by an error
-  if ($uploadOk == 0) {
-      echo "Sorry, your file was not uploaded.";
-  // if everything is ok, try to upload file
-  } else {
-      if (move_uploaded_file($_FILES["upload_img"]["tmp_name"], $target_file)) {
-          echo "The file ". htmlspecialchars( basename( $_FILES["upload_img"]["name"])). " has been uploaded.";
-      } else {
-          echo "Sorry, there was an error uploading your file.";
-      }
-  }
-
+ 
   // Insert product into database
   $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, img) VALUES ('$productname', '$description', '$price', '$quantity', '$target_file')";
 
@@ -605,16 +437,8 @@ $result = $conn->query($selectsql);
 
 // Check if table is not empty
 if ($result->num_rows > 0) {
-  echo "<main class='table anim' style='--delay: .4s' id='user_table'>";
-  echo "<section class='table__header anim' style='--delay: .2s'>";
-  echo "<div class='input-group'>";
-  echo "<input type='search' name='search' class='search-input' placeholder='Search Data'>";
-  echo "</div>";
-  echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Product</button>";
-  echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
-  echo "</section>";
 
-  echo "<div class='container'>";
+ 
   foreach ($result as $fielddata) {
       ?>      
       <div class="fielddata-item">
@@ -626,12 +450,12 @@ if ($result->num_rows > 0) {
       </div>
       <?php
   }
-  echo "</div>";
-  echo "</main>";
+
 } else {
   echo "No records found";
 }
 ?>
+</div>
 
          </section>
 
@@ -642,6 +466,19 @@ if ($result->num_rows > 0) {
 
 const userSettings = document.querySelector('.user-settings');
 const dropdownMenu = document.querySelector('.dropdown-menu');
+const search = document.querySelector(".search-input"),
+              productContainer = document.querySelector(".product-container"),
+              productItems = productContainer.querySelectorAll(".fielddata-item");
+
+        search.addEventListener("input", searchProducts);
+
+        function searchProducts() {
+            const searchValue = search.value.toLowerCase();
+            productItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        }
   
   userSettings.addEventListener('click', function() {
     dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
