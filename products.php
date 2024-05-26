@@ -402,6 +402,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
 <form action="products.php" method="post" class="search-input"></form>
 
 <div class="product-container anim" style="--delay: .3s">
+
     <?php
     include "dbconnect.php";
 

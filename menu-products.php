@@ -336,45 +336,79 @@ body {
   <div class="content-container">
         <div class="product-container anim" style="--delay: .3s">
 
-        <?php
+       <?php
 include "dbconnect.php";
 
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset($_POST['quantity']) && isset($_POST['total_amount']) && isset($_POST['payment_method'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset($_POST['quantity']) && isset($_POST['payment_method'])) {
     $productIds = $_POST['product_id'];
-    // $productPrices = $_POST['product_price'];
     $quantities = $_POST['quantity'];
-    $totalAmount = $_POST['total_amount'];
     $paymentMethod = $_POST['payment_method'];
     $salesDate = date('Y-m-d');
+    $totalAmount = 0;
 
     // Start transaction
     $conn->begin_transaction();
 
     try {
-        // Insert into sales table
-        // $salesSql = "INSERT INTO join_sales_table (total_amount, payment_method, sales_date) VALUES ('$totalAmount', '$paymentMethod', '$salesDate')";
-        // if ($conn->query($salesSql) === TRUE) {
-        //     // Get the last inserted sales_id
-        //     $salesId = $conn->insert_id;
+        // Calculate the total amount and update inventory
+        for ($i = 0; $i < count($productIds); $i++) {
+            $productId = $productIds[$i];
+            $quantity = $quantities[$i];
 
-            // Insert into sales_details table
+            // Fetch the product price and quantity available from the database
+            $productSql = "SELECT price, quantity_available FROM product_table WHERE product_id = '$productId'";
+            $productResult = $conn->query($productSql);
+            if ($productResult->num_rows > 0) {
+                $productRow = $productResult->fetch_assoc();
+                $price = $productRow['price'];
+                $quantityAvailable = $productRow['quantity_available'];
+
+                if ($quantity > $quantityAvailable) {
+                    throw new Exception("Insufficient stock for product ID: $productId");
+                }
+
+                $totalAmount += $price * $quantity;
+
+                // Update the product quantity
+                $newQuantityAvailable = $quantityAvailable - $quantity;
+                $status = ($newQuantityAvailable > 0) ? 'available' : 'unavailable';
+                $updateProductSql = "UPDATE product_table SET quantity_available = '$newQuantityAvailable', status = '$status' WHERE product_id = '$productId'";
+                if ($conn->query($updateProductSql) !== TRUE) {
+                    throw new Exception("Error updating product inventory: " . $conn->error);
+                }
+            } else {
+                throw new Exception("Error fetching product details for product ID: $productId");
+            }
+        }
+
+        // Insert into sales_table
+        $salesSql = "INSERT INTO sales_table (total_amount, payment_method, sales_date) VALUES ('$totalAmount', '$paymentMethod', NOW())";
+
+        
+        if ($conn->query($salesSql) === TRUE) {
+            // Get the last inserted sales_id
+            $salesId = $conn->insert_id;
+
+            $insertResult = $conn->query($salesSql);
+            
+            // Insert into transaction_table
             for ($i = 0; $i < count($productIds); $i++) {
                 $productId = $productIds[$i];
                 $quantity = $quantities[$i];
 
-                $detailsSql = "INSERT INTO join_sales_table (sales_id, product_id, quantity_sold, total_amount, payment_method, sales_date) VALUES ('$salesId', '$productId', '$quantity', '$totalAmount', '$paymentMethod', '$salesDate's)";
+                $detailsSql = "INSERT INTO transaction_table (product_id, quantity_sold, transaction_date) VALUES ('$productId', '$quantity',  NOW())";
                 if ($conn->query($detailsSql) !== TRUE) {
-                    throw new Exception("Error: " . $detailsSql . "<br>" . $conn->error);
+                    throw new Exception("Error inserting transaction details: " . $conn->error);
                 }
             }
 
             // Commit transaction
             $conn->commit();
             echo "Order placed successfully!";
-        // } else {
-        //     throw new Exception("Error: " . $salesSql . "<br>" . $conn->error);
-        // }
+        } else {
+            throw new Exception("Error inserting sales record: " . $conn->error);
+        }
     } catch (Exception $e) {
         // Rollback transaction on error
         $conn->rollback();
@@ -382,11 +416,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset
     }
 }
 
-// Fetch product data
-$selectsql = "SELECT * FROM product_table";
+// Fetch product data, excluding products with zero quantity
+$selectsql = "SELECT * FROM product_table WHERE quantity_available > 0";
 if (isset($_POST['search']) && !empty($_POST['search'])) {
     $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
-    $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'";
+    $selectsql = "SELECT * FROM product_table WHERE (product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%') AND quantity_available > 0";
 }
 
 $result = $conn->query($selectsql);
@@ -411,6 +445,8 @@ $result = $conn->query($selectsql);
                 echo "No records found";
             }
             ?>
+
+
         </div>
 
         <div class="cart-container">

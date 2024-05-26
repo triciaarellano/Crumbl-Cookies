@@ -1,134 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+	<html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Home page</title>
-
 		<style>
 			body {
 				background-color: #ffc8cb;
-                overflow-y: hidden;
+				overflow-y: hidden;
+				display: flex;
+				justify-content: center;
+				align-items: center;
 			}
-            
-            /* -- BUTTON -- */
-            .buttons {
-                display: flex;
-                justify-content: center;
-                margin-top: 500px;
-                text-align: center;
-                border-radius: 50%;
-            }
-            .blob-btn {
-                z-index: 1;
-                position: relative;
-                padding: 20px 46px;
-                margin-bottom: 30px;
-                text-align: center;
-                text-transform: uppercase;
-                color: #ff8ba0;
-                font-size: 16px;
-                font-weight: bold;
-                background-color: transparent;
-                outline: none;
-                border: none;
-                transition: color 0.5s;
-                cursor: pointer;
-                border-radius: 30px;
-            }
-            .blob-btn:before {
-                content: "";
-                z-index: 1;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
+			
+			.buttons {
+		display: flex;
+		margin-top: 375px;
+		flex-direction: column;
+		justify-content: center; 
+		align-items: center; 
+		text-align: center;
+		border-radius: 50%;
+	
+	}
 
-            }
-            .blob-btn:after {
-                content: "";
-                z-index: -2;
-                position: absolute;
-                left: 3px;
-                top: 3px;
-                width: 100%;
-                height: 100%;
-                transition: all 0.3s 0.2s;
-                border-radius: 30px;
-            }
-            .blob-btn:hover {
-                color: #fff;
-                border-radius: 30px;
-            }
-            .blob-btn:hover:after {
-                transition: all 0.3s;
-                left: 0;
-                top: 0;
-                border-radius: 30px;
-            }
-            .blob-btn__inner {
-                z-index: -1;
-                overflow: hidden;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                border-radius: 30px;
-                background: #fff;
-            }
-            .blob-btn__blobs {
-                position: relative;
-                display: block;
-                height: 100%;
-                filter: url('#goo');
-            }
-            .blob-btn__blob {
-                position: absolute;
-                top: 2px;
-                width: 25%;
-                height: 100%;
-                background: #ff8ba0;
-                border-radius: 100%;
-                transform: translate3d(0, 150%, 0) scale(1.7);
-                transition: transform 0.45s;
-            }
 
-            .blob-btn__blob:nth-child(1) {
-                left: 0%;
-                transition-delay: 0s;
-            }
-            .blob-btn__blob:nth-child(2) {
-                left: 30%;
-                transition-delay: 0.08s;
-            }
-            .blob-btn__blob:nth-child(3) {
-                left: 60%;
-                transition-delay: 0.16s;
-            }
-            .blob-btn__blob:nth-child(4) {
-                left: 90%;
-                transition-delay: 0.24s;
-            }
-            .blob-btn:hover .blob-btn__blob {
-                transform: translateZ(0) scale(1.7);
-            }
-
-            
-
+			.blob-btn, .btn-login, .btn-register {
+				z-index: 1;
+				position: relative;
+				padding: 20px 46px;
+				margin-bottom: 30px;
+				text-align: center;
+				text-transform: uppercase;
+				color: #ff8ba0;
+				font-size: 16px;
+				font-weight: bold;
+				background-color: transparent;
+				outline: none;
+				border: none;
+				transition: color 0.5s;
+				cursor: pointer;
+				border-radius: 30px;
+			}
+			.blob-btn:before, .btn-login:before, .btn-register:before {
+				content: "";
+				z-index: 1;
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+			}
+			.blob-btn:after, .btn-login:after, .btn-register:after {
+				content: "";
+				z-index: -2;
+				position: absolute;
+				left: 3px;
+				top: 3px;
+				width: 100%;
+				height: 100%;
+				transition: all 0.3s 0.2s;
+				border-radius: 30px;
+			}
+			.blob-btn:hover, .btn-login:hover, .btn-register:hover {
+				color: #fff;
+				border-radius: 30px;
+			}
+			.blob-btn:hover:after, .btn-login:hover:after, .btn-register:hover:after {
+				transition: all 0.3s;
+				left: 0;
+				top: 0;
+				border-radius: 30px;
+			}
+			.blob-btn__inner, .btn-login__inner, .btn-register__inner {
+				z-index: -1;
+				overflow: hidden;
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				border-radius: 30px;
+				background: #fff;
+			}
+			.blob-btn__blobs, .btn-login__blobs, .btn-register__blobs {
+				position: relative;
+				display: block;
+				height: 100%;
+				filter: url('#goo');
+			}
+			.blob-btn__blob, .btn-login__blob, .btn-register__blob {
+				position: absolute;
+				top: 2px;
+				width: 25%;
+				height: 100%;
+				background: #ff8ba0;
+				border-radius: 100%;
+				transform: translate3d(0, 150%, 0) scale(1.7);
+				transition: transform 0.45s;
+			}
+			.blob-btn__blob:nth-child(1), .btn-login__blob:nth-child(1), .btn-register__blob:nth-child(1) {
+				left: 0%;
+				transition-delay: 0s;
+			}
+			.blob-btn__blob:nth-child(2), .btn-login__blob:nth-child(2), .btn-register__blob:nth-child(2) {
+				left: 30%;
+				transition-delay: 0.08s;
+			}
+			.blob-btn__blob:nth-child(3), .btn-login__blob:nth-child(3), .btn-register__blob:nth-child(3) {
+				left: 60%;
+				transition-delay: 0.16s;
+			}
+			.blob-btn__blob:nth-child(4), .btn-login__blob:nth-child(4), .btn-register__blob:nth-child(4) {
+				left: 90%;
+				transition-delay: 0.24s;
+			}
+			.blob-btn:hover .blob-btn__blob, .btn-login:hover .btn-login__blob, .btn-register:hover .btn-register__blob {
+				transform: translateZ(0) scale(1.7);
+			}
 			.wrapper {
 				height: 100vh;
 				text-align: center;
 				position: relative;
 			}
-
-			.wrapper button {
-				position: relative;
-				top: 50%;
-				transform: translateY(-50%);
-			}
-
 			.loader {
 				position: fixed;
 				z-index: 999;
@@ -138,7 +132,6 @@
 				height: 100vh;
 				transition: width 0s 1.4s ease;
 			}
-
 			.loader__icon {
 				position: absolute;
 				z-index: 1;
@@ -148,11 +141,9 @@
 				opacity: 0;
 				transition: opacity 0.5s ease;
 			}
-
 			.loader__icon svg {
 				transform-origin: 0 0;
 			}
-
 			.loader__tile {
 				position: absolute;
 				left: 0;
@@ -161,86 +152,70 @@
 				background-color: #ff6486;
 				transition: width 0.7s ease;
 			}
-
 			.loader__tile:nth-child(1) {
 				top: calc(0 * 20%);
 				transition-delay: 0s;
 			}
-
 			.loader__tile:nth-child(2) {
 				top: calc(1 * 20%);
 				transition-delay: 0.2s;
 			}
-
 			.loader__tile:nth-child(3) {
 				top: calc(2 * 20%);
 				transition-delay: 0.4s;
 			}
-
 			.loader__tile:nth-child(4) {
 				top: calc(3 * 20%);
 				transition-delay: 0.6s;
 			}
-
 			.loader__tile:nth-child(5) {
 				top: calc(4 * 20%);
 				transition-delay: 0.8s;
 			}
-
 			.loader--active {
 				width: 100%;
 				transition-delay: 0s;
 			}
-
 			.loader--active .loader__icon {
 				opacity: 1;
 				transition: opacity 0.5s 1.4s ease;
 			}
-
 			.loader--active .loader__tile {
 				width: 100%;
 			}
-
 			.loader--active .loader__tile:nth-child(1) {
 				transition-delay: 0s;
 			}
-
 			.loader--active .loader__tile:nth-child(2) {
 				transition-delay: 0.2s;
 			}
-
 			.loader--active .loader__tile:nth-child(3) {
 				transition-delay: 0.4s;
 			}
-
 			.loader--active .loader__tile:nth-child(4) {
 				transition-delay: 0.6s;
 			}
-
 			.loader--active .loader__tile:nth-child(5) {
 				transition-delay: 0.8s;
 			}
-
-			.content {
-				display: flex;
-				flex-wrap: wrap;
-				justify-content: center;
-				align-items: center;
-				gap: 10px;
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				opacity: 0;
-				transform: translateY(100%);
-				transition: opacity 1s ease, transform 1s ease;
+				.content {
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: center;
+					align-items: center;
+					gap: 20px;
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					width: 100%;
+					opacity: 0;
+					transform: translateY(100%);
+					transition: opacity 1s ease, transform 1s ease;
 			}
-
 			.content.show {
 				opacity: 1;
 				transform: translateY(0);
 			}
-
 			.flex-container {
 				width: 150px;
 				height: 200px;
@@ -257,24 +232,20 @@
 				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 				transition: transform 0.3s, box-shadow 0.3s;
 			}
-
 			.flex-container:hover {
 				transform: translateY(-10px);
 				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 			}
-
 			.product-image {
 				width: 80%;
 				height: auto;
 				margin-bottom: 10px;
 				border-radius: 5px;
 			}
-
 			.product-name {
 				font-size: 1.2rem;
 				margin-bottom: 5px;
 			}
-
 			.flex-container button {
 				background-color: #fff;
 				color: #007ae5;
@@ -286,12 +257,10 @@
 				font-size: 1rem;
 				transition: background-color 0.3s, color 0.3s;
 			}
-
 			.flex-container button:hover {
 				background-color: #007ae5;
 				color: #fff;
 			}
-
 			.flex-container span.quantity {
 				font-size: 2rem;
 			}
@@ -300,61 +269,33 @@
 	<body>
 		<div class="wrapper">
 			<div class="buttons">
-                <button class="blob-btn">
-                  START ORDERING
-                  <span class="blob-btn__inner">
-                    <span class="blob-btn__blobs">
-                      <span class="blob-btn__blob"></span>
-                      <span class="blob-btn__blob"></span>
-                      <span class="blob-btn__blob"></span>
-                      <span class="blob-btn__blob"></span>
-                    </span>
-                  </span>
-                </button>
-                <br/>
-              
-              <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-                <defs>
-                  <filter id="goo">
-                    <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
-                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
-                    <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
-                  </filter>
-                </defs>
-              </svg>
+				<button class="blob-btn">
+					START ORDERING
+					<span class="blob-btn__inner">
+						<span class="blob-btn__blobs">
+							<span class="blob-btn__blob"></span>
+							<span class="blob-btn__blob"></span>
+							<span class="blob-btn__blob"></span>
+							<span class="blob-btn__blob"></span>
+						</span>
+
+				</button>
+			</div>
+			<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+				<defs>
+					<filter id="goo">
+						<feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
+						<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+						<feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
+					</filter>
+				</defs>
+			</svg>
 			<div class="loader loader--active">
 				<div class="loader__icon">
-					<svg
-						version="1.1"
-						id="loader-1"
-						xmlns="http://www.w3.org/2000/svg"
-						xmlns:xlink="http://www.w3.org/1999/xlink"
-						x="0px"
-						y="0px"
-						width="40px"
-						height="40px"
-						viewBox="0 0 40 40"
-						enable-background="new 0 0 40 40"
-						xml:space="preserve"
-					>
-						<path
-							opacity="0.2"
-							fill="#fff"
-							d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"
-						></path>
-						<path
-							fill="#fff"
-							d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0C22.32,8.481,24.301,9.057,26.013,10.047z"
-						></path>
-						<animateTransform
-							attributeType="xml"
-							attributeName="transform"
-							type="rotate"
-							from="0 20 20"
-							to="360 20 20"
-							dur="0.5s"
-							repeatCount="indefinite"
-						></animateTransform>
+					<svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+						<path opacity="0.2" fill="#fff" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"></path>
+						<path fill="#fff" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0C22.32,8.481,24.301,9.057,26.013,10.047z"></path>
+						<animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"></animateTransform>
 					</svg>
 				</div>
 				<div class="loader__tile"></div>
@@ -364,14 +305,32 @@
 				<div class="loader__tile"></div>
 			</div>
 			<div class="content">
-				<button class="btn-login" type="button">LOG IN</button>
-				<button class="btn-register" type="button">REGISTER NOW</button>
+				<button class="btn-login">
+					LOG IN
+					<span class="btn-login__inner">
+						<span class="btn-login__blobs">
+							<span class="btn-login__blob"></span>
+							<span class="btn-login__blob"></span>
+							<span class="btn-login__blob"></span>
+							<span class="btn-login__blob"></span>
+						</span>
+						<button class="btn-register">
+							REGISTER NOW
+							<span class="btn-register__inner">
+								<span class="btn-register__blobs">
+									<span class="btn-register__blob"></span>
+									<span class="btn-register__blob"></span>
+									<span class="btn-register__blob"></span>
+									<span class="btn-register__blob"></span>
+								</span>
+							</span>
+						</button>
 			</div>
 		</div>
 		<script>
 			var $loader = document.querySelector(".loader");
 			var $content = document.querySelector(".content");
-			var $button = document.querySelector(".btn");
+			var $button = document.querySelector(".blob-btn");
 
 			window.onload = function () {
 				$loader.classList.remove("loader--active");
@@ -405,4 +364,4 @@
 			});
 		</script>
 	</body>
-</html>
+	</html>
