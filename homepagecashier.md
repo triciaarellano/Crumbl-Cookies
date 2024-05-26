@@ -1,3 +1,5 @@
+# homepagecashier
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -188,6 +190,7 @@
     .flex-container span.quantity {
       font-size: 2rem;
     }
+
   </style>
 </head>
 <body>
@@ -277,7 +280,7 @@
 
     $button.addEventListener('click', function () {
       $loader.classList.add('loader--active');
-      
+
       window.setTimeout(function () {
         $loader.classList.remove('loader--active');
         $content.classList.add('show');
@@ -301,6 +304,7 @@
         }
       });
     });
+
   </script>
 </body>
 </html>

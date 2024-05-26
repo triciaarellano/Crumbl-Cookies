@@ -1,3 +1,5 @@
+# products-toggleedit-sana
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -21,6 +23,7 @@ body {
     overflow: scroll;
     font-size: 15px;
     font-weight: 500;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     position: relative;
 }
 
@@ -95,6 +98,12 @@ body {
 	 position: absolute;
 	 top: 5%;
 	 left: 17%;
+	 background: linear-gradient(
+		to bottom,
+		#f6f7fb 0%, 
+		#f6f7fb 78%, 
+		rgb(31 29 43 / 0%) 100%
+		);
 
 	 z-index: 11;
 }
@@ -238,7 +247,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
     justify-content: center;
     background-color: transparent;
     overflow-y: auto;
-    max-height: calc(100vh - 100px); 
+    max-height: calc(94.6vh - 200px); 
 }
 
 .fielddata-quantity {
@@ -517,39 +526,40 @@ box-shadow: 0 0.1rem 0.4rem #0002;
         foreach ($result as $fielddata) {
             ?>
             <div class="fielddata-item">
-                <div class="fielddata-details">
-                    <img src="<?php echo $fielddata['img']; ?>" alt="Product Image" style="width: 200px; height: 200px; object-fit: cover;">
-                    <h2 class="fielddata-prodname"><?php echo $fielddata['product_name'] ?></h2>
-                    <p class="fielddata-desc"><?php echo $fielddata['description'] ?></p>
-                    <p class="fielddata-quantity">Quantity: <?php echo $fielddata['quantity_available'] ?> <?php echo getStockStatus($fielddata['quantity_available']); ?></p>
-                    <p class="<?php echo $fielddata['quantity_available'] > 0 ? 'available-status' : 'unavailable-status'; ?>">
-                        <?php echo getProductStatus($fielddata['quantity_available']); ?>
-                    </p>
-                    <button class="edit-button" data-bs-toggle="collapse" data-bs-target="#collapse_<?php echo $fielddata['product_id']; ?>"><i class='bi bi-pencil-square'></i></button>
-                    <div id="collapse_<?php echo $fielddata['product_id']; ?>" class="collapse">
-                        <form action="products.php" method="post">
-                            <div class="mb-3">
-                                <label for="edit_productname_<?php echo $fielddata['product_id']; ?>" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="edit_productname_<?php echo $fielddata['product_id']; ?>" name="edit_productname" value="<?php echo $fielddata['product_name']; ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_description_<?php echo $fielddata['product_id']; ?>" class="form-label">Description</label>
-                                <textarea class="form-control" id="edit_description_<?php echo $fielddata['product_id']; ?>" name="edit_description"><?php echo $fielddata['description']; ?></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_price_<?php echo $fielddata['product_id']; ?>" class="form-label">Price</label>
-                                <input type="text" class="form-control" id="edit_price_<?php echo $fielddata['product_id']; ?>" name="edit_price" value="<?php echo $fielddata['price']; ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_quantity_<?php echo $fielddata['product_id']; ?>" class="form-label">Quantity</label>
-                                <input type="text" class="form-control" id="edit_quantity_<?php echo $fielddata['product_id']; ?>" name="edit_quantity" value="<?php echo $fielddata['quantity_available']; ?>">
-                            </div>
-                            <input type="hidden" name="edit_product_id" value="<?php echo $fielddata['product_id']; ?>">
-                            <button type="submit" name="edit_submit" class="btn btn-primary" id="sub">Save changes</button>
-                        </form>
-                    </div>
+    <div class="fielddata-details">
+        <img src="<?php echo $fielddata['img']; ?>" alt="Product Image" style="width: 200px; height: 200px; object-fit: cover;">
+        <h2 class="fielddata-prodname"><?php echo $fielddata['product_name'] ?></h2>
+        <p class="fielddata-desc"><?php echo $fielddata['description'] ?></p>
+        <p class="fielddata-quantity">Quantity: <?php echo $fielddata['quantity_available'] ?> <?php echo getStockStatus($fielddata['quantity_available']); ?></p>
+        <p class="<?php echo $fielddata['quantity_available'] > 0 ? 'available-status' : 'unavailable-status'; ?>">
+            <?php echo getProductStatus($fielddata['quantity_available']); ?>
+        </p>
+        <button class="edit-button" data-productId="<?php echo $fielddata['product_id']; ?>">Edit</button>
+        <div id="edit-section-<?php echo $fielddata['product_id']; ?>" style="display: none;">
+            <form action="products.php" method="post">
+                <div class="mb-3">
+                    <label for="edit_productname_<?php echo $fielddata['product_id']; ?>" class="form-label">Product Name</label>
+                    <input type="text" class="form-control" id="edit_productname_<?php echo $fielddata['product_id']; ?>" name="edit_productname" value="<?php echo $fielddata['product_name']; ?>">
                 </div>
-            </div>
+                <div class="mb-3">
+                    <label for="edit_description_<?php echo $fielddata['product_id']; ?>" class="form-label">Description</label>
+                    <textarea class="form-control" id="edit_description_<?php echo $fielddata['product_id']; ?>" name="edit_description"><?php echo $fielddata['description']; ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="edit_price_<?php echo $fielddata['product_id']; ?>" class="form-label">Price</label>
+                    <input type="text" class="form-control" id="edit_price_<?php echo $fielddata['product_id']; ?>" name="edit_price" value="<?php echo $fielddata['price']; ?>">
+                </div>
+                <div class="mb-3">
+                    <label for="edit_quantity_<?php echo $fielddata['product_id']; ?>" class="form-label">Quantity</label>
+                    <input type="text" class="form-control" id="edit_quantity_<?php echo $fielddata['product_id']; ?>" name="edit_quantity" value="<?php echo $fielddata['quantity_available']; ?>">
+                </div>
+                <input type="hidden" name="edit_product_id" value="<?php echo $fielddata['product_id']; ?>">
+                <button type="submit" name="edit_submit" class="btn btn-primary" id="sub">Save changes</button>
+            </form>
+        </div>
+    </div>
+
+</div>
 
             <?php
         }
@@ -565,13 +575,12 @@ box-shadow: 0 0.1rem 0.4rem #0002;
          <script src='script.js'></script>
 
          <script>
-         document.addEventListener("DOMContentLoaded", function() {
-
-const userSettings = document.querySelector('.user-settings');
-const dropdownMenu = document.querySelector('.dropdown-menu');
-const search = document.querySelector(".search-input"),
-productContainer = document.querySelector(".product-container"),
-productItems = productContainer.querySelectorAll(".fielddata-item");
+    document.addEventListener("DOMContentLoaded", function() {
+        const userSettings = document.querySelector('.user-settings');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        const search = document.querySelector(".search-input");
+        const productContainer = document.querySelector(".product-container");
+        const productItems = productContainer.querySelectorAll(".fielddata-item");
 
         search.addEventListener("input", searchProducts);
 
@@ -583,73 +592,93 @@ productItems = productContainer.querySelectorAll(".fielddata-item");
             });
         }
 
-userSettings.addEventListener('click', function() {
-dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-});
+        userSettings.addEventListener('click', function() {
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
 
-// Close the dropdown if the user clicks outside of it
-window.addEventListener('click', function(event) {
-if (!userSettings.contains(event.target)) {
-dropdownMenu.style.display = 'none';
-}
-});
+        // Close the dropdown if the user clicks outside of it
+        window.addEventListener('click', function(event) {
+            if (!userSettings.contains(event.target)) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
 
-// to handle sidebar link click
-function handleSidebarLinkClick(event) {
-// remove 'is-active' class from all sidebar links
-document.querySelectorAll(".sidebar-link").forEach(function(link) {
-link.classList.remove("is-active");
-});
-// add 'is-active' class to the clicked sidebar link
-event.target.classList.add("is-active");
-}
+        // Toggle edit section
 
-// add click event listeners to all sidebar links
-document.querySelectorAll(".sidebar-link").forEach(function(link) {
-link.addEventListener("click", handleSidebarLinkClick);
-});
-
-// to handle window resize
-function handleWindowResize() {
-// If window width is greater than 1090px
-if (window.innerWidth > 1090) {
-// remove 'collapse' class from sidebar
-document.querySelector(".sidebar").classList.remove("collapse");
+function toggleEdit(productId) {
+var editSection = document.getElementById('edit-section-' + productId);
+if (editSection.style.display === 'none' || editSection.style.display === '') {
+editSection.style.display = 'block';
 } else {
-// add 'collapse' class to sidebar
-document.querySelector(".sidebar").classList.add("collapse");
+editSection.style.display = 'none';
 }
 }
 
-window.addEventListener("resize", handleWindowResize);
-handleWindowResize();
-
-// to handle logo, logo-expand, and overview click
-function handleLogoClick() {
-// remove 'show' class from main container
-document.querySelector(".main-container").classList.remove("show");
-// scroll main container to top
-document.querySelector(".main-container").scrollTop = 0;
-}
-
-// add click event listeners to logo, logo-expand, and overview
-document.querySelectorAll(".logo, .logo-expand, .sidebar-link").forEach(function(element) {
-element.addEventListener("click", handleLogoClick);
+// Add click event listeners to edit buttons
+document.querySelectorAll(".edit-button").forEach(function(button) {
+button.addEventListener("click", function() {
+const productId = button.dataset.productId;
+toggleEdit(productId);
+});
 });
 
-});
+        // Add click event listeners to edit buttons
+        document.querySelectorAll(".edit-button").forEach(function(button) {
+            button.addEventListener("click", function() {
+                const productId = button.dataset.productId;
+                toggleEdit(productId);
+            });
+        });
 
-document.getElementById('refreshButton').addEventListener('click', function() {
-location.reload();
-});
+        // Handle sidebar link click
+        function handleSidebarLinkClick(event) {
+            document.querySelectorAll(".sidebar-link").forEach(function(link) {
+                link.classList.remove("is-active");
+            });
+            event.target.classList.add("is-active");
+        }
 
-//preview image
-function previewImg(event){
-var display = document.getElementById("preview_img");
-display.src = URL.createObjectURL(event.target.files[0]);
-}
+        // Add click event listeners to all sidebar links
+        document.querySelectorAll(".sidebar-link").forEach(function(link) {
+            link.addEventListener("click", handleSidebarLinkClick);
+        });
 
-          </script>
+        // Handle window resize
+        function handleWindowResize() {
+            if (window.innerWidth > 1090) {
+                document.querySelector(".sidebar").classList.remove("collapse");
+            } else {
+                document.querySelector(".sidebar").classList.add("collapse");
+            }
+        }
+
+        window.addEventListener("resize", handleWindowResize);
+        handleWindowResize();
+
+        // Handle logo, logo-expand, and overview click
+        function handleLogoClick() {
+            document.querySelector(".main-container").classList.remove("show");
+            document.querySelector(".main-container").scrollTop = 0;
+        }
+
+        // Add click event listeners to logo, logo-expand, and overview
+        document.querySelectorAll(".logo, .logo-expand, .sidebar-link").forEach(function(element) {
+            element.addEventListener("click", handleLogoClick);
+        });
+
+        // Refresh page
+        document.getElementById('refreshButton').addEventListener('click', function() {
+            location.reload();
+        });
+
+        // Preview image
+        function previewImg(event) {
+            var display = document.getElementById("preview_img");
+            display.src = URL.createObjectURL(event.target.files[0]);
+        }
+    });
+
+</script>
 
   </main>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

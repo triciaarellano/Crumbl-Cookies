@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Products</title>
+    <title>Cashier</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -21,6 +21,7 @@ body {
     overflow: scroll;
     font-size: 15px;
     font-weight: 500;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     position: relative;
 }
 
@@ -95,6 +96,12 @@ body {
 	 position: absolute;
 	 top: 5%;
 	 left: 17%;
+	 background: linear-gradient(
+		to bottom,
+		#f6f7fb 0%, 
+		#f6f7fb 78%, 
+		rgb(31 29 43 / 0%) 100%
+		);
 
 	 z-index: 11;
 }
@@ -238,7 +245,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
     justify-content: center;
     background-color: transparent;
     overflow-y: auto;
-    max-height: calc(100vh - 100px); 
+    max-height: calc(94.6vh - 200px); 
 }
 
 .fielddata-quantity {
@@ -275,38 +282,19 @@ box-shadow: 0 0.1rem 0.4rem #0002;
   <div class="side-wrapper">
    <div class="side-title">CATEGORY</div>
    <div class="side-menu">
-    <a class="sidebar-link" href="dashboard.php">
+    <a class="sidebar-link" href="homepagecashier.php">
      <i class="bi bi-house-door icon"></i>
      Overview
     </a>
-    <a class="sidebar-link" href="accounts.php">
-     <i class="bi bi-people"></i>
-     Accounts
+    <a class="sidebar-link" href="menu-products.php">
+    <i class="bi bi-cart icon"></i>
+     Our Products
     </a>
-    <a class="sidebar-link is-active" href="products.php">
-     <i class="bi bi-cart icon"></i>
-     Products
+    <a class="sidebar-link is-active" href="orderform.php">
+     <i class="bi bi-receipt icon"></i>
+     Order Form
     </a>
-    <a class="sidebar-link" href="archives.php">
-     <i class="bi bi-bookmark"></i>
-     Archives
-    </a>
-    <a class="sidebar-link" href="inventory.php">
-     <i class="bi bi-box-seam icon"></i>
-     Inventory
-    </a>
-	<a class="sidebar-link" href="transactions.php">
-     <i class="bi bi-receipt"></i>
-     Transactions
-    </a>
-    <a class="sidebar-link" href="salesrecord.php">
-     <i class="bi bi-journal icon"></i>
-     Sales Record
-    </a>
-    <a class="sidebar-link" href="audittrail.php">
-     <i class="bi bi-bar-chart icon"></i>
-     Audit Trail
-    </a>
+
    </div>
    
   </div>
@@ -346,7 +334,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
   </div>
 
   <div class="main-container">
-   <div class="main-header anim" style="--delay: 0s">Products</div>
+   <div class="main-header anim" style="--delay: 0s">MENU</div>
 </div>
 
 <div class="controls anim" style="--delay: .1s">
@@ -525,28 +513,9 @@ box-shadow: 0 0.1rem 0.4rem #0002;
                     <p class="<?php echo $fielddata['quantity_available'] > 0 ? 'available-status' : 'unavailable-status'; ?>">
                         <?php echo getProductStatus($fielddata['quantity_available']); ?>
                     </p>
-                    <button class="edit-button" data-bs-toggle="collapse" data-bs-target="#collapse_<?php echo $fielddata['product_id']; ?>"><i class='bi bi-pencil-square'></i></button>
+                   
                     <div id="collapse_<?php echo $fielddata['product_id']; ?>" class="collapse">
-                        <form action="products.php" method="post">
-                            <div class="mb-3">
-                                <label for="edit_productname_<?php echo $fielddata['product_id']; ?>" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="edit_productname_<?php echo $fielddata['product_id']; ?>" name="edit_productname" value="<?php echo $fielddata['product_name']; ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_description_<?php echo $fielddata['product_id']; ?>" class="form-label">Description</label>
-                                <textarea class="form-control" id="edit_description_<?php echo $fielddata['product_id']; ?>" name="edit_description"><?php echo $fielddata['description']; ?></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_price_<?php echo $fielddata['product_id']; ?>" class="form-label">Price</label>
-                                <input type="text" class="form-control" id="edit_price_<?php echo $fielddata['product_id']; ?>" name="edit_price" value="<?php echo $fielddata['price']; ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_quantity_<?php echo $fielddata['product_id']; ?>" class="form-label">Quantity</label>
-                                <input type="text" class="form-control" id="edit_quantity_<?php echo $fielddata['product_id']; ?>" name="edit_quantity" value="<?php echo $fielddata['quantity_available']; ?>">
-                            </div>
-                            <input type="hidden" name="edit_product_id" value="<?php echo $fielddata['product_id']; ?>">
-                            <button type="submit" name="edit_submit" class="btn btn-primary" id="sub">Save changes</button>
-                        </form>
+                        
                     </div>
                 </div>
             </div>

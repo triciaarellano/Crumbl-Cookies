@@ -1,3 +1,5 @@
+# productswithedit
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -21,6 +23,7 @@ body {
     overflow: scroll;
     font-size: 15px;
     font-weight: 500;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     position: relative;
 }
 
@@ -95,6 +98,12 @@ body {
 	 position: absolute;
 	 top: 5%;
 	 left: 17%;
+	 background: linear-gradient(
+		to bottom,
+		#f6f7fb 0%, 
+		#f6f7fb 78%, 
+		rgb(31 29 43 / 0%) 100%
+		);
 
 	 z-index: 11;
 }
@@ -238,7 +247,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
     justify-content: center;
     background-color: transparent;
     overflow-y: auto;
-    max-height: calc(100vh - 100px); 
+    max-height: calc(94.6vh - 200px); 
 }
 
 .fielddata-quantity {

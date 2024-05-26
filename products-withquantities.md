@@ -1,3 +1,5 @@
+# products-withquantities
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -21,6 +23,7 @@ body {
     overflow: scroll;
     font-size: 15px;
     font-weight: 500;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     position: relative;
 }
 
@@ -95,6 +98,12 @@ body {
 	 position: absolute;
 	 top: 5%;
 	 left: 17%;
+	 background: linear-gradient(
+		to bottom,
+		#f6f7fb 0%, 
+		#f6f7fb 78%, 
+		rgb(31 29 43 / 0%) 100%
+		);
 
 	 z-index: 11;
 }
@@ -238,28 +247,20 @@ box-shadow: 0 0.1rem 0.4rem #0002;
     justify-content: center;
     background-color: transparent;
     overflow-y: auto;
-    max-height: calc(100vh - 100px); 
+    max-height: calc(94.6vh - 200px); 
 }
 
 .fielddata-quantity {
+    display: flex;
+    align-items: center;
     font-size: 1rem;
     font-weight: 500;
 }
 
 .fielddata-quantity .bi {
-    margin-left: 5px;
-    margin-bottom: 30px;
+    margin-left: 10px;
 }
 
-.available-status {
-    color: green;
-    font-weight: bold;
-}
-
-.unavailable-status {
-    color: red;
-    font-weight: bold;
-}
 
 </style>
 
@@ -370,6 +371,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
                         <label for="upload_img" class="form-label">Product Image</label>
                         <img src="" alt="" id="preview_img" width="200" height="200" class="img-upload">
                         <input type="file" class="form-control" id="upload_img" name="upload_img" accept="image/*" onchange="previewImg(event)">
+
                     </div>
                     <div class="mb-3">
                         <label for="product_name" class="form-label">Product name</label>
@@ -397,170 +399,251 @@ box-shadow: 0 0.1rem 0.4rem #0002;
             </div>
         </div>
     </div>
+
 </div>
 
-<form action="products.php" method="post" class="search-input"></form>
+      <form action="products.php" method="post" class="search-input"></form>
 
-<div class="product-container anim" style="--delay: .3s">
-    <?php
-    include "dbconnect.php";
+      <div class="product-container anim" style="--delay: .3s">
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Validate and sanitize inputs
-        $productid = isset($_POST['product_id']) ? mysqli_real_escape_string($conn, $_POST['product_id']) : '';
-        $productname = isset($_POST['product_name']) ? mysqli_real_escape_string($conn, $_POST['product_name']) : '';
-        $description = isset($_POST['description']) ? mysqli_real_escape_string($conn, $_POST['description']) : '';
-        $price = isset($_POST['price']) ? mysqli_real_escape_string($conn, $_POST['price']) : '';
-        $quantity = isset($_POST['quantity']) ? mysqli_real_escape_string($conn, $_POST['quantity']) : '';
+      <?php
 
-        // Handle file upload
-        $target_dir = "uploads/";
-        $target_file = $target_dir . basename($_FILES["upload_img"]["name"] ?? '');
+include "dbconnect.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate and sanitize inputs
+    $productname = mysqli_real_escape_string($conn, $_POST['product_name']);
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $price = mysqli_real_escape_string($conn, $_POST['price']);
+    $quantity = mysqli_real_escape_string($conn, $\_POST['quantity']);
+
+    // Handle file upload
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["upload_img"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $maxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+
+    // Check if image file is a actual image or fake image
+    $check = getimagesize($_FILES["upload_img"]["tmp_name"]);
+    if ($check !== false) {
         $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-        $maxFileSize = 5 * 1024 * 1024; // 5MB
-
-        // Check if image file is a actual image or fake image
-        if (isset($_FILES["upload_img"]) && $_FILES["upload_img"]["tmp_name"]) {
-            $check = getimagesize($_FILES["upload_img"]["tmp_name"]);
-            if ($check !== false) {
-                $uploadOk = 1;
-            } else {
-                echo "File is not an image.";
-                $uploadOk = 0;
-            }
-        }
-
-        // Check file size
-        if (isset($_FILES["upload_img"]) && $_FILES["upload_img"]["size"] > $maxFileSize) {
-            echo "Sorry, your file is too large.";
-            $uploadOk = 0;
-        }
-
-        // Allow certain file formats
-        if ($imageFileType && !in_array($imageFileType, ["jpg", "png", "jpeg", "gif"])) {
-            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-            $uploadOk = 0;
-        }
-
-        if ($uploadOk == 0) {
-            echo "Sorry, your file was not uploaded.";
-        } else {
-            if (isset($_FILES["upload_img"]) && move_uploaded_file($_FILES["upload_img"]["tmp_name"], $target_file)) {
-                $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, img) VALUES ('$productname', '$description', '$price', '$quantity', '$target_file')";
-                if (mysqli_query($conn, $insertsql)) {
-                    echo "<script>
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Product has been added successfully!',
-                            icon: 'success'
-                        });
-                    </script>";
-                } else {
-                  echo "<script>
-                  Swal.fire({
-                      title: 'Error!',
-                      text: 'Failed to add the product!',
-                      icon: 'error'
-                  });
-              </script>";
-                }
-            } else {
-
-            }
-        }
+    } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
-        $editproduct_id = isset($_POST['edit_product_id']) ? mysqli_real_escape_string($conn, $_POST['edit_product_id']) : '';
-        $editproductname = isset($_POST['edit_productname']) ? mysqli_real_escape_string($conn, $_POST['edit_productname']) : '';
-        $editdescription = isset($_POST['edit_description']) ? mysqli_real_escape_string($conn, $_POST['edit_description']) : '';
-        $editprice = isset($_POST['edit_price']) ? mysqli_real_escape_string($conn, $_POST['edit_price']) : '';
-        $editquantity = isset($_POST['edit_quantity']) ? mysqli_real_escape_string($conn, $_POST['edit_quantity']) : '';
-        $editstatus = getProductStatus($editquantity);
+    // Check if file already exists
+    if (file_exists($target_file)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
 
-        if ($editproduct_id && $editproductname && $editdescription && $editprice && $editquantity) {
-            $update_query = "UPDATE product_table SET product_name = '$editproductname', description = '$editdescription', price = '$editprice', quantity_available = '$editquantity', status = '$editstatus' WHERE product_id = '$editproduct_id'";
-            if (mysqli_query($conn, $update_query)) {
+    // Check file size
+    if ($_FILES["upload_img"]["size"] > $maxFileSize) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+    // If everything is ok, try to upload file
+    } else {
+        if (move_uploaded_file($_FILES["upload_img"]["tmp_name"], $target_file)) {
+            // Insert product into database
+            $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, img) VALUES ('$productname', '$description', '$price', '$quantity', '$target_file')";
+            if (mysqli_query($conn, $insertsql)) {
                 echo "<script>
                     Swal.fire({
-                        title: 'Updated!',
-                        text: 'Product information has been updated!',
+                        title: 'Success!',
+                        text: 'Product has been added successfully!',
                         icon: 'success'
                     });
                 </script>";
             } else {
-                echo "Error updating record: " . mysqli_error($conn);
+                echo "Error: " . $insertsql . "<br>" . mysqli_error($conn);
             }
+        } else {
+            echo "Sorry, there was an error uploading your file.";
         }
     }
 
-    $selectsql = "SELECT * FROM product_table";
-    if (isset($_POST['search']) && !empty($_POST['search'])) {
-        $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
-        $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'";
-    }
+}
 
-    $result = $conn->query($selectsql);
+if (isset($_POST['sub'])) {
+    $productname = $_POST['product_name'];
+    $price = $_POST['price'];
+    $quantity = $_POST['quantity'];
+    $description = $_POST['description'];
+    $status = getProductStatus($quantity);
 
-    // Function to determine stock status
-    function getStockStatus($quantity) {
-        return $quantity < 5 ? '<i class="bi bi-exclamation-circle text-danger" title="Low Stock"></i>' : '';
-    }
+    $productsql = "SELECT * FROM product_table WHERE product_name = '$productname'";
+    $product_result = $conn->query($productsql);
 
-    function getProductStatus($quantity) {
-        return $quantity > 0 ? 'Available' : 'Unavailable';
-    }
+    if ($product_result->num_rows == 0) {
+        $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, status)
+                        VALUES ('$productname', '$description', '$price', '$quantity', '$status')";
+        $result = $conn->query($insertsql);
 
-    // Check if table is not empty
-    if ($result->num_rows > 0) {
-        foreach ($result as $fielddata) {
+        if ($result === TRUE) {
             ?>
-            <div class="fielddata-item">
-                <div class="fielddata-details">
-                    <img src="<?php echo $fielddata['img']; ?>" alt="Product Image" style="width: 200px; height: 200px; object-fit: cover;">
-                    <h2 class="fielddata-prodname"><?php echo $fielddata['product_name'] ?></h2>
-                    <p class="fielddata-desc"><?php echo $fielddata['description'] ?></p>
-                    <p class="fielddata-quantity">Quantity: <?php echo $fielddata['quantity_available'] ?> <?php echo getStockStatus($fielddata['quantity_available']); ?></p>
-                    <p class="<?php echo $fielddata['quantity_available'] > 0 ? 'available-status' : 'unavailable-status'; ?>">
-                        <?php echo getProductStatus($fielddata['quantity_available']); ?>
-                    </p>
-                    <button class="edit-button" data-bs-toggle="collapse" data-bs-target="#collapse_<?php echo $fielddata['product_id']; ?>"><i class='bi bi-pencil-square'></i></button>
-                    <div id="collapse_<?php echo $fielddata['product_id']; ?>" class="collapse">
-                        <form action="products.php" method="post">
-                            <div class="mb-3">
-                                <label for="edit_productname_<?php echo $fielddata['product_id']; ?>" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="edit_productname_<?php echo $fielddata['product_id']; ?>" name="edit_productname" value="<?php echo $fielddata['product_name']; ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_description_<?php echo $fielddata['product_id']; ?>" class="form-label">Description</label>
-                                <textarea class="form-control" id="edit_description_<?php echo $fielddata['product_id']; ?>" name="edit_description"><?php echo $fielddata['description']; ?></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_price_<?php echo $fielddata['product_id']; ?>" class="form-label">Price</label>
-                                <input type="text" class="form-control" id="edit_price_<?php echo $fielddata['product_id']; ?>" name="edit_price" value="<?php echo $fielddata['price']; ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_quantity_<?php echo $fielddata['product_id']; ?>" class="form-label">Quantity</label>
-                                <input type="text" class="form-control" id="edit_quantity_<?php echo $fielddata['product_id']; ?>" name="edit_quantity" value="<?php echo $fielddata['quantity_available']; ?>">
-                            </div>
-                            <input type="hidden" name="edit_product_id" value="<?php echo $fielddata['product_id']; ?>">
-                            <button type="submit" name="edit_submit" class="btn btn-primary" id="sub">Save changes</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
+            <script>
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Product has been added successfully!',
+                    icon: 'success'
+                });
+            </script>
             <?php
+        } else {
+            echo $conn->error;
         }
-    } else {
-        echo "No records found";
     }
-    ?>
+
+}
+
+if (isset($_POST['sub'])) {
+  $productname = $_POST['product_name'];
+  $price = $_POST['price'];
+  $quantity = $_POST['quantity'];
+  $description = $_POST['description'];
+  $status = getProductStatus($quantity);
+
+$productsql = "SELECT * FROM product_table WHERE product_name = '$productname'";
+$product_result = $conn->query($productsql);
+
+if ($product_result->num_rows == 0) {
+      $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, status)
+                      VALUES ('$productname', '$description', '$price', '$quantity', '$status')";
+$result = $conn->query($insertsql);
+
+      if ($result === TRUE) {
+          ?>
+          <script>
+              Swal.fire({
+                  title: 'Success!',
+                  text: 'Product has been added successfully!',
+                  icon: 'success'
+              });
+          </script>
+          <?php
+      } else {
+          echo $conn->error;
+      }
+
+}
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($\_POST['edit_submit'])) {
+$editproduct_id = mysqli_real_escape_string($conn, $_POST['edit_product_id']);
+  $editproductname = mysqli_real_escape_string($conn, $_POST['edit_productname']);
+  $editdescription = mysqli_real_escape_string($conn, $_POST['edit_description']);
+  $editprice = mysqli_real_escape_string($conn, $_POST['edit_price']);
+  $editquantity = mysqli_real_escape_string($conn, $_POST['edit_quantity']);
+  $editstatus = getProductStatus($editquantity); // Determine status based on quantity
+
+$update_query = "UPDATE product_table SET product_name = '$editproductname', description = '$editdescription', price = '$editprice', quantity_available = '$editquantity', status = '$editstatus' WHERE product_id = '$editproduct_id'";
+  if (mysqli_query($conn, $update_query)) {
+      echo "<script>
+          Swal.fire({
+              title: 'Updated!',
+              text: 'Product information has been updated!',
+              icon: 'success'
+          });
+      </script>";
+  } else {
+      echo "Error updating record: " . mysqli_error($conn);
+}
+}
+
+$selectsql = "SELECT * FROM product_table";
+if (isset($\_POST['search']) && !empty($_POST['search'])) {
+    $searchinput = $_POST['search'];
+    $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'";
+}
+
+$result = $conn->query($selectsql);
+
+// Function to determine stock status
+function getStockStatus($quantity) {
+return $quantity < 5 ? '<i class="bi bi-exclamation-circle text-danger" title="Low Stock"></i>' : '';
+}
+
+function getProductStatus($quantity) {
+return $quantity > 0 ? 'Available' : 'Unavailable';
+}
+
+// Check if table is not empty
+if ($result->num_rows > 0) {
+  foreach ($result as $fielddata) {
+      ?>
+      <div class="fielddata-item">
+          <div class="fielddata-details">
+              <img src="<?php echo $fielddata['img']; ?>" alt="Product Image" style="width: 200px; height: 200px; object-fit: cover;">
+              <h2 class="fielddata-prodname"><?php echo $fielddata['product_name'] ?></h2>
+              <p class="fielddata-desc"><?php echo $fielddata['description'] ?></p>
+              <p class="fielddata-quantity">Quantity: <?php echo $fielddata['quantity_available'] ?> <?php echo getStockStatus($fielddata['quantity_available']); ?></p>
+<p class="<?php echo $fielddata['quantity_available'] > 0 ? 'available-status' : 'unavailable-status'; ?>">
+<?php echo getProductStatus($fielddata['quantity_available']); ?>
+</p>
+<button class="edit-button" data-bs-toggle="modal" data-bs-target="#editModal_<?php echo $fielddata['product_id']; ?>">Edit</button>
+</div>
+</div>
+
+      <?php
+
+}
+} else {
+echo "No records found";
+}
+?>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal_<?php echo $fielddata['product_id']; ?>" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="editModalLabel">Edit Product</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <form action="" method="post">
+                          <div class="mb-3">
+                              <label for="edit_productname" class="form-label">Product Name</label>
+                              <input type="text" class="form-control" id="edit_productname" name="edit_productname" value="<?php echo $fielddata['product_name']; ?>">
+                          </div>
+                          <div class="mb-3">
+                              <label for="edit_description" class="form-label">Description</label>
+                              <textarea class="form-control" id="edit_description" name="edit_description"><?php echo $fielddata['description']; ?></textarea>
+                          </div>
+                          <div class="mb-3">
+                              <label for="edit_price" class="form-label">Price</label>
+                              <input type="text" class="form-control" id="edit_price" name="edit_price" value="<?php echo $fielddata['price']; ?>">
+                          </div>
+                          <div class="mb-3">
+                              <label for="edit_quantity" class="form-label">Quantity</label>
+                              <input type="text" class="form-control" id="edit_quantity" name="edit_quantity" value="<?php echo $fielddata['quantity_available']; ?>">
+                          </div>
+                          <input type="hidden" name="edit_product_id" value="<?php echo $fielddata['product_id']; ?>">
+                          <button type="submit" name="edit_submit" class="btn btn-primary" id="sub">Save changes</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
 
 </div>
 
          </section>
+         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
 
          <script src='script.js'></script>
 
@@ -652,8 +735,6 @@ display.src = URL.createObjectURL(event.target.files[0]);
           </script>
 
   </main>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
 </body>
  

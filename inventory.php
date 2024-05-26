@@ -379,12 +379,24 @@ tbody td.active {
   background-color: pink;
 }
 
-.unavailable-status {
-  color: red;
-}
-
 .form-label {
   color: #333;
+}
+
+
+
+.fielddata-quantity .bi {
+    margin-left: 10px;
+}
+
+.available-status {
+    color: green;
+    font-weight: bold;
+}
+
+.unavailable-status {
+    color: red;
+    font-weight: bold;
 }
 
 </style>
@@ -486,7 +498,7 @@ tbody td.active {
             </div>
             <div class="modal-body">
                 <!-- Form Inside Modal -->
-                <form action="archives.php" method="post">
+                <form action="inventory.php" method="post">
                 <div class="mb-3">
                         <label for="product_name" class="form-label">Product name</label>
                         <input type="text" class="form-control" id="product_name" name="product_name" required>
@@ -535,7 +547,7 @@ if (isset($_POST['sub'])) {
     $price = $_POST['price'];
     $quantity = $_POST['quantity'];
     $description = $_POST['description'];
-    $status = "";
+    $status = getProductStatus($quantity);
 
     $productsql = "SELECT * FROM product_table WHERE product_name = '$productname'";
     $product_result = $conn->query($productsql);
@@ -568,7 +580,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
     $editdescription = mysqli_real_escape_string($conn, $_POST['edit_description']);
     $editprice = mysqli_real_escape_string($conn, $_POST['edit_price']);
     $editquantity = mysqli_real_escape_string($conn, $_POST['edit_quantity']);
-    $editstatus = mysqli_real_escape_string($conn, $_POST['edit_status']);
+    $editstatus = getProductStatus($editquantity);
 
     $update_query = "UPDATE product_table SET product_name = '$editproductname', description = '$editdescription', price = '$editprice', quantity_available = '$editquantity', status = '$editstatus' WHERE product_id = '$editproduct_id'";
     if (mysqli_query($conn, $update_query)) {
@@ -594,6 +606,14 @@ if (isset($_POST['search']) && $_POST['search'] != NULL) {
 
 $result = $conn->query($selectsql);
 
+// Function to determine stock status
+function getStockStatus($quantity) {
+  return $quantity < 5 ? '<i class="bi bi-exclamation-circle text-danger" title="Low Stock"></i>' : '';
+}
+
+function getProductStatus($quantity) {
+  return $quantity > 0 ? 'Available' : 'Unavailable';
+}
 
   // Check if table is not empty
 if ($result->num_rows > 0) {
@@ -620,12 +640,13 @@ if ($result->num_rows > 0) {
   echo "<tbody>";
 
        foreach ($result as $fielddata) {
+        $status_class = $fielddata['quantity_available'] > 0 ? 'available-status' : 'unavailable-status';
         echo "<tr>";
         echo "<td>" . $fielddata['product_id'] . "</td>";
         echo "<td>" . $fielddata['product_name'] . "</td>";
         echo "<td>" . $fielddata['price'] . "</td>";
-        echo "<td>" . $fielddata['quantity_available'] . "</td>";
-        echo "<td class='unavailable-status'>" . $fielddata['status'] . "</td>";
+        echo "<td class='fielddata-quantity'>" . $fielddata['quantity_available'] . " " . getStockStatus($fielddata['quantity_available']) . "</td>";
+        echo "<td class='$status_class'>" . getProductStatus($fielddata['quantity_available']) . "</td>";
         echo "<td>";
         echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['product_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['product_id'] . "'><i class='bi bi-pencil-square'></i></button>";
         echo "</td>";
