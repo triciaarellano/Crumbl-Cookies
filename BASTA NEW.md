@@ -1,3 +1,5 @@
+# BASTA NEW
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -329,62 +331,49 @@ body {
   </div>
  </div>
 
- 
-
   <form action="menu-products.php" method="post" class="search-input"></form>
 
   <div class="content-container">
         <div class="product-container anim" style="--delay: .3s">
 
-        <?php
+       <?php
+
 include "dbconnect.php";
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset($_POST['quantity']) && isset($_POST['total_amount']) && isset($_POST['payment_method'])) {
-    $productIds = $_POST['product_id'];
-    // $productPrices = $_POST['product_price'];
-    $quantities = $_POST['quantity'];
-    $totalAmount = $_POST['total_amount'];
-    $paymentMethod = $_POST['payment_method'];
-    $salesDate = date('Y-m-d');
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($\_POST['product_id']) && isset($_POST['product_price']) && isset($\_POST['quantity']) && isset($_POST['total_amount']) && isset($\_POST['payment_method'])) {
+$productIds = $\_POST['product_id'];
+$productPrices = $\_POST['product_price'];
+$quantities = $\_POST['quantity'];
+$totalAmount = $\_POST['total_amount'];
+$paymentMethod = $\_POST['payment_method'];
+$salesDate = date('Y-m-d');
 
-    // Start transaction
-    $conn->begin_transaction();
+    if (count($productIds) === count($productPrices) && count($productIds) === count($quantities)) {
+        $insertValues = [];
+        for ($i = 0; $i < count($productIds); $i++) {
+            $productId = $productIds[$i];
+            $productPrice = $productPrices[$i];
+            $quantity = $quantities[$i];
+            $insertValues[] = "('$productId', '$quantity', '$productPrice', '$paymentMethod', '$salesDate')";
+        }
 
-    try {
-        // Insert into sales table
-        // $salesSql = "INSERT INTO join_sales_table (total_amount, payment_method, sales_date) VALUES ('$totalAmount', '$paymentMethod', '$salesDate')";
-        // if ($conn->query($salesSql) === TRUE) {
-        //     // Get the last inserted sales_id
-        //     $salesId = $conn->insert_id;
-
-            // Insert into sales_details table
-            for ($i = 0; $i < count($productIds); $i++) {
-                $productId = $productIds[$i];
-                $quantity = $quantities[$i];
-
-                $detailsSql = "INSERT INTO join_sales_table (sales_id, product_id, quantity_sold, total_amount, payment_method, sales_date) VALUES ('$salesId', '$productId', '$quantity', '$totalAmount', '$paymentMethod', '$salesDate's)";
-                if ($conn->query($detailsSql) !== TRUE) {
-                    throw new Exception("Error: " . $detailsSql . "<br>" . $conn->error);
-                }
-            }
-
-            // Commit transaction
-            $conn->commit();
+        $insertSql = "INSERT INTO join_sales_table (product_id, quantity_sold, total_amount, payment_method, sales_date) VALUES " . implode(', ', $insertValues);
+        if ($conn->query($insertSql) === TRUE) {
             echo "Order placed successfully!";
-        // } else {
-        //     throw new Exception("Error: " . $salesSql . "<br>" . $conn->error);
-        // }
-    } catch (Exception $e) {
-        // Rollback transaction on error
-        $conn->rollback();
-        echo $e->getMessage();
+        } else {
+            echo "Error: " . $insertSql . "<br>" . $conn->error;
+        }
+    } else {
+        echo "Product IDs, prices, and quantities count mismatch!";
     }
+
+} else {
+// echo "Invalid request!"; // Commented out as per your original code
 }
 
 // Fetch product data
 $selectsql = "SELECT * FROM product_table";
-if (isset($_POST['search']) && !empty($_POST['search'])) {
+if (isset($\_POST['search']) && !empty($_POST['search'])) {
     $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
     $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'";
 }
@@ -432,10 +421,10 @@ $result = $conn->query($selectsql);
             </div>
         </div>
     </div>
+
 </form>
 
 </div> <!-- MAIN CONTAINER CLOSE -->
-
 
          </section>
 
@@ -513,8 +502,8 @@ $result = $conn->query($selectsql);
         totalPriceElement.textContent = `Total Price: PHP ${totalPrice.toFixed(2)}`;
         totalAmountInput.value = totalPrice.toFixed(2);
     }
-});
 
+});
 
           </script>
 

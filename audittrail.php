@@ -490,6 +490,7 @@ if (isset($_POST['sub'])) {
     $result = $conn->query($loginsql);
 
 
+
     //check if there is a matching record
     if ($result->num_rows == 1) {
         $fielddata = $result->fetch_assoc();
@@ -503,7 +504,7 @@ if (isset($_POST['sub'])) {
         $_SESSION['type'] = $user_type;
 
 
-        $logsql = "INSERT INTO join_logs_user  (user_id, action, DateTime) VALUES ($user_id, 'Logged IN', NOW())";
+        $logsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES ($user_id, 'Logged IN', NOW())";
         $conn->query($logsql);
     }
 }

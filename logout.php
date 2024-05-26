@@ -2,11 +2,11 @@
 require_once "dbconnect.php";
 session_start();
 
-            $log_id = $_SESSION['log_id'];
+            $user_id =$_SESSION['user_id'];
             $user_type = $_SESSION['role'];
             $username = $_SESSION['username'];
 
-            $logoutsql = "INSERT INTO join_logs_user (log_id, role, username, action, DateTime) VALUES ($log_id, $user_type, $username,'Logged OUT', NOW())";
+            $logoutsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES ($user_id,'Logged OUT', NOW())";
 
             $conn->query($logoutsql);
             echo $conn->error;
@@ -14,7 +14,6 @@ session_start();
     session_destroy();
 
 ?>
-
 
 
 
