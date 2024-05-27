@@ -10,49 +10,67 @@ if (isset($_POST['sub'])) {
     $username = $_POST['username'];
     $password = md5($_POST['password']);
 
-    // Select SQL
-    $loginsql = "SELECT * FROM user_table WHERE username = '".$username."' AND password = '".$password."'";
+    // Prepare the SQL statement to prevent SQL injection
+    $stmt = $conn->prepare("SELECT * FROM user_table WHERE username = ? AND password = ?");
+    $stmt->bind_param("ss", $username, $password);
 
-    // Convert login SQL string to query    
-    $loginresult = $conn->query($loginsql);
+    // Execute the statement
+    $stmt->execute();
+
+    // Get the result
+    $loginresult = $stmt->get_result();
 
     // Condition if valid login
     if ($loginresult && $loginresult->num_rows == 1) {
+        $user_data = $loginresult->fetch_assoc();
         $_SESSION['username'] = $username;
         
         // Insert login action into logs_table
-        $user_data = $loginresult->fetch_assoc();
         if (isset($user_data['user_id'])) {
             $user_id = $user_data['user_id'];
             $fullname = $user_data['full_name'];
-            $user_type = $user_data['role'];
+            $user_type = $user_data['role']; // Fetch user_type correctly
 
             $_SESSION['full_name'] = $fullname;
             $_SESSION['role'] = $user_type;
             $_SESSION['user_id'] = $user_id;
 
+            // Insert login action into logs_table
+            $logsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES (?, 'Logged IN', NOW())";
+            $logstmt = $conn->prepare($logsql);
+            $logstmt->bind_param("i", $user_id);
 
-            $logsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES ('$user_id', 'Logged IN', NOW())";
-            if (!$conn->query($logsql)) {
+            if (!$logstmt->execute()) {
                 echo "Error inserting log entry: " . $conn->error;
             }
+
+            // Redirect based on user role
+            if ($user_type == 'Employee') {
+                header("Location: employee-dashboard.php");
+            } elseif ($user_type == 'Cashier') {
+                header("Location: homepagecashier.php");
+            } elseif ($user_type == 'Admin') {
+                header("Location: dashboard.php");
+            } else {
+                echo "Unknown user role.";
+                exit;
+            }
+            exit;
         } else {
             echo "User ID not found.";
         }
-        
-        header("Location: dashboard.php");
-        exit;
     } else {
         echo "<script>
         Swal.fire({
             icon: 'error',
             title: 'Wrong username or password!',
-            text: 'hahahah mali',
+            text: 'Please try again.',
         });
-    </script>";
+        </script>";
     }
 }
 ?>
+
 
 <html lang="en">
 <head>
@@ -61,9 +79,9 @@ if (isset($_POST['sub'])) {
     <title>Log in</title>
    
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+   
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
 

@@ -204,8 +204,23 @@
 
             <div class="sub-block__contents">
                 <div class="product-number">
-                    <div class="number">5,403</div>
-                    <span class="item-text">pesos</span>
+                <?php 
+
+                  // Query to get the sum of total_amount from sales_table
+                  $sales_sum_query = "SELECT SUM(total_amount) AS total_sales FROM sales_table";
+                  $sales_query = mysqli_query($conn, $sales_sum_query);
+
+                  if ($sales_query) {
+                      // Fetch the result as an associative array
+                      $row = mysqli_fetch_assoc($sales_query);
+                      $total_sales = $row['total_sales'];
+
+                      echo "<div class='number'>" . $total_sales . "</div> <div class='item-text'>pesos</div>";
+                  } else {
+                      // Handle the error if the query fails
+                      echo "Error: " . mysqli_error($conn);
+                  }
+                  ?>
                   </div>
               </div>
 
@@ -279,12 +294,48 @@ $result = $conn->query($selectsql);
     </div>
 </div>
 
-        <div class="bottom-block anim" style="--delay: .7s">
-            <div class="bottom-block__title">Low Inventory Alert!</div>
-            <div class="bottom-block__contents">
+<div class="bottom-block anim" style="--delay: .7s">
+    <div class="bottom-block__title">Low Inventory Alert!</div>
+    <div class="bottom-block__contents">
+    <?php
+     include "dbconnect.php";
+    // SQL query to fetch low stock items
+    $low_stock_query = "SELECT product_name, quantity_available FROM product_table WHERE quantity_available < 5";
+    $low_stock_result = mysqli_query($conn, $low_stock_query);
 
-            </div>
-        </div>
+    // Check if the query was successful
+    if ($low_stock_result) {
+        // Check if there are any low stock items
+        if (mysqli_num_rows($low_stock_result) > 0) {
+            // Start the table
+            echo '<table border="1">
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity Available</th>
+                    </tr>';
+            
+            // Fetch each row and display in the table
+            while ($row = mysqli_fetch_assoc($low_stock_result)) {
+                echo '<tr>
+                        <td>' . htmlspecialchars($row['product_name']) . '</td>
+                        <td>' . htmlspecialchars($row['quantity_available']) . '</td>
+                      </tr>';
+            }
+
+            // End the table
+            echo '</table>';
+        } else {
+            // If no low stock items are found
+            echo '<p>No items are currently low in stock.</p>';
+        }
+    } else {
+        // Handle the error if the query fails
+        echo '<p>Error retrieving low stock items: ' . mysqli_error($conn) . '</p>';
+    }
+    ?>
+    </div>
+</div>
+
 
 </div>
 </form>
