@@ -5,13 +5,26 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Home page</title>
 		<style>
+			
+
 			body {
 				background-color: #ffc8cb;
 				overflow-y: hidden;
 				display: flex;
 				justify-content: center;
 				align-items: center;
+				height: 100vh;
+				margin: 0;
 			}
+
+		.content{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+			text-align: center;
+			flex-direction: column;
+		}
 			
 			.buttons {
 		display: flex;
@@ -20,9 +33,9 @@
 		justify-content: center; 
 		align-items: center; 
 		text-align: center;
-		border-radius: 50%;
-	
-	}
+		
+
+			}
 
 
 			.blob-btn, .btn-login, .btn-register {
@@ -41,7 +54,7 @@
 				transition: color 0.5s;
 				cursor: pointer;
 				border-radius: 30px;
-			}
+			} 
 			.blob-btn:before, .btn-login:before, .btn-register:before {
 				content: "";
 				z-index: 1;
@@ -99,6 +112,7 @@
 				transform: translate3d(0, 150%, 0) scale(1.7);
 				transition: transform 0.45s;
 			}
+
 			.blob-btn__blob:nth-child(1), .btn-login__blob:nth-child(1), .btn-register__blob:nth-child(1) {
 				left: 0%;
 				transition-delay: 0s;
@@ -305,28 +319,37 @@
 				<div class="loader__tile"></div>
 			</div>
 			<div class="content">
-				<button class="btn-login">
-					LOG IN
-					<span class="btn-login__inner">
-						<span class="btn-login__blobs">
-							<span class="btn-login__blob"></span>
-							<span class="btn-login__blob"></span>
-							<span class="btn-login__blob"></span>
-							<span class="btn-login__blob"></span>
-						</span>
-						<button class="btn-register">
-							REGISTER NOW
-							<span class="btn-register__inner">
-								<span class="btn-register__blobs">
-									<span class="btn-register__blob"></span>
-									<span class="btn-register__blob"></span>
-									<span class="btn-register__blob"></span>
-									<span class="btn-register__blob"></span>
-								</span>
+				<!-- Log In btn na nakalink sa login.php-->
+				<a href="login.php" class="btn-login-link">
+					<button class="btn-login">
+						LOG IN
+						<span class="btn-login__inner">
+							<span class="btn-login__blobs">
+								<span class="btn-login__blob"></span>
+								<span class="btn-login__blob"></span>
+								<span class="btn-login__blob"></span>
+								<span class="btn-login__blob"></span>
 							</span>
-						</button>
+						</span>
+					</button>
+				</a>
+				
+				<!--  btn-register na nakalink sa registration.php-->
+				<a href="registration.php" class="btn-register-link">
+					<button class="btn-register">
+						REGISTER NOW
+						<span class="btn-register__inner">
+							<span class="btn-register__blobs">
+								<span class="btn-register__blob"></span>
+								<span class="btn-register__blob"></span>
+								<span class="btn-register__blob"></span>
+								<span class="btn-register__blob"></span>
+							</span>
+						</span>
+					</button>
+				</a>
 			</div>
-		</div>
+			
 		<script>
 			var $loader = document.querySelector(".loader");
 			var $content = document.querySelector(".content");

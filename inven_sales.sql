@@ -41,7 +41,7 @@ SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
 /*!50001 CREATE VIEW `join_sales_table` AS SELECT 
  1 AS `sales_id`,
- 1 AS `product_id`,
+ 1 AS `transaction_id`,
  1 AS `quantity_sold`,
  1 AS `total_amount`,
  1 AS `payment_method`,
@@ -79,7 +79,7 @@ CREATE TABLE `logs_table` (
   PRIMARY KEY (`log_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,7 +88,7 @@ CREATE TABLE `logs_table` (
 
 LOCK TABLES `logs_table` WRITE;
 /*!40000 ALTER TABLE `logs_table` DISABLE KEYS */;
-INSERT INTO `logs_table` VALUES (1,77,'Logged IN','2024-05-13 00:00:00'),(2,91,'Logged IN','2024-05-13 00:00:00'),(3,91,'Logged IN','2024-05-13 00:00:00'),(4,90,'Logged IN','2024-05-13 00:00:00'),(5,91,'Logged IN','2024-05-13 00:00:00'),(6,77,'Logged IN','2024-05-13 14:18:09'),(7,91,'Logged IN','2024-05-13 14:24:52'),(8,77,'Logged IN','2024-05-13 14:27:19'),(9,77,'Logged IN','2024-05-13 14:29:49'),(10,90,'Logged IN','2024-05-13 14:36:56'),(11,77,'Logged IN','2024-05-13 14:39:49'),(12,90,'Logged IN','2024-05-13 14:45:05'),(13,90,'Logged IN','2024-05-13 15:01:02'),(14,77,'Logged IN','2024-05-13 16:40:51'),(15,90,'Logged IN','2024-05-13 16:42:15'),(16,77,'Logged IN','2024-05-13 18:16:56'),(17,90,'Logged IN','2024-05-13 18:17:06'),(18,84,'Logged IN','2024-05-13 18:23:15'),(19,77,'Logged IN','2024-05-13 18:52:38'),(20,91,'Logged IN','2024-05-13 22:31:03'),(21,77,'Logged IN','2024-05-13 22:36:16'),(22,90,'Logged IN','2024-05-13 22:40:20'),(23,77,'Logged IN','2024-05-13 22:41:36'),(24,91,'Logged IN','2024-05-17 13:24:12'),(25,91,'Logged OUT','2024-05-17 13:24:18'),(26,77,'Logged IN','2024-05-17 13:24:24'),(27,77,'Logged OUT','2024-05-17 13:24:42'),(28,91,'Logged IN','2024-05-17 13:24:52'),(29,91,'Logged OUT','2024-05-17 13:25:03'),(30,91,'Logged IN','2024-05-17 13:34:17'),(31,91,'Logged OUT','2024-05-17 13:34:32'),(32,90,'Logged IN','2024-05-17 17:15:43'),(33,92,'Logged IN','2024-05-17 18:10:56'),(34,92,'Logged OUT','2024-05-17 18:11:00'),(35,93,'Logged IN','2024-05-17 18:42:27'),(36,93,'Logged OUT','2024-05-17 18:42:34'),(37,94,'Logged IN','2024-05-17 18:45:34'),(38,94,'Logged OUT','2024-05-17 18:45:39'),(39,90,'Logged IN','2024-05-17 19:16:46'),(40,90,'Logged OUT','2024-05-17 19:16:58'),(41,76,'Logged IN','2024-05-17 19:26:02'),(42,76,'Logged IN','2024-05-17 19:26:29'),(43,76,'Logged IN','2024-05-17 19:26:50'),(44,76,'Logged IN','2024-05-17 19:27:03'),(45,76,'Logged IN','2024-05-17 19:27:12'),(46,76,'Logged OUT','2024-05-17 19:27:15'),(47,96,'Logged IN','2024-05-17 22:35:02'),(48,96,'Logged OUT','2024-05-17 22:35:28'),(49,96,'Logged IN','2024-05-17 22:44:50'),(50,96,'Logged OUT','2024-05-17 22:44:57'),(51,91,'Logged IN','2024-05-17 23:09:03'),(52,91,'Logged OUT','2024-05-17 23:09:05'),(53,90,'Logged IN','2024-05-17 23:10:34'),(54,90,'Logged OUT','2024-05-17 23:10:36'),(55,90,'Logged IN','2024-05-17 23:13:41'),(56,90,'Logged OUT','2024-05-17 23:13:42'),(57,91,'Logged IN','2024-05-17 23:13:58'),(58,91,'Logged OUT','2024-05-17 23:14:00'),(59,90,'Logged IN','2024-05-17 23:14:44'),(60,90,'Logged OUT','2024-05-17 23:14:45'),(61,90,'Logged IN','2024-05-17 23:18:32'),(62,90,'Logged OUT','2024-05-17 23:18:35'),(63,77,'Logged IN','2024-05-17 23:36:37'),(64,77,'Logged OUT','2024-05-17 23:36:39'),(65,93,'Logged IN','2024-05-17 23:36:54'),(66,93,'Logged OUT','2024-05-17 23:37:02'),(67,93,'Logged IN','2024-05-17 23:37:12'),(68,93,'Logged OUT','2024-05-17 23:44:22'),(69,97,'Logged IN','2024-05-17 23:48:16'),(70,97,'Logged OUT','2024-05-18 00:22:11'),(71,90,'Logged IN','2024-05-18 00:30:07'),(72,98,'Logged IN','2024-05-18 08:59:32'),(73,98,'Logged OUT','2024-05-18 21:06:40'),(74,90,'Logged IN','2024-05-18 21:06:48'),(75,90,'Logged OUT','2024-05-18 21:36:03'),(76,96,'Logged IN','2024-05-18 21:51:24'),(77,121,'Logged IN','2024-05-19 00:32:25'),(78,121,'Logged IN','2024-05-19 00:33:24'),(79,121,'Logged IN','2024-05-19 00:33:56'),(80,121,'Logged OUT','2024-05-19 00:34:09'),(81,121,'Logged IN','2024-05-19 01:21:00'),(82,108,'Logged IN','2024-05-19 14:01:59'),(83,108,'Logged OUT','2024-05-19 18:33:40'),(84,159,'Logged IN','2024-05-24 18:06:33'),(85,163,'Logged IN','2024-05-24 18:36:11'),(86,165,'Logged IN','2024-05-24 18:45:01'),(87,181,'Logged IN','2024-05-24 20:47:23'),(88,184,'Logged IN','2024-05-24 20:57:44'),(89,186,'Logged IN','2024-05-24 21:03:52'),(90,187,'Logged IN','2024-05-24 21:16:23'),(91,189,'Logged IN','2024-05-24 21:30:07'),(92,190,'Logged IN','2024-05-24 21:31:16'),(93,190,'Logged IN','2024-05-24 21:31:21'),(94,184,'Logged IN','2024-05-25 03:17:49'),(95,184,'Logged OUT','2024-05-25 03:20:01'),(96,184,'Logged IN','2024-05-25 03:20:10'),(97,184,'Logged OUT','2024-05-25 16:50:49'),(98,97,'Logged IN','2024-05-25 16:51:30'),(99,184,'Logged IN','2024-05-26 00:35:05');
+INSERT INTO `logs_table` VALUES (1,77,'Logged IN','2024-05-13 00:00:00'),(2,91,'Logged IN','2024-05-13 00:00:00'),(3,91,'Logged IN','2024-05-13 00:00:00'),(4,90,'Logged IN','2024-05-13 00:00:00'),(5,91,'Logged IN','2024-05-13 00:00:00'),(6,77,'Logged IN','2024-05-13 14:18:09'),(7,91,'Logged IN','2024-05-13 14:24:52'),(8,77,'Logged IN','2024-05-13 14:27:19'),(9,77,'Logged IN','2024-05-13 14:29:49'),(10,90,'Logged IN','2024-05-13 14:36:56'),(11,77,'Logged IN','2024-05-13 14:39:49'),(12,90,'Logged IN','2024-05-13 14:45:05'),(13,90,'Logged IN','2024-05-13 15:01:02'),(14,77,'Logged IN','2024-05-13 16:40:51'),(15,90,'Logged IN','2024-05-13 16:42:15'),(16,77,'Logged IN','2024-05-13 18:16:56'),(17,90,'Logged IN','2024-05-13 18:17:06'),(18,84,'Logged IN','2024-05-13 18:23:15'),(19,77,'Logged IN','2024-05-13 18:52:38'),(20,91,'Logged IN','2024-05-13 22:31:03'),(21,77,'Logged IN','2024-05-13 22:36:16'),(22,90,'Logged IN','2024-05-13 22:40:20'),(23,77,'Logged IN','2024-05-13 22:41:36'),(24,91,'Logged IN','2024-05-17 13:24:12'),(25,91,'Logged OUT','2024-05-17 13:24:18'),(26,77,'Logged IN','2024-05-17 13:24:24'),(27,77,'Logged OUT','2024-05-17 13:24:42'),(28,91,'Logged IN','2024-05-17 13:24:52'),(29,91,'Logged OUT','2024-05-17 13:25:03'),(30,91,'Logged IN','2024-05-17 13:34:17'),(31,91,'Logged OUT','2024-05-17 13:34:32'),(32,90,'Logged IN','2024-05-17 17:15:43'),(33,92,'Logged IN','2024-05-17 18:10:56'),(34,92,'Logged OUT','2024-05-17 18:11:00'),(35,93,'Logged IN','2024-05-17 18:42:27'),(36,93,'Logged OUT','2024-05-17 18:42:34'),(37,94,'Logged IN','2024-05-17 18:45:34'),(38,94,'Logged OUT','2024-05-17 18:45:39'),(39,90,'Logged IN','2024-05-17 19:16:46'),(40,90,'Logged OUT','2024-05-17 19:16:58'),(41,76,'Logged IN','2024-05-17 19:26:02'),(42,76,'Logged IN','2024-05-17 19:26:29'),(43,76,'Logged IN','2024-05-17 19:26:50'),(44,76,'Logged IN','2024-05-17 19:27:03'),(45,76,'Logged IN','2024-05-17 19:27:12'),(46,76,'Logged OUT','2024-05-17 19:27:15'),(47,96,'Logged IN','2024-05-17 22:35:02'),(48,96,'Logged OUT','2024-05-17 22:35:28'),(49,96,'Logged IN','2024-05-17 22:44:50'),(50,96,'Logged OUT','2024-05-17 22:44:57'),(51,91,'Logged IN','2024-05-17 23:09:03'),(52,91,'Logged OUT','2024-05-17 23:09:05'),(53,90,'Logged IN','2024-05-17 23:10:34'),(54,90,'Logged OUT','2024-05-17 23:10:36'),(55,90,'Logged IN','2024-05-17 23:13:41'),(56,90,'Logged OUT','2024-05-17 23:13:42'),(57,91,'Logged IN','2024-05-17 23:13:58'),(58,91,'Logged OUT','2024-05-17 23:14:00'),(59,90,'Logged IN','2024-05-17 23:14:44'),(60,90,'Logged OUT','2024-05-17 23:14:45'),(61,90,'Logged IN','2024-05-17 23:18:32'),(62,90,'Logged OUT','2024-05-17 23:18:35'),(63,77,'Logged IN','2024-05-17 23:36:37'),(64,77,'Logged OUT','2024-05-17 23:36:39'),(65,93,'Logged IN','2024-05-17 23:36:54'),(66,93,'Logged OUT','2024-05-17 23:37:02'),(67,93,'Logged IN','2024-05-17 23:37:12'),(68,93,'Logged OUT','2024-05-17 23:44:22'),(69,97,'Logged IN','2024-05-17 23:48:16'),(70,97,'Logged OUT','2024-05-18 00:22:11'),(71,90,'Logged IN','2024-05-18 00:30:07'),(72,98,'Logged IN','2024-05-18 08:59:32'),(73,98,'Logged OUT','2024-05-18 21:06:40'),(74,90,'Logged IN','2024-05-18 21:06:48'),(75,90,'Logged OUT','2024-05-18 21:36:03'),(76,96,'Logged IN','2024-05-18 21:51:24'),(77,121,'Logged IN','2024-05-19 00:32:25'),(78,121,'Logged IN','2024-05-19 00:33:24'),(79,121,'Logged IN','2024-05-19 00:33:56'),(80,121,'Logged OUT','2024-05-19 00:34:09'),(81,121,'Logged IN','2024-05-19 01:21:00'),(82,108,'Logged IN','2024-05-19 14:01:59'),(83,108,'Logged OUT','2024-05-19 18:33:40'),(84,159,'Logged IN','2024-05-24 18:06:33'),(85,163,'Logged IN','2024-05-24 18:36:11'),(86,165,'Logged IN','2024-05-24 18:45:01'),(87,181,'Logged IN','2024-05-24 20:47:23'),(88,184,'Logged IN','2024-05-24 20:57:44'),(89,186,'Logged IN','2024-05-24 21:03:52'),(90,187,'Logged IN','2024-05-24 21:16:23'),(91,189,'Logged IN','2024-05-24 21:30:07'),(92,190,'Logged IN','2024-05-24 21:31:16'),(93,190,'Logged IN','2024-05-24 21:31:21'),(94,184,'Logged IN','2024-05-25 03:17:49'),(95,184,'Logged OUT','2024-05-25 03:20:01'),(96,184,'Logged IN','2024-05-25 03:20:10'),(97,184,'Logged OUT','2024-05-25 16:50:49'),(98,97,'Logged IN','2024-05-25 16:51:30'),(99,184,'Logged IN','2024-05-26 00:35:05'),(100,184,'Logged IN','2024-05-26 21:56:34'),(101,184,'Logged OUT','2024-05-26 21:59:38'),(102,184,'Logged IN','2024-05-26 21:59:54'),(103,184,'Logged IN','2024-05-27 00:48:37'),(104,184,'Logged OUT','2024-05-27 00:49:06'),(105,184,'Logged IN','2024-05-27 00:49:33');
 /*!40000 ALTER TABLE `logs_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ CREATE TABLE `product_table` (
   `img` varchar(45) DEFAULT NULL,
   `status` enum('Available','Unavailable') DEFAULT NULL,
   PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,7 +117,7 @@ CREATE TABLE `product_table` (
 
 LOCK TABLES `product_table` WRITE;
 /*!40000 ALTER TABLE `product_table` DISABLE KEYS */;
-INSERT INTO `product_table` VALUES (25,'Choco Cookie','chocolate',120,8,'uploads/1.png','Available'),(27,'Pillow cookie','cravings',130,0,'uploads/2.png','Unavailable'),(28,'Cookie Dough','FAVEEEEE',150,0,'uploads/4.png','Unavailable'),(30,'Pink chookies','cute',120,43,'uploads/21.png','Available'),(31,'Pink M&Ms','prettyyy',120,43,'uploads/21.png','Available'),(32,'Rainbow Sparks','funfetti',140,0,'uploads/10.png','Unavailable'),(33,'Chocolate Sprinkles','chocolateee',100,23,'uploads/3.png',''),(34,'pillows','pillow',120,3,'uploads/2.png',''),(35,'pillows','pillow',120,7,'uploads/2.png',''),(36,'pillows','pillow',120,7,'uploads/2.png',''),(37,'Choco Crinkles','crinkleees',100,24,'uploads/22.png',NULL),(38,'Choco Crinkles','crinkles',102,22,'uploads/22.png',NULL),(39,'Lemon Cookie','asim',110,21,'uploads/12.png',NULL),(40,'Lemon Cookie','asim',110,21,'uploads/12.png',NULL),(41,'Blueberry Cookie','berriesss',165,12,'uploads/16.png',NULL),(42,'Blueberry Cookie','berriesss',165,12,'uploads/16.png',NULL),(43,'M&M Cookie','gumana ka',125,15,'uploads/15.png',NULL),(44,'asdads','asdasd',127,6,'uploads/crumbl-otp.jpg',NULL),(45,'almonds','sadada',130,12312,'uploads/9.png',NULL),(46,'234323','dfsf',0,213,'uploads/crumbl-bg.jpg',NULL),(47,'weqw','qwewqw',0,0,'uploads/3.png',NULL),(48,'qweqw','qewe',0,0,'uploads/10.png',NULL),(49,'qeqe','qeqew',0,0,'uploads/22.png',NULL),(50,'re','re',0,0,'uploads/25.png',NULL),(51,'asd','asd',0,0,'uploads/23.png',NULL),(52,'2312','1231',321,322,'uploads/22.png',NULL),(53,'534','45',345,435,'uploads/12.png',NULL),(54,'booberies','booo',232,123,'uploads/16.png',NULL),(55,'amonds','amooo',122,232,'uploads/9.png',NULL),(56,'mnms','mnm',102,0,'uploads/15.png','Unavailable'),(57,'icing cookie','ice',122,323,'uploads/14.png',NULL),(58,'Vanilla Cookie','banilalalla',134,32,'uploads/19.png',NULL),(59,'lime cookie','limeee',123,123,'uploads/23.png',NULL),(60,'brownieeeee','brown',232,232,'uploads/26.png','Available'),(61,'strawberry frosting','comkie',123,321,'uploads/27.png',NULL),(62,'leche','flan',123,32,'uploads/24.png',NULL);
+INSERT INTO `product_table` VALUES (25,'Choco Cookie','chocolate',120,5,'uploads/1.png','Available'),(27,'Pillow cookie','cravings',130,0,'uploads/2.png','Unavailable'),(28,'Cookie Dough','FAVEEEEE',150,0,'uploads/4.png','Unavailable'),(30,'Pink chookies','cute',120,43,'uploads/21.png','Available'),(31,'Pink M&Ms','prettyyy',120,41,'uploads/21.png','Available'),(32,'Rainbow Sparks','funfetti',140,0,'uploads/10.png','Unavailable'),(33,'Chocolate','chocolateee',100,23,'uploads/3.png','Available'),(34,'pillows','pillow',120,3,'uploads/2.png',''),(35,'pillows','pillow',120,7,'uploads/2.png',''),(36,'pillows','pillow',120,6,'uploads/2.png','Available'),(37,'Choco Crinkles','crinkleees',100,22,'uploads/22.png','Available'),(38,'Choco Crinkles','crinkles',102,22,'uploads/22.png',NULL),(39,'Lemon Cookie','asim',110,21,'uploads/12.png',NULL),(40,'Lemon Cookie','asim',110,20,'uploads/12.png','Available'),(41,'Blueberi','berriesss',165,10,'uploads/16.png','Available'),(42,'Blueberryy','berriesss',165,12,'uploads/16.png','Available'),(43,'M&M Cookie','gumana ka',125,15,'uploads/15.png',NULL),(44,'asdads','asdasd',127,6,'uploads/crumbl-otp.jpg',NULL),(45,'almonds','sadada',130,12312,'uploads/9.png',NULL),(46,'234323','dfsf',0,213,'uploads/crumbl-bg.jpg',NULL),(47,'weqw','qwewqw',0,0,'uploads/3.png',NULL),(48,'qweqw','qewe',0,0,'uploads/10.png',NULL),(49,'qeqe','qeqew',0,0,'uploads/22.png',NULL),(50,'re','re',0,0,'uploads/25.png',NULL),(51,'asd','asd',0,0,'uploads/23.png',NULL),(52,'2312','1231',321,322,'uploads/22.png',NULL),(53,'534','45',345,435,'uploads/12.png',NULL),(54,'booberies','booo',232,123,'uploads/16.png',NULL),(55,'amonds','amooo',122,232,'uploads/9.png',NULL),(56,'mnms','mnm',102,0,'uploads/15.png','Unavailable'),(57,'icing cookie','ice',122,323,'uploads/14.png',NULL),(58,'Vanilla Cookie','banilalalla',134,32,'uploads/19.png',NULL),(59,'lime cookie','limeee',123,123,'uploads/23.png',NULL),(60,'brownieeeee','brown',232,232,'uploads/26.png','Available'),(61,'strawberry','comkie',123,321,'uploads/27.png','Available'),(62,'leche','flan',123,32,'uploads/24.png',NULL),(63,'oreo','rere',122,321,'uploads/25.png',NULL);
 /*!40000 ALTER TABLE `product_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +129,7 @@ DROP TABLE IF EXISTS `sales_table`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sales_table` (
-  `sales_id` int(11) NOT NULL,
+  `sales_id` int(11) NOT NULL AUTO_INCREMENT,
   `transaction_id` int(11) DEFAULT NULL,
   `total_amount` double DEFAULT NULL,
   `payment_method` varchar(45) DEFAULT NULL,
@@ -137,7 +137,7 @@ CREATE TABLE `sales_table` (
   PRIMARY KEY (`sales_id`),
   KEY `transaction_id` (`transaction_id`),
   CONSTRAINT `transaction_id` FOREIGN KEY (`transaction_id`) REFERENCES `transaction_table` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -146,7 +146,7 @@ CREATE TABLE `sales_table` (
 
 LOCK TABLES `sales_table` WRITE;
 /*!40000 ALTER TABLE `sales_table` DISABLE KEYS */;
-INSERT INTO `sales_table` VALUES (1,2,NULL,'cash','05-25-2024');
+INSERT INTO `sales_table` VALUES (1,2,NULL,'cash','05-25-2024'),(4,NULL,270,'cash','2024-05-26'),(8,NULL,202,'cash','2024-05-26'),(9,NULL,240,'cash','2024-05-26'),(10,NULL,210,'cash','2024-05-26'),(11,NULL,250,'cash','2024-05-26'),(13,NULL,210,'cash','2024-05-26'),(14,NULL,270,'cash','2024-05-26'),(15,NULL,102,'cash','2024-05-26'),(16,NULL,300,'cash','2024-05-26'),(18,NULL,285,'cash','2024-05-26'),(21,NULL,120,'cash','2024-05-26'),(22,NULL,130,'cash','2024-05-26'),(23,NULL,120,'cash','2024-05-26'),(24,NULL,165,'cash','2024-05-26'),(25,NULL,120,'cash','2024-05-26'),(26,NULL,100,'cash','2024-05-26'),(27,NULL,120,'cash','2024-05-26'),(28,NULL,110,'cash','2024-05-26'),(29,NULL,120,'cash','2024-05-27 03:28:01'),(30,NULL,120,'cash','2024-05-27 03:28:01'),(31,NULL,120,'cash','2024-05-27 03:30:33'),(32,NULL,120,'cash','2024-05-27 03:30:33'),(33,NULL,285,'cash','2024-05-27 03:38:54'),(34,NULL,285,'cash','2024-05-27 03:38:54'),(38,NULL,220,'cash','2024-05-27 11:29:35'),(39,NULL,220,'cash','2024-05-27 11:29:35');
 /*!40000 ALTER TABLE `sales_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -158,14 +158,14 @@ DROP TABLE IF EXISTS `transaction_table`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `transaction_table` (
-  `transaction_id` int(11) NOT NULL,
+  `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) DEFAULT NULL,
   `quantity_sold` int(11) DEFAULT NULL,
   `transaction_date` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `product_id` (`product_id`),
   CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product_table` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2147483648 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +174,7 @@ CREATE TABLE `transaction_table` (
 
 LOCK TABLES `transaction_table` WRITE;
 /*!40000 ALTER TABLE `transaction_table` DISABLE KEYS */;
-INSERT INTO `transaction_table` VALUES (1,NULL,2,'05-09-2024'),(2,25,4,'05-25-2024');
+INSERT INTO `transaction_table` VALUES (1,27,2,'05-09-2024'),(2,25,4,'05-25-2024'),(3,28,1,NULL),(4,34,1,NULL),(5,33,1,'2024-05-26'),(6,38,1,'2024-05-26'),(7,30,1,'2024-05-26'),(8,35,1,'2024-05-26'),(9,39,1,'2024-05-26'),(10,37,1,'2024-05-26'),(11,25,1,'2024-05-26'),(12,27,1,'2024-05-26'),(13,33,1,NULL),(14,39,1,NULL),(15,28,1,'2024-05-26'),(16,35,1,'2024-05-26'),(17,38,1,'2024-05-26'),(18,33,3,'2024-05-26'),(19,25,1,NULL),(20,41,1,NULL),(21,25,1,'2024-05-26'),(22,27,1,'2024-05-26'),(23,25,1,'2024-05-26'),(24,42,1,'2024-05-26'),(25,25,1,'2024-05-26'),(26,37,1,NULL),(27,25,1,NULL),(28,40,1,'2024-05-27 03:19:32'),(29,31,1,'2024-05-27 03:28:01'),(30,36,1,'2024-05-27 03:30:33'),(31,25,1,'2024-05-27 03:38:54'),(32,41,1,'2024-05-27 03:38:54'),(33,37,1,'2024-05-27 11:29:35'),(34,31,1,'2024-05-27 11:29:35');
 /*!40000 ALTER TABLE `transaction_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +239,7 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `join_sales_table` AS select `s`.`sales_id` AS `sales_id`,`t`.`product_id` AS `product_id`,`t`.`quantity_sold` AS `quantity_sold`,`s`.`total_amount` AS `total_amount`,`s`.`payment_method` AS `payment_method`,`s`.`sales_date` AS `sales_date` from (`sales_table` `s` join `transaction_table` `t` on(`s`.`transaction_id` = `t`.`transaction_id`)) */;
+/*!50001 VIEW `join_sales_table` AS select `s`.`sales_id` AS `sales_id`,`t`.`transaction_id` AS `transaction_id`,`t`.`quantity_sold` AS `quantity_sold`,`s`.`total_amount` AS `total_amount`,`s`.`payment_method` AS `payment_method`,`s`.`sales_date` AS `sales_date` from (`sales_table` `s` join `transaction_table` `t` on(`s`.`transaction_id` = `t`.`transaction_id`)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -271,4 +271,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-26  2:18:32
+-- Dump completed on 2024-05-27 13:39:21

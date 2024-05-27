@@ -510,6 +510,9 @@ if ($result->num_rows > 0) {
   echo "<th>Product ID<span class='icon-arrow'>&UpArrow;</span></th>";
   echo "<th>Price <span class='icon-arrow'>&UpArrow;</span></th>";
   echo "<th>Quantity <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Reference Number</th>";
+  echo "<th>Receipt Number</th>";
+  echo "<th>Status <span class='icon-arrow'>&UpArrow;</span></th>";
   echo "<th>Transaction Date</th>";
   echo "</tr>";
   echo "</thead>";
@@ -521,7 +524,10 @@ if ($result->num_rows > 0) {
         echo "<td>" . $fielddata['product_id'] . "</td>";
         echo "<td>" . $fielddata['price'] . "</td>";
         echo "<td>" . $fielddata['quantity_sold'] . "</td>";
-        echo "<td>" . $fielddata['transaction_date'] . "</td>";
+        echo "<td>" . $fielddata['reference_number'] . "</td>";
+        echo "<td>" . $fielddata['receipt_number'] . "</td>";
+        echo "<td>" . $fielddata['status'] . "</td>";
+        echo "<td>" . date('Y-m-d g:i A', strtotime($fielddata['transaction_date'])) . "</td>";
         echo "</tr>";
 
         }

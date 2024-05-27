@@ -1,3 +1,105 @@
+<?php
+include "dbconnect.php";
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset($_POST['quantity']) && isset($_POST['payment_method'])) {
+    $productIds = $_POST['product_id'];
+    $quantities = $_POST['quantity'];
+    $paymentMethod = mysqli_real_escape_string($conn, $_POST['payment_method']);
+    $salesDate = date('Y-m-d H:i:s');
+    $totalAmount = 0;
+    $totalQuantity = 0;
+
+    // Start transaction
+    $conn->begin_transaction();
+
+    try {
+        // Calculate the total amount and update inventory
+        foreach ($productIds as $index => $productId) {
+            $productId = mysqli_real_escape_string($conn, $productId);
+            $quantity = (int) $quantities[$index];
+
+            // Fetch the product price and quantity available from the database
+            $productSql = "SELECT price, quantity_available FROM product_table WHERE product_id = '$productId'";
+            $productResult = $conn->query($productSql);
+
+            if ($productResult->num_rows > 0) {
+                $productRow = $productResult->fetch_assoc();
+                $price = $productRow['price'];
+                $quantityAvailable = $productRow['quantity_available'];
+
+                if ($quantity > $quantityAvailable) {
+                    throw new Exception("Insufficient stock for product ID: $productId");
+                }
+
+                $totalAmount += $price * $quantity;
+                $totalQuantity += $quantity;
+
+                // Update the product quantity
+                $newQuantityAvailable = $quantityAvailable - $quantity;
+                $status = ($newQuantityAvailable > 0) ? 'Available' : 'Unavailable';
+                $updateProductSql = "UPDATE product_table SET quantity_available = '$newQuantityAvailable', status = '$status' WHERE product_id = '$productId'";
+                if ($conn->query($updateProductSql) !== TRUE) {
+                    throw new Exception("Error updating product inventory: " . $conn->error);
+                }
+            } else {
+                throw new Exception("Error fetching product details for product ID: $productId");
+            }
+        }
+
+        // Insert into transaction_table first to generate the transaction_id
+        $detailsSql = "INSERT INTO transaction_table (product_id, quantity_sold, transaction_date, status) VALUES ";
+        $values = [];
+        foreach ($productIds as $index => $productId) {
+            $productId = mysqli_real_escape_string($conn, $productId);
+            $quantity = (int) $quantities[$index];
+            $status = ($paymentMethod === 'cash') ? 'paid' : 'pending';
+            $values[] = "('$productId', '$quantity', '$salesDate', '$status')";
+        }
+        $detailsSql .= implode(", ", $values);
+        if ($conn->query($detailsSql) !== TRUE) {
+            throw new Exception("Error inserting transaction details: " . $conn->error);
+        }
+
+        // Get the generated transaction_id
+        $transactionId = $conn->insert_id;
+
+        // Handle payment method and redirect
+        if ($paymentMethod === 'cash') {
+            // Insert into sales_table using the generated transaction_id
+            $salesSql = "INSERT INTO sales_table (transaction_id, total_amount, payment_method, sales_date) VALUES ('$transactionId', '$totalAmount', '$paymentMethod', '$salesDate')";
+            if ($conn->query($salesSql) === TRUE) {
+                // Commit transaction
+                $conn->commit();
+                header("Location: order-successful.php?transaction_id=$transactionId");
+                exit;
+            } else {
+                throw new Exception("Error inserting sales record: " . $conn->error);
+            }
+        } else if ($paymentMethod === 'gcash') {
+            // Commit transaction
+            $conn->commit();
+            // Redirect to payment-gcash.php
+            header("Location: payment-gcash.php?transaction_id=$transactionId");
+            exit;
+        }
+    } catch (Exception $e) {
+        // Rollback transaction on error
+        $conn->rollback();
+        echo $e->getMessage();
+    }
+}
+
+// Fetch product data, excluding products with zero quantity
+$selectsql = "SELECT * FROM product_table WHERE quantity_available > 0";
+if (isset($_POST['search']) && !empty($_POST['search'])) {
+    $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
+    $selectsql = "SELECT * FROM product_table WHERE (product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%') AND quantity_available > 0";
+}
+
+$result = $conn->query($selectsql);
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -32,95 +134,23 @@ body {
 	 padding: 30px;
 }
 
-.user-settings-container {
-      display: flex;
-	  position: relative;
-	  left: 89%;
-    }
-
-    .user-settings {
-      position: relative;
-      display: flex;
-      align-items: center;
-      margin-left: 20px;
-      cursor: pointer;
-    }
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: white;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 9999;
-    }
-
-    .dropdown-menu a {
-      display: block;
-      padding: 8px 16px;
-      color: black;
-      text-decoration: none;
-    }
-
-    .dropdown-menu a:hover {
-      background-color: #f1f1f1;
-    }
-
-    .notify {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .notification {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 8px;
-      height: 8px;
-      background-color: red;
-      border-radius: 50%;
-    }
-
  .anim {
 	 animation: bottom 0.8s var(--delay) both;
 }
 
- .main-header {
-	 font-size: 30px;
-	 color: #333;
-	 font-weight: 700;
-	 padding-bottom: 20px;
-	 position: absolute;
-	 top: 5%;
-	 left: 17%;
-	 background: linear-gradient(
-		to bottom,
-		#f6f7fb 0%, 
-		#f6f7fb 78%, 
-		rgb(31 29 43 / 0%) 100%
-		);
+/* -- CART CONTAINER -- */
 
-	 z-index: 11;
-}
-
-
-/* -- TABLE -- */
-
-
-/* Add this CSS */
 .content-container {
   display: flex;
-  justify-content: space-between; /* Adjusts spacing between elements */
-  height: 100%; /* Ensures the container takes full height of its parent */
+  justify-content: space-between; 
+  height: 100%; 
+  overflow-y: hidden;
 }
 
 .product-container {
     display: flex;
     flex-wrap: wrap;
-    flex: 3; /* Adjust the flex value as needed */
+    flex: 3; 
     gap: 20px;
     margin-top: 20px;
     padding-top: 10px;
@@ -136,35 +166,42 @@ body {
 }
 
 .cart-container {
-    flex: 1; 
-    background-color: transparent; 
-    overflow-y: auto;
+    flex: 1;
+    margin-top: -40px;
+    margin-right: 40px;
+    background-color: transparent;
+    overflow-y: hidden;
     height: 100vh;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease; 
 }
 
 .order-summary {
-    height: 60vh;
+    height: 50vh;
     background-color: white;
-    padding: 20px 20px;
-    border-bottom: 1px solid #34495e;
-    overflow-y: auto; 
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding: 20px;
+    overflow-y: auto;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .payment-info {
-    height: 40vh;
-    background-color: #ddd;
-    padding: 20px 20px;
+    height: 42vh;
+    background-color: white;
+    padding: 20px;
     border-radius: 20px;
-    border-bottom: 1px solid #34495e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .cart-title {
     font-size: 24px;
     color: #333;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #34495e;
 }
 
 .cart-item {
@@ -172,19 +209,28 @@ body {
     align-items: center;
     margin: 10px 0;
     padding: 10px;
+    background-color: whitesmoke;
     border-radius: 8px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateX(100%); 
+    opacity: 0; 
+}
+
+.cart-item-show {
+    transform: translateX(0); 
+    opacity: 1; 
 }
 
 .cart-img {
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     object-fit: cover;
     margin-right: 20px;
     border-radius: 8px;
 }
 
 .cart-details {
-    flex-grow: 1; 
+    flex-grow: 1;
 }
 
 .cart-prodname {
@@ -212,6 +258,39 @@ body {
     align-items: center;
 }
 
+.quantity-controls button {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease; 
+}
+
+.quantity-controls button:hover {
+    color: #fff; 
+    transform: translateY(-2px);
+}
+
+.quantity-controls button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    border-radius: 5px;
+    transition: opacity 0.3s ease; 
+    opacity: 0; 
+    z-index: -1;
+}
+
+.quantity-controls button:hover::before {
+    opacity: 1;
+}
+
+
 .remove-btn {
     background: transparent;
     color: red;
@@ -219,17 +298,53 @@ body {
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.payment-method select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: whitesmoke; 
+    color: #333;
+    appearance: none; 
+    outline: none; 
+    transition: background-color 0.3s ease; 
+}
+
+.payment-method select:hover {
+    background-color: whitesmoke; 
+}
+
+.payment-method select:focus {
+    background-color: rgba(255, 255, 255, 0.4); 
+}
+
+.payment-method select::after {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none; 
+}
+
+.payment-method-text {
+    margin-top: 70px;
 }
 
 .remove-btn:hover {
-    background: transparent;
-    color: darkred;
+    background: transparent; 
+    color: darkred; 
 }
 
 .total-price {
     font-size: 18px;
     font-weight: bold;
     color: #333;
+    margin-top: 35px;
 }
 
 .place-order-btn {
@@ -241,11 +356,14 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 20px;
+    width: 100%;
 }
 
 .place-order-btn:hover {
-    transform: translateY(-1px);
-	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
 }
 
 
@@ -256,7 +374,7 @@ body {
 	background-color: #ffffff;
 	border: 1px solid #ddd;
 	border-radius: 10px;
-	width: calc(20% - 30px); /* 4 items per row with 20px gap */
+	width: calc(20% - 30px); /* 5 items per row with 20px gap */
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -336,95 +454,7 @@ body {
   <div class="content-container">
         <div class="product-container anim" style="--delay: .3s">
 
-       <?php
-include "dbconnect.php";
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset($_POST['quantity']) && isset($_POST['payment_method'])) {
-    $productIds = $_POST['product_id'];
-    $quantities = $_POST['quantity'];
-    $paymentMethod = $_POST['payment_method'];
-    $salesDate = date('Y-m-d');
-    $totalAmount = 0;
-
-    // Start transaction
-    $conn->begin_transaction();
-
-    try {
-        // Calculate the total amount and update inventory
-        for ($i = 0; $i < count($productIds); $i++) {
-            $productId = $productIds[$i];
-            $quantity = $quantities[$i];
-
-            // Fetch the product price and quantity available from the database
-            $productSql = "SELECT price, quantity_available FROM product_table WHERE product_id = '$productId'";
-            $productResult = $conn->query($productSql);
-            if ($productResult->num_rows > 0) {
-                $productRow = $productResult->fetch_assoc();
-                $price = $productRow['price'];
-                $quantityAvailable = $productRow['quantity_available'];
-
-                if ($quantity > $quantityAvailable) {
-                    throw new Exception("Insufficient stock for product ID: $productId");
-                }
-
-                $totalAmount += $price * $quantity;
-
-                // Update the product quantity
-                $newQuantityAvailable = $quantityAvailable - $quantity;
-                $status = ($newQuantityAvailable > 0) ? 'available' : 'unavailable';
-                $updateProductSql = "UPDATE product_table SET quantity_available = '$newQuantityAvailable', status = '$status' WHERE product_id = '$productId'";
-                if ($conn->query($updateProductSql) !== TRUE) {
-                    throw new Exception("Error updating product inventory: " . $conn->error);
-                }
-            } else {
-                throw new Exception("Error fetching product details for product ID: $productId");
-            }
-        }
-
-        // Insert into sales_table
-        $salesSql = "INSERT INTO sales_table (total_amount, payment_method, sales_date) VALUES ('$totalAmount', '$paymentMethod', NOW())";
-
-        
-        if ($conn->query($salesSql) === TRUE) {
-            // Get the last inserted sales_id
-            $salesId = $conn->insert_id;
-
-            $insertResult = $conn->query($salesSql);
-            
-            // Insert into transaction_table
-            for ($i = 0; $i < count($productIds); $i++) {
-                $productId = $productIds[$i];
-                $quantity = $quantities[$i];
-
-                $detailsSql = "INSERT INTO transaction_table (product_id, quantity_sold, transaction_date) VALUES ('$productId', '$quantity',  NOW())";
-                if ($conn->query($detailsSql) !== TRUE) {
-                    throw new Exception("Error inserting transaction details: " . $conn->error);
-                }
-            }
-
-            // Commit transaction
-            $conn->commit();
-            echo "Order placed successfully!";
-        } else {
-            throw new Exception("Error inserting sales record: " . $conn->error);
-        }
-    } catch (Exception $e) {
-        // Rollback transaction on error
-        $conn->rollback();
-        echo $e->getMessage();
-    }
-}
-
-// Fetch product data, excluding products with zero quantity
-$selectsql = "SELECT * FROM product_table WHERE quantity_available > 0";
-if (isset($_POST['search']) && !empty($_POST['search'])) {
-    $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
-    $selectsql = "SELECT * FROM product_table WHERE (product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%') AND quantity_available > 0";
-}
-
-$result = $conn->query($selectsql);
-?>
 
 <form action="menu-products.php" method="post" class="search-input">
     <div class="content-container">
@@ -445,8 +475,6 @@ $result = $conn->query($selectsql);
                 echo "No records found";
             }
             ?>
-
-
         </div>
 
         <div class="cart-container">
@@ -456,7 +484,8 @@ $result = $conn->query($selectsql);
             </div>
             <div class="payment-info">
                 <div class="payment-method">
-                    <label for="payment_method">Select Payment Method:</label>
+                <p class="cart-title">Payment Details</p>
+                    <label for="payment_method" class="payment-method-text">Select Payment Method:</label>
                     <select id="payment_method" name="payment_method">
                         <option value="cash">Cash</option>
                         <option value="gcash">GCash</option>
@@ -469,6 +498,9 @@ $result = $conn->query($selectsql);
         </div>
     </div>
 </form>
+
+
+
 
 </div> <!-- MAIN CONTAINER CLOSE -->
 
@@ -511,9 +543,18 @@ $result = $conn->query($selectsql);
                 <button type="button" class="remove-btn"><i class="bi bi-trash"></i></button>
             `;
 
+            // Add the cart item to the DOM
             orderSummary.appendChild(cartItem);
+
+            // Trigger the sliding transition
+            setTimeout(() => {
+                cartItem.classList.add('cart-item-show');
+            }, 10);
+
+            // Update total price
             updateTotalPrice();
 
+            // Event listeners for remove button, increment button, and decrement button
             cartItem.querySelector('.remove-btn').addEventListener('click', () => {
                 cartItem.remove();
                 updateTotalPrice();
@@ -550,7 +591,6 @@ $result = $conn->query($selectsql);
         totalAmountInput.value = totalPrice.toFixed(2);
     }
 });
-
 
           </script>
 

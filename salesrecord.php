@@ -547,7 +547,7 @@ if (isset($_POST['sub'])) {
     $quantity = $_POST['quantity_sold'];
     $totalamount = $_POST['total_amount'];
     $payment = $_POST['payment_method'];
-    $salesdate = $_POST['sales_date'];
+    $salesdate = date('Y-m-d g:i A', strtotime($fielddata['sales_date']));
 
     $salessql = "SELECT * FROM join_sales_table WHERE product_id = '$productid'";
     $sales_result = $conn->query($salessql);
@@ -575,13 +575,13 @@ if (isset($_POST['sub'])) {
 
 // Handle edit form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
-    $editproduct_id = mysqli_real_escape_string($conn, $_POST['edit_product_id']);
+    $editreceipt_number = mysqli_real_escape_string($conn, $_POST['editreceipt_number']);
     $editquantity = mysqli_real_escape_string($conn, $_POST['edit_quantity']);
     $edittotalamount = mysqli_real_escape_string($conn, $_POST['edit_total_amount']);
     $editpayment = mysqli_real_escape_string($conn, $_POST['edit_payment_method']);
     $editsalesdate = mysqli_real_escape_string($conn, $_POST['edit_sales_date']);
 
-    $update_query = "UPDATE join_sales_table SET product_id = '$editproduct_id', quantity_sold = '$editquantity', total_amount = '$edittotalamount', payment_method = '$editpayment', sales_date = '$editsalesdate' WHERE product_id = '$editproduct_id'";
+    $update_query = "UPDATE join_sales_table SET receipt_number = '$editreceipt_number', quantity_sold = '$editquantity', total_amount = '$edittotalamount', payment_method = '$editpayment', sales_date = '$editsalesdate', WHERE receipt_number = '$editreceipt_number'";
     if (mysqli_query($conn, $update_query)) {
         echo "<script>
             Swal.fire({
@@ -620,7 +620,7 @@ if ($result->num_rows > 0) {
   echo "<thead>";
   echo "<tr>";
   echo "<th>Sales ID <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Product ID <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Receipt Number <span class='icon-arrow'>&UpArrow;</span></th>";
   echo "<th>Quantity Sold <span class='icon-arrow'>&UpArrow;</span></th>";
   echo "<th>Total Amount <span class='icon-arrow'>&UpArrow;</span></th>";
   echo "<th>Payment Method <span class='icon-arrow'>&UpArrow;</span></th>";
@@ -634,11 +634,11 @@ if ($result->num_rows > 0) {
       
         echo "<tr>";
         echo "<td>" . $fielddata['sales_id'] . "</td>";
-        echo "<td>" . $fielddata['product_id'] . "</td>";
+        echo "<td>" . $fielddata['receipt_number'] . "</td>";
         echo "<td>" . $fielddata['quantity_sold'] . "</td>";
         echo "<td>" . $fielddata['total_amount'] . "</td>";
         echo "<td>" . $fielddata['payment_method'] . "</td>";
-        echo "<td>" . $fielddata['sales_date'] . "</td>";
+        echo "<td>" . date('Y-m-d g:i A', strtotime($fielddata['sales_date'])) . "</td>";
         echo "<td>";
         echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['sales_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['sales_id'] . "'><i class='bi bi-pencil-square'></i></button>";
         echo "</td>";
@@ -651,8 +651,8 @@ if ($result->num_rows > 0) {
         echo "<div class='card card-body'>";
         echo "<form action='' method='post'>";
         echo "<div class='mb-3'>";
-        echo "<label for='edit_product_id' class='form-label'>Product ID</label>";
-        echo "<input type='text' class='form-control' id='edit_product_id' name='edit_product_id' value='" . $fielddata['product_id'] . "'>";
+        echo "<label for='editreceipt_number' class='form-label'>Receipt Number</label>";
+        echo "<input type='text' class='form-control' id='editreceipt_number' name='editreceipt_number' value='" . $fielddata['receipt_number'] . "'>";
         echo "</div>";
         echo "<div class='mb-3'>";
         echo "<div class='row'>";
@@ -681,7 +681,7 @@ if ($result->num_rows > 0) {
         echo "<label for='edit_sales_date' class='form-label'>Sales Date</label>";
         echo "<input type='text' class='form-control' id='edit_sales_date' name='edit_sales_date' value='" . $fielddata['sales_date'] . "'>";
         echo "</div>";
-        echo "<input type='hidden' name='edit_product_id' value='" . $fielddata['product_id'] . "'>";
+        echo "<input type='hidden' name='editreceipt_number' value='" . $fielddata['receipt_number'] . "'>";
         echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
         echo "</form>";
         echo "</div>";
