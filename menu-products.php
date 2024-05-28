@@ -1,10 +1,10 @@
 <?php
-session_start(); // Ensure session is started
-include "dbconnect.php"; // Include database connection file
-include "log-function.php"; // Include log function file
+session_start(); 
+include "dbconnect.php";
+include "log-function.php"; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset($_POST['quantity']) && isset($_POST['payment_method'])) {
-    // Assuming you have a way to get the user ID from session
+
     $user_id = $_SESSION['user_id'] ?? null;
 
     $productIds = $_POST['product_id'];
@@ -14,22 +14,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset
     $totalAmount = 0;
     $totalQuantity = 0;
 
-    // Generate a unique receipt number for the transaction
-    $receiptNumber = uniqid('rec_');
 
-    // Set the reference number to 'none' initially
+    $receiptNumber = uniqid('rec_');
     $referenceNumber = 'none';
 
-    // Start transaction
+
     $conn->begin_transaction();
 
     try {
-        // Calculate the total amount and update inventory
+       
         foreach ($productIds as $index => $productId) {
             $productId = mysqli_real_escape_string($conn, $productId);
             $quantity = (int) $quantities[$index];
 
-            // Fetch the product price and quantity available from the database
             $productSql = "SELECT price, quantity_available FROM product_table WHERE product_id = '$productId'";
             $productResult = $conn->query($productSql);
 
@@ -45,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset
                 $totalAmount += $price * $quantity;
                 $totalQuantity += $quantity;
 
-                // Update the product quantity
                 $newQuantityAvailable = $quantityAvailable - $quantity;
                 $status = ($newQuantityAvailable > 0) ? 'Available' : 'Unavailable';
                 $updateProductSql = "UPDATE product_table SET quantity_available = '$newQuantityAvailable', status = '$status' WHERE product_id = '$productId'";
@@ -57,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset
             }
         }
 
-        // Insert each product in the transaction_table with the same reference_number and receipt_number
         $status = ($paymentMethod === 'cash') ? 'paid' : 'pending';
         foreach ($productIds as $index => $productId) {
             $productId = mysqli_real_escape_string($conn, $productId);

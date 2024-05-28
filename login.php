@@ -50,9 +50,26 @@ if (isset($_POST['sub'])) {
         } else {
             echo "User ID not found.";
         }
-      } else {
+    } else {
         $error = 'Wrong username or password!';
-        // echo "<script>alert('Wrong username or password!');</script>";
+        echo "
+        <html>
+        <head>
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+        </head>
+        <body>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Wrong username or password!'
+                    });
+                });
+            </script>
+        </body>
+        </html>
+        ";
     }    
 }
 ?>

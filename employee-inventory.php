@@ -1,15 +1,9 @@
-<?php
-include "dbconnect.php";
-date_default_timezone_set("Asia/Manila");
-
-?>
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sales Record</title>
+    <title>Inventory</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -419,41 +413,33 @@ tbody td.active {
   <div class="side-wrapper">
    <div class="side-title">CATEGORY</div>
    <div class="side-menu">
-    <a class="sidebar-link" href="dashboard.php">
+    <a class="sidebar-link overview" href="employee-dashboard.php">
      <i class="bi bi-house-door icon"></i>
      Overview
     </a>
-    <a class="sidebar-link" href="accounts.php">
-     <i class="bi bi-people"></i>
-     Accounts
-    </a>
-    <a class="sidebar-link" href="products.php">
+    <a class="sidebar-link" href="employee-products.php">
      <i class="bi bi-cart icon"></i>
      Products
     </a>
-    <a class="sidebar-link" href="archives.php">
+    <a class="sidebar-link" href="employee-archives.php">
      <i class="bi bi-bookmark"></i>
      Archives
     </a>
-    <a class="sidebar-link" href="inventory.php">
+    <a class="sidebar-link is-active" href="employee-inventory.php">
      <i class="bi bi-box-seam icon"></i>
      Inventory
     </a>
-	<a class="sidebar-link" href="transactions.php">
+	<a class="sidebar-link" href="employee-transactions.php">
      <i class="bi bi-receipt"></i>
      Transactions
     </a>
-    <a class="sidebar-link is-active" href="salesrecord.php">
+    <a class="sidebar-link" href="employee-salesrecord.php">
      <i class="bi bi-journal icon"></i>
      Sales Record
     </a>
-    <a class="sidebar-link" href="audittrail.php">
-     <i class="bi bi-bar-chart icon"></i>
-     Audit Trail
-    </a>
    </div>
-   
   </div>
+
   <div class="side-wrapper">
    <div class="side-menu">
 
@@ -491,7 +477,7 @@ tbody td.active {
 
 
   <div class="main-container">
-   <div class="main-header anim" style="--delay: 0s">Sales Record</div>
+   <div class="main-header anim" style="--delay: 0s">Inventory</div>
 </div>
 
 <!-- Modal Structure -->
@@ -499,40 +485,40 @@ tbody td.active {
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="pinkModalLabel">Add Sales</h1>
+                <h1 class="modal-title fs-5" id="pinkModalLabel">Add Products</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- Form Inside Modal -->
-                <form action="salesrecord.php" method="post">
+                <form action="inventory.php" method="post">
                 <div class="mb-3">
-                        <label for="product_id" class="form-label">Product ID</label>
-                        <input type="text" class="form-control" id="product_id" name="product_id" required>
+                        <label for="product_name" class="form-label">Product name</label>
+                        <input type="text" class="form-control" id="product_name" name="product_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="payment_method" class="form-label">Payment Method</label>
-                        <select class="form-select" id="payment_method" name="payment_method" required>
-                            <option value="Cash">Cash</option>
-                            <option value="GCash">GCash</option>
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="Available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
                         </select>
                     </div>
                     <div class="row">
                     <div class="col">
                     <div class="mb-3">
-                        <label for="quantity_sold" class="form-label">Quantity Sold</label>
-                        <input type="text" class="form-control" id="quantity_sold" name="quantity_sold" required>
+                        <label for="price" class="form-label">Price</label>
+                        <input type="text" class="form-control" id="price" name="price" required>
                     </div>
                     </div>
                     <div class="col">
                     <div class="mb-3">
-                        <label for="total_amount" class="form-label">Total Amount</label>
-                        <input type="text" class="form-control" id="total_amount" name="total_amount" required>
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="text" class="form-control" id="quantity" name="quantity" required>
                     </div>
                     </div>
                     </div>
                     <div class="mb-3">
-                        <label for="sales_date" class="form-label">Sales Date</label>
-                        <textarea class="form-control" id="sales_date" name="sales_date" required></textarea>
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" required></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -546,20 +532,21 @@ tbody td.active {
 
 
 <?php
+include "dbconnect.php";
 
 if (isset($_POST['sub'])) {
-    $productid = $_POST['product_id'];
-    $quantity = $_POST['total_quantity'];
-    $totalamount = $_POST['total_amount'];
-    $payment = $_POST['payment_method'];
-    $salesdate = date('Y-m-d h:i:s', strtotime($fielddata['DateTime']));
+    $productname = $_POST['product_name'];
+    $price = $_POST['price'];
+    $quantity = $_POST['quantity'];
+    $description = $_POST['description'];
+    $status = getProductStatus($quantity);
 
-    $salessql = "SELECT * FROM join_sales_table WHERE product_id = '$productid'";
-    $sales_result = $conn->query($salessql);
+    $productsql = "SELECT * FROM product_table WHERE product_name = '$productname'";
+    $product_result = $conn->query($productsql);
 
-    if ($sales_result->num_rows == 0) {
-        $insertsql = "INSERT INTO join_sales_table (product_id, total_quantity, total_amount, payment_method, sales_date)
-                        VALUES ('$productid', '$quantity', '$totalamount', '$payment', '$salesdate')";
+    if ($product_result->num_rows == 0) {
+        $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, status)
+                        VALUES ('$productname', '$description', '$price', '$quantity', '$status')";
         $result = $conn->query($insertsql);
 
         if ($result === TRUE) {
@@ -567,7 +554,7 @@ if (isset($_POST['sub'])) {
             <script>
                 Swal.fire({
                     title: 'Success!',
-                    text: 'Product sales has been added successfully!',
+                    text: 'Product has been added successfully!',
                     icon: 'success'
                 });
             </script>
@@ -580,18 +567,19 @@ if (isset($_POST['sub'])) {
 
 // Handle edit form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
-    $editreceipt_number = mysqli_real_escape_string($conn, $_POST['editreceipt_number']);
+    $editproduct_id = mysqli_real_escape_string($conn, $_POST['edit_product_id']);
+    $editproductname = mysqli_real_escape_string($conn, $_POST['edit_productname']);
+    $editdescription = mysqli_real_escape_string($conn, $_POST['edit_description']);
+    $editprice = mysqli_real_escape_string($conn, $_POST['edit_price']);
     $editquantity = mysqli_real_escape_string($conn, $_POST['edit_quantity']);
-    $edittotalamount = mysqli_real_escape_string($conn, $_POST['edit_total_amount']);
-    $editpayment = mysqli_real_escape_string($conn, $_POST['edit_payment_method']);
-    $editsalesdate = mysqli_real_escape_string($conn, $_POST['edit_sales_date']);
+    $editstatus = getProductStatus($editquantity);
 
-    $update_query = "UPDATE join_sales_table SET receipt_number = '$editreceipt_number', quantity_sold = '$editquantity', total_amount = '$edittotalamount', payment_method = '$editpayment', sales_date = '$editsalesdate', WHERE receipt_number = '$editreceipt_number'";
+    $update_query = "UPDATE product_table SET product_name = '$editproductname', description = '$editdescription', price = '$editprice', quantity_available = '$editquantity', status = '$editstatus' WHERE product_id = '$editproduct_id'";
     if (mysqli_query($conn, $update_query)) {
         echo "<script>
             Swal.fire({
                 title: 'Updated!',
-                text: 'Product sales has been updated!',
+                text: 'Product information has been updated!',
                 icon: 'success'
             });
         </script>";
@@ -600,93 +588,96 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
     }
 }
 
-$selectsql = "SELECT * FROM join_sales_table ORDER BY sales_id DESC";
+$selectsql = "SELECT * FROM product_table ORDER BY product_id DESC";
 
 // Check if the search input is clicked and not null, change $selectsql syntax
 if (isset($_POST['search']) && $_POST['search'] != NULL) {
     $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
-    $selectsql = "SELECT * FROM join_sales_table AND (sales_id LIKE '%$searchinput%' OR product_id LIKE '%$searchinput%' OR payment_method LIKE '%$searchinput%')";
+    $selectsql = "SELECT * FROM product_table AND (product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%')";
 }
 
 $result = $conn->query($selectsql);
 
+// Function to determine stock status
+function getStockStatus($quantity) {
+  return $quantity < 5 ? '<i class="bi bi-exclamation-circle text-danger" title="Low Stock"></i>' : '';
+}
+
+function getProductStatus($quantity) {
+  return $quantity > 0 ? 'Available' : 'Unavailable';
+}
+
   // Check if table is not empty
 if ($result->num_rows > 0) {
-  echo "<main class='table anim' style='--delay: .4s' id='user_table'>"; // palitan yung id neto pls 
+  echo "<main class='table anim' style='--delay: .4s' id='user_table'>";
   echo "<section class='table__header anim' style='--delay: .2s'>";
   echo "<div class='input-group'>";
   echo "<input type='search' name='search' class='search-input' placeholder='Search Products'>";
   echo "</div>";
-  echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Sales</button>";
+  echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Products</button>";
   echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
   echo "</section>";
   echo "<section class='table__body'>";
   echo "<table>";
   echo "<thead>";
   echo "<tr>";
-  echo "<th>Sales ID <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Receipt Number <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Quantity Sold <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Total Amount <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Payment Method <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Sales Date</th>";
+  echo "<th>Product ID <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Product Name <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Price <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Quantity <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Status</th>";
   echo "<th>Action</th>";
   echo "</tr>";
   echo "</thead>";
   echo "<tbody>";
 
        foreach ($result as $fielddata) {
-      
+        $status_class = $fielddata['quantity_available'] > 0 ? 'available-status' : 'unavailable-status';
         echo "<tr>";
-        echo "<td>" . $fielddata['sales_id'] . "</td>";
-        echo "<td>" . $fielddata['receipt_number'] . "</td>";
-        echo "<td>" . $fielddata['total_quantity'] . "</td>";
-        echo "<td>" . $fielddata['total_amount'] . "</td>";
-        echo "<td>" . $fielddata['payment_method'] . "</td>";
-        echo "<td>" . date('Y-m-d g:i A', strtotime($fielddata['sales_date'])) . "</td>";
+        echo "<td>" . $fielddata['product_id'] . "</td>";
+        echo "<td>" . $fielddata['product_name'] . "</td>";
+        echo "<td>" . $fielddata['price'] . "</td>";
+        echo "<td class='fielddata-quantity'>" . $fielddata['quantity_available'] . " " . getStockStatus($fielddata['quantity_available']) . "</td>";
+        echo "<td class='$status_class'>" . getProductStatus($fielddata['quantity_available']) . "</td>";
         echo "<td>";
-        echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['sales_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['sales_id'] . "'><i class='bi bi-pencil-square'></i></button>";
+        echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['product_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['product_id'] . "'><i class='bi bi-pencil-square'></i></button>";
         echo "</td>";
         echo "</tr>";
 
          // Edit form collapse for each user
         echo "<tr>";
         echo "<td colspan='7' class='border-0'>";
-        echo "<div class='collapse' id='collapseEdit_" . $fielddata['sales_id'] . "'>";
+        echo "<div class='collapse' id='collapseEdit_" . $fielddata['product_id'] . "'>";
         echo "<div class='card card-body'>";
         echo "<form action='' method='post'>";
         echo "<div class='mb-3'>";
-        echo "<label for='editreceipt_number' class='form-label'>Receipt Number</label>";
-        echo "<input type='text' class='form-control' id='editreceipt_number' name='editreceipt_number' value='" . $fielddata['receipt_number'] . "'>";
+        echo "<label for='edit_productname' class='form-label'>Product Name</label>";
+        echo "<input type='text' class='form-control' id='edit_productname' name='edit_productname' value='" . $fielddata['product_name'] . "'>";
         echo "</div>";
         echo "<div class='mb-3'>";
         echo "<div class='row'>";
         echo "<div class='col-md-6'>";
-        echo "<label for='edit_quantity' class='form-label'>Quantity Sold</label>";
-        echo "<input type='text' class='form-control' id='edit_quantity' name='edit_quantity' value='" . $fielddata['total_quantity'] . "'>";
+        echo "<label for='edit_price' class='form-label'>Price</label>";
+        echo "<input type='text' class='form-control' id='edit_price' name='edit_price' value='" . $fielddata['price'] . "'>";
         echo "</div>";
         echo "<div class='col-md-6'>";
-        echo "<label for='edit_total_amount' class='form-label'>Total Amount</label>";
-        echo "<input type='text' class='form-control' id='edit_total_amount' name='edit_total_amount' value='" . $fielddata['total_amount'] . "'>";
+        echo "<label for='edit_quantity' class='form-label'>Quantity</label>";
+        echo "<input type='text' class='form-control' id='edit_quantity' name='edit_quantity' value='" . $fielddata['quantity_available'] . "'>";
         echo "</div>";
         echo "</div>"; // close .row
-        // echo "<div class='mb-3'>";
-        // echo "<label for='edit_status' class='form-label'>Status</label>";
-        // echo "<select class='form-select' id='edit_status' name='edit_status'>";
-        // echo "<option value='Available'" . ($fielddata['status'] == 'Available' ? ' selected' : '') . ">Available</option>";
-        // echo "<option value='Unavailable'" . ($fielddata['status'] == 'Unavailable' ? ' selected' : '') . ">Unavailable</option>";
-        // echo "</select>";
-        // echo "</div>";
-        // echo "</div>"; // close mb3
         echo "<div class='mb-3'>";
-        echo "<label for='edit_payment_method' class='form-label'>Payment Method</label>";
-        echo "<input type='text' class='form-control' id='edit_payment_method' name='edit_payment_method' value='" . $fielddata['payment_method'] . "'>";
+        echo "<label for='edit_status' class='form-label'>Status</label>";
+        echo "<select class='form-select' id='edit_status' name='edit_status'>";
+        echo "<option value='Available'" . ($fielddata['status'] == 'Available' ? ' selected' : '') . ">Available</option>";
+        echo "<option value='Unavailable'" . ($fielddata['status'] == 'Unavailable' ? ' selected' : '') . ">Unavailable</option>";
+        echo "</select>";
         echo "</div>";
+        echo "</div>"; // close mb3
         echo "<div class='mb-3'>";
-        echo "<label for='edit_sales_date' class='form-label'>Sales Date</label>";
-        echo "<input type='text' class='form-control' id='edit_sales_date' name='edit_sales_date' value='" . $fielddata['sales_date'] . "'>";
+        echo "<label for='edit_description' class='form-label'>Description</label>";
+        echo "<textarea class='form-control' id='edit_description' name='edit_description'>" . $fielddata['description'] . "</textarea>"; 
         echo "</div>";
-        echo "<input type='hidden' name='editreceipt_number' value='" . $fielddata['receipt_number'] . "'>";
+        echo "<input type='hidden' name='edit_product_id' value='" . $fielddata['product_id'] . "'>";
         echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
         echo "</form>";
         echo "</div>";

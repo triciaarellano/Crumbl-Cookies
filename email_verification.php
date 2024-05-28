@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crumbl Cookies OTP Verification</title>
 
-    <!-- SweetAlert2 CSS (optional but recommended for better styling) -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.7/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 <body>
 
-<!-- Your PHP code goes here -->
 
 <?php
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Load Composer's autoloader
 require 'vendor/autoload.php';
 
 function send_verification($fullname, $email, $otp) {

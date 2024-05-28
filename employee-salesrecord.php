@@ -1,15 +1,9 @@
-<?php
-include "dbconnect.php";
-date_default_timezone_set("Asia/Manila");
-
-?>
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sales Record</title>
+    <title>Audit Trail</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -385,24 +379,12 @@ tbody td.active {
   background-color: pink;
 }
 
+.unavailable-status {
+  color: red;
+}
+
 .form-label {
   color: #333;
-}
-
-
-
-.fielddata-quantity .bi {
-    margin-left: 10px;
-}
-
-.available-status {
-    color: green;
-    font-weight: bold;
-}
-
-.unavailable-status {
-    color: red;
-    font-weight: bold;
 }
 
 </style>
@@ -419,41 +401,33 @@ tbody td.active {
   <div class="side-wrapper">
    <div class="side-title">CATEGORY</div>
    <div class="side-menu">
-    <a class="sidebar-link" href="dashboard.php">
+    <a class="sidebar-link overview" href="employee-dashboard.php">
      <i class="bi bi-house-door icon"></i>
      Overview
     </a>
-    <a class="sidebar-link" href="accounts.php">
-     <i class="bi bi-people"></i>
-     Accounts
-    </a>
-    <a class="sidebar-link" href="products.php">
+    <a class="sidebar-link" href="employee-products.php">
      <i class="bi bi-cart icon"></i>
      Products
     </a>
-    <a class="sidebar-link" href="archives.php">
+    <a class="sidebar-link" href="employee-archives.php">
      <i class="bi bi-bookmark"></i>
      Archives
     </a>
-    <a class="sidebar-link" href="inventory.php">
+    <a class="sidebar-link" href="employee-inventory.php">
      <i class="bi bi-box-seam icon"></i>
      Inventory
     </a>
-	<a class="sidebar-link" href="transactions.php">
+	<a class="sidebar-link" href="employee-transactions.php">
      <i class="bi bi-receipt"></i>
      Transactions
     </a>
-    <a class="sidebar-link is-active" href="salesrecord.php">
+    <a class="sidebar-link is-active" href="employee-salesrecord.php">
      <i class="bi bi-journal icon"></i>
      Sales Record
     </a>
-    <a class="sidebar-link" href="audittrail.php">
-     <i class="bi bi-bar-chart icon"></i>
-     Audit Trail
-    </a>
    </div>
-   
   </div>
+
   <div class="side-wrapper">
    <div class="side-menu">
 
@@ -491,219 +465,94 @@ tbody td.active {
 
 
   <div class="main-container">
-   <div class="main-header anim" style="--delay: 0s">Sales Record</div>
-</div>
-
-<!-- Modal Structure -->
-<div class="modal fade" id="pinkModal" tabindex="-1" aria-labelledby="pinkModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="pinkModalLabel">Add Sales</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Form Inside Modal -->
-                <form action="salesrecord.php" method="post">
-                <div class="mb-3">
-                        <label for="product_id" class="form-label">Product ID</label>
-                        <input type="text" class="form-control" id="product_id" name="product_id" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="payment_method" class="form-label">Payment Method</label>
-                        <select class="form-select" id="payment_method" name="payment_method" required>
-                            <option value="Cash">Cash</option>
-                            <option value="GCash">GCash</option>
-                        </select>
-                    </div>
-                    <div class="row">
-                    <div class="col">
-                    <div class="mb-3">
-                        <label for="quantity_sold" class="form-label">Quantity Sold</label>
-                        <input type="text" class="form-control" id="quantity_sold" name="quantity_sold" required>
-                    </div>
-                    </div>
-                    <div class="col">
-                    <div class="mb-3">
-                        <label for="total_amount" class="form-label">Total Amount</label>
-                        <input type="text" class="form-control" id="total_amount" name="total_amount" required>
-                    </div>
-                    </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sales_date" class="form-label">Sales Date</label>
-                        <textarea class="form-control" id="sales_date" name="sales_date" required></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" name="sub" id="sub">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+   <div class="main-header anim" style="--delay: 0s">Audit Trail</div>
 </div>
 
 
 <?php
+require_once "dbconnect.php";
 
+// LOG IN TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 if (isset($_POST['sub'])) {
-    $productid = $_POST['product_id'];
-    $quantity = $_POST['total_quantity'];
-    $totalamount = $_POST['total_amount'];
-    $payment = $_POST['payment_method'];
-    $salesdate = date('Y-m-d h:i:s', strtotime($fielddata['DateTime']));
+    $username = $_POST['username'];
+    $password = md5($_POST['password']); //encrypted
 
-    $salessql = "SELECT * FROM join_sales_table WHERE product_id = '$productid'";
-    $sales_result = $conn->query($salessql);
 
-    if ($sales_result->num_rows == 0) {
-        $insertsql = "INSERT INTO join_sales_table (product_id, total_quantity, total_amount, payment_method, sales_date)
-                        VALUES ('$productid', '$quantity', '$totalamount', '$payment', '$salesdate')";
-        $result = $conn->query($insertsql);
+    $loginsql = "SELECT * FROM user_table WHERE username = '".$username."' AND password = '".$password."'";
+    $result = $conn->query($loginsql);
 
-        if ($result === TRUE) {
-            ?>
-            <script>
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Product sales has been added successfully!',
-                    icon: 'success'
-                });
-            </script>
-            <?php
-        } else {
-            echo $conn->error;
-        }
+
+
+    //check if there is a matching record
+    if ($result->num_rows == 1) {
+        $fielddata = $result->fetch_assoc();
+        $user_type = $fielddata['role']; // will get the user type of the matching record
+        //user's full name
+        $fullname = $fielddata['fullname'];
+        $user_id = $_SESSION['user_id'] = $fielddata['User_ID'];
+
+
+        $_SESSION['user'] = $fullname; //user's fullname inserted to a session variable
+        $_SESSION['type'] = $user_type;
+
+
+        $logsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES ($user_id, 'Logged IN', NOW())";
+        $conn->query($logsql);
     }
 }
 
-// Handle edit form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
-    $editreceipt_number = mysqli_real_escape_string($conn, $_POST['editreceipt_number']);
-    $editquantity = mysqli_real_escape_string($conn, $_POST['edit_quantity']);
-    $edittotalamount = mysqli_real_escape_string($conn, $_POST['edit_total_amount']);
-    $editpayment = mysqli_real_escape_string($conn, $_POST['edit_payment_method']);
-    $editsalesdate = mysqli_real_escape_string($conn, $_POST['edit_sales_date']);
-
-    $update_query = "UPDATE join_sales_table SET receipt_number = '$editreceipt_number', quantity_sold = '$editquantity', total_amount = '$edittotalamount', payment_method = '$editpayment', sales_date = '$editsalesdate', WHERE receipt_number = '$editreceipt_number'";
-    if (mysqli_query($conn, $update_query)) {
-        echo "<script>
-            Swal.fire({
-                title: 'Updated!',
-                text: 'Product sales has been updated!',
-                icon: 'success'
-            });
-        </script>";
-    } else {
-        echo "Error updating record: " . mysqli_error($conn);
-    }
-}
-
-$selectsql = "SELECT * FROM join_sales_table ORDER BY sales_id DESC";
 
 // Check if the search input is clicked and not null, change $selectsql syntax
 if (isset($_POST['search']) && $_POST['search'] != NULL) {
-    $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
-    $selectsql = "SELECT * FROM join_sales_table AND (sales_id LIKE '%$searchinput%' OR product_id LIKE '%$searchinput%' OR payment_method LIKE '%$searchinput%')";
+    $searchinput = $_POST['search'];
+    $selectsql = "SELECT * FROM join_logs_user WHERE log_id LIKE '%$searchinput%' OR user_id LIKE '%$searchinput%' OR action LIKE '%$searchinput%' OR DateTime LIKE '%$searchinput%'";
+} else {
+
+    $selectsql = "SELECT * FROM join_logs_user ORDER BY log_id DESC";
 }
+
 
 $result = $conn->query($selectsql);
 
-  // Check if table is not empty
+// Check if table is not empty
 if ($result->num_rows > 0) {
-  echo "<main class='table anim' style='--delay: .4s' id='user_table'>"; // palitan yung id neto pls 
-  echo "<section class='table__header anim' style='--delay: .2s'>";
-  echo "<div class='input-group'>";
-  echo "<input type='search' name='search' class='search-input' placeholder='Search Products'>";
-  echo "</div>";
-  echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Sales</button>";
-  echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
-  echo "</section>";
-  echo "<section class='table__body'>";
-  echo "<table>";
-  echo "<thead>";
-  echo "<tr>";
-  echo "<th>Sales ID <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Receipt Number <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Quantity Sold <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Total Amount <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Payment Method <span class='icon-arrow'>&UpArrow;</span></th>";
-  echo "<th>Sales Date</th>";
-  echo "<th>Action</th>";
-  echo "</tr>";
-  echo "</thead>";
-  echo "<tbody>";
-
-       foreach ($result as $fielddata) {
-      
+    echo "<main class='table anim' style='--delay: .4s' id='join_logs_user'>";
+    echo "<section class='table__header anim' style='--delay: .4s'>";
+    echo "<div class='input-group'>";
+    echo "<input type='search' name='search' class='search-input' placeholder='Search User'>";
+    echo "</div>";
+    echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
+    echo "</section>";
+    echo "<section class='table__body'>";
+    echo "<table>";
+    echo "<thead>";
+    echo "<tr>";
+    echo "<th>Log ID<span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Role<span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Username<span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Action<span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "<th>Date and Time<span class='icon-arrow'>&UpArrow;</span></th>";
+    echo "</tr>";
+    echo "</thead>";
+    echo "<tbody>";
+    foreach ($result as $fielddata) {
         echo "<tr>";
-        echo "<td>" . $fielddata['sales_id'] . "</td>";
-        echo "<td>" . $fielddata['receipt_number'] . "</td>";
-        echo "<td>" . $fielddata['total_quantity'] . "</td>";
-        echo "<td>" . $fielddata['total_amount'] . "</td>";
-        echo "<td>" . $fielddata['payment_method'] . "</td>";
-        echo "<td>" . date('Y-m-d g:i A', strtotime($fielddata['sales_date'])) . "</td>";
-        echo "<td>";
-        echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['sales_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['sales_id'] . "'><i class='bi bi-pencil-square'></i></button>";
-        echo "</td>";
+        echo "<td>" . $fielddata['log_id'] . "</td>";
+        echo "<td>" . $fielddata['role'] . "</td>";
+        echo "<td>" . $fielddata['username'] . "</td>";
+        echo "<td>" . $fielddata['action'] . "</td>";
+        echo "<td>" . date('Y-m-d h:i:s', strtotime($fielddata['DateTime'])) . "</td>";
         echo "</tr>";
+    }
+    echo "</tbody>";
+    echo "</table>";
+    echo "</section>";
+    echo "</main>";
+} else {
+    echo "No records found";
+}
+?>
 
-         // Edit form collapse for each user
-        echo "<tr>";
-        echo "<td colspan='7' class='border-0'>";
-        echo "<div class='collapse' id='collapseEdit_" . $fielddata['sales_id'] . "'>";
-        echo "<div class='card card-body'>";
-        echo "<form action='' method='post'>";
-        echo "<div class='mb-3'>";
-        echo "<label for='editreceipt_number' class='form-label'>Receipt Number</label>";
-        echo "<input type='text' class='form-control' id='editreceipt_number' name='editreceipt_number' value='" . $fielddata['receipt_number'] . "'>";
-        echo "</div>";
-        echo "<div class='mb-3'>";
-        echo "<div class='row'>";
-        echo "<div class='col-md-6'>";
-        echo "<label for='edit_quantity' class='form-label'>Quantity Sold</label>";
-        echo "<input type='text' class='form-control' id='edit_quantity' name='edit_quantity' value='" . $fielddata['total_quantity'] . "'>";
-        echo "</div>";
-        echo "<div class='col-md-6'>";
-        echo "<label for='edit_total_amount' class='form-label'>Total Amount</label>";
-        echo "<input type='text' class='form-control' id='edit_total_amount' name='edit_total_amount' value='" . $fielddata['total_amount'] . "'>";
-        echo "</div>";
-        echo "</div>"; // close .row
-        // echo "<div class='mb-3'>";
-        // echo "<label for='edit_status' class='form-label'>Status</label>";
-        // echo "<select class='form-select' id='edit_status' name='edit_status'>";
-        // echo "<option value='Available'" . ($fielddata['status'] == 'Available' ? ' selected' : '') . ">Available</option>";
-        // echo "<option value='Unavailable'" . ($fielddata['status'] == 'Unavailable' ? ' selected' : '') . ">Unavailable</option>";
-        // echo "</select>";
-        // echo "</div>";
-        // echo "</div>"; // close mb3
-        echo "<div class='mb-3'>";
-        echo "<label for='edit_payment_method' class='form-label'>Payment Method</label>";
-        echo "<input type='text' class='form-control' id='edit_payment_method' name='edit_payment_method' value='" . $fielddata['payment_method'] . "'>";
-        echo "</div>";
-        echo "<div class='mb-3'>";
-        echo "<label for='edit_sales_date' class='form-label'>Sales Date</label>";
-        echo "<input type='text' class='form-control' id='edit_sales_date' name='edit_sales_date' value='" . $fielddata['sales_date'] . "'>";
-        echo "</div>";
-        echo "<input type='hidden' name='editreceipt_number' value='" . $fielddata['receipt_number'] . "'>";
-        echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
-        echo "</form>";
-        echo "</div>";
-        echo "</div>";
-        echo "</td>";
-        echo "</tr>";
-        }
-
-        echo "</tbody>";
-        echo "</table>";
-        echo "</section>";
-        echo "</main>";
-        
-      } else {
-        echo "No records found";
-        }
-        ?>
 
 
          <script src='script.js'></script>
