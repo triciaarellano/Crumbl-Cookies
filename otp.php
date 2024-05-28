@@ -358,62 +358,62 @@ form button:hover {
 
     <script>
     const body = document.querySelector("body");
-const loginModal = document.querySelector(".login-modal");
-const loginModalButton = document.querySelector(".login-modal-button");
-const closeButton = document.querySelector(".close-button");
+    const loginModal = document.querySelector(".login-modal");
+    const loginModalButton = document.querySelector(".login-modal-button");
+    const closeButton = document.querySelector(".close-button");
 
-const openLoginModal = () => {
-  loginModal.classList.add("is-open");
-  body.style.overflow = "hidden";
-};
+    const openLoginModal = () => {
+      loginModal.classList.add("is-open");
+      body.style.overflow = "hidden";
+    };
 
-const closeLoginModal = () => {
-  loginModal.classList.remove("is-open");
-  body.style.overflow = "initial";
-};
+    const closeLoginModal = () => {
+      loginModal.classList.remove("is-open");
+      body.style.overflow = "initial";
+    };
 
-loginModalButton.addEventListener("click", openLoginModal);
-closeButton.addEventListener("click", closeLoginModal);
+    loginModalButton.addEventListener("click", openLoginModal);
+    closeButton.addEventListener("click", closeLoginModal);
 
-document.addEventListener("DOMContentLoaded", openLoginModal);
+    document.addEventListener("DOMContentLoaded", openLoginModal);
 
-const inputs = document.querySelectorAll("input"),
-button = document.querySelector("button");
+    const inputs = document.querySelectorAll("input"),
+    button = document.querySelector("button");
 
-inputs.forEach((input, index1) => {
-  input.addEventListener("keyup", (e) => {
-    const currentInput = input,
-    nextInput = input.nextElementSibling,
-    prevInput = input.previousElementSibling;
-    if (currentInput.value.length > 1) {
-      currentInput.value = "";
-      return;
-    }
-
-    if (nextInput && nextInput.hasAttribute("disabled") && currentInput.value !== "") {
-      nextInput.removeAttribute("disabled");
-      nextInput.focus();
-    }
-
-    if (e.key === "Backspace") {
-      inputs.forEach((input, index2) => {
-        if (index1 <= index2 && prevInput) {
-          input.setAttribute("disabled", true);
-          input.value = "";
-          prevInput.focus();
+    inputs.forEach((input, index1) => {
+      input.addEventListener("keyup", (e) => {
+        const currentInput = input,
+        nextInput = input.nextElementSibling,
+        prevInput = input.previousElementSibling;
+        if (currentInput.value.length > 1) {
+          currentInput.value = "";
+          return;
         }
+
+        if (nextInput && nextInput.hasAttribute("disabled") && currentInput.value !== "") {
+          nextInput.removeAttribute("disabled");
+          nextInput.focus();
+        }
+
+        if (e.key === "Backspace") {
+          inputs.forEach((input, index2) => {
+            if (index1 <= index2 && prevInput) {
+              input.setAttribute("disabled", true);
+              input.value = "";
+              prevInput.focus();
+            }
+          });
+        }
+
+        if (!inputs[3].disabled && inputs[3].value !== "") {
+          button.classList.add("active");
+          return;
+        }
+        button.classList.remove("active");
       });
-    }
+    });
 
-    if (!inputs[3].disabled && inputs[3].value !== "") {
-      button.classList.add("active");
-      return;
-    }
-    button.classList.remove("active");
-  });
-});
-
-window.addEventListener("load", () => inputs[0].focus());
-</script>
+    window.addEventListener("load", () => inputs[0].focus());
+    </script>
   </body>
 </html>

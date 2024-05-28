@@ -1,29 +1,15 @@
 <?php
 include "dbconnect.php";
 
-// Function to generate a random receipt number
-function generateReceiptNumber() {
-    return 'R' . strtoupper(bin2hex(random_bytes(5)));
-}
-
 if (isset($_GET['transaction_id'])) {
     $transactionId = mysqli_real_escape_string($conn, $_GET['transaction_id']);
-    
-    // Generate receipt number
-    $receiptNumber = generateReceiptNumber();
 
-    // Update transaction with receipt number
-    $updateReceiptSql = "UPDATE transaction_table SET receipt_number = '$receiptNumber' WHERE transaction_id = '$transactionId'";
-    if ($conn->query($updateReceiptSql) !== TRUE) {
-        echo "Error updating receipt number: " . $conn->error;
-        exit;
-    }
-
-    // Fetch transaction details
+    // Fetch transaction details, including the receipt number
     $transactionSql = "SELECT * FROM transaction_table WHERE transaction_id = '$transactionId'";
     $transactionResult = $conn->query($transactionSql);
     if ($transactionResult->num_rows > 0) {
         $transactionRow = $transactionResult->fetch_assoc();
+        $receiptNumber = $transactionRow['receipt_number'];
     } else {
         echo "Transaction not found.";
         exit;
@@ -33,7 +19,6 @@ if (isset($_GET['transaction_id'])) {
     exit;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">

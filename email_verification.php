@@ -1,3 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crumbl Cookies OTP Verification</title>
+
+    <!-- SweetAlert2 CSS (optional but recommended for better styling) -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.7/dist/sweetalert2.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Your PHP code goes here -->
+
 <?php
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -23,23 +37,24 @@ function send_verification($fullname, $email, $otp) {
 
         // Content
         $mail->isHTML(true);  // Set email format to HTML
-        $mail->Subject = "OTP Verification";
-        $mail->Body = "Hello " . $fullname . "<br> This is your account verification code: " . $otp;
+        $mail->Subject = "Crumbl Cookies OTP Verification Code";
+        $mail->Body = "Hello " . $fullname . "! <br><br> This is your account verification code: " . $otp;
 
         $mail->send();
 
-        echo "<script>
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Please check your email for the OTP verification.',
-                showConfirmButton: false,
-                timer: 1500,
-                willClose: () => {
-                    window.location.href = 'otp.php'; // Redirect to otp.php
-                }
-            });
-        </script>";
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+              <script>
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Please check your email for the OTP verification.',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    willClose: () => {
+                        window.location.href = 'otp.php'; // Redirect to otp.php
+                    }
+                });
+              </script>";
     } catch (Exception $e) {
         echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
     }
@@ -47,4 +62,10 @@ function send_verification($fullname, $email, $otp) {
 
 ?>
 
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+</body>
+</html>

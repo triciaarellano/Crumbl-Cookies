@@ -4,38 +4,30 @@ require_once "dbconnect.php";
 
 session_start();
 
-// Button function
+$error = '';
+
 if (isset($_POST['sub'])) {
-    // User input
     $username = $_POST['username'];
     $password = md5($_POST['password']);
 
-    // Prepare the SQL statement to prevent SQL injection
     $stmt = $conn->prepare("SELECT * FROM user_table WHERE username = ? AND password = ?");
     $stmt->bind_param("ss", $username, $password);
-
-    // Execute the statement
     $stmt->execute();
-
-    // Get the result
     $loginresult = $stmt->get_result();
 
-    // Condition if valid login
     if ($loginresult && $loginresult->num_rows == 1) {
         $user_data = $loginresult->fetch_assoc();
         $_SESSION['username'] = $username;
-        
-        // Insert login action into logs_table
+
         if (isset($user_data['user_id'])) {
             $user_id = $user_data['user_id'];
             $fullname = $user_data['full_name'];
-            $user_type = $user_data['role']; // Fetch user_type correctly
+            $user_type = $user_data['role'];
 
             $_SESSION['full_name'] = $fullname;
             $_SESSION['role'] = $user_type;
             $_SESSION['user_id'] = $user_id;
 
-            // Insert login action into logs_table
             $logsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES (?, 'Logged IN', NOW())";
             $logstmt = $conn->prepare($logsql);
             $logstmt->bind_param("i", $user_id);
@@ -44,7 +36,6 @@ if (isset($_POST['sub'])) {
                 echo "Error inserting log entry: " . $conn->error;
             }
 
-            // Redirect based on user role
             if ($user_type == 'Employee') {
                 header("Location: employee-dashboard.php");
             } elseif ($user_type == 'Cashier') {
@@ -59,15 +50,10 @@ if (isset($_POST['sub'])) {
         } else {
             echo "User ID not found.";
         }
-    } else {
-        echo "<script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Wrong username or password!',
-            text: 'Please try again.',
-        });
-        </script>";
-    }
+      } else {
+        $error = 'Wrong username or password!';
+        // echo "<script>alert('Wrong username or password!');</script>";
+    }    
 }
 ?>
 
@@ -107,6 +93,15 @@ body {
   left: 0;
   width: 100%;
 }
+
+.input-block.invalid input {
+            border-color: red;
+        }
+
+.error-message {
+            color: red;
+            font-size: 14px;
+        }
 
 .login-modal {
   position: fixed;
@@ -368,27 +363,32 @@ body {
     EVERY LAST CRUMB.
   </span>
 </div>
+
+
 <div class="login-modal">
-  <div class="login-modal-container">
-  <div class="login-modal-left">
-    <h1 class="login-modal-title">Welcome!</h1>
-    <p class="login-modal-desc">Bringing friends and family together over the best desserts in the world.</p>
-    <form method="POST" action="login.php"> 
-        <div class="input-block">
-            <label for="username" class="input-label">Username</label>
-            <input type="text" name="username" id="username" placeholder="Username" required/>
+    <div class="login-modal-container">
+        <div class="login-modal-left">
+            <h1 class="login-modal-title">Welcome!</h1>
+            <p class="login-modal-desc">Bringing friends and family together over the best desserts in the world.</p>
+            <form method="POST" action="login.php"> 
+                <div class="input-block">
+                    <label for="username" class="input-label">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Username" required/>
+                </div>
+                <div class="input-block <?php echo $error ? 'invalid' : ''; ?>">
+                    <label for="password" class="input-label">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Password" required/>
+                </div>
+                <?php if ($error): ?>
+                    <p class="error-message"><?php echo $error; ?></p>
+                <?php endif; ?>
+                <div class="login-modal-buttons">
+                    <a href="" class="">Forgot your password?</a>
+                    <input type="submit" name="sub" value="Log In" class="input-button" id="sub">
+                </div>
+            </form>
+            <p class="sign-up">Don't have an account? <a href="registration.php">Sign up now</a></p>
         </div>
-        <div class="input-block">
-            <label for="password" class="input-label">Password</label>
-            <input type="password" name="password" id="password" placeholder="Password" required/>
-        </div>
-        <div class="login-modal-buttons">
-            <a href="" class="">Forgot your password?</a>
-            <input type="submit" name="sub" value="Log In" class="input-button" id="sub">
-        </div>
-    </form>
-    <p class="sign-up">Don't have an account? <a href="registration.php">Sign up now</a></p>
-</div>
 
     <div class="login-modal-right">
       <img src="images/crumbl-side.png" alt="">
@@ -404,6 +404,10 @@ body {
 
     </div>
 
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
 
@@ -448,7 +452,6 @@ document.onkeydown = evt => {
 
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
 
 </body>
 </html>

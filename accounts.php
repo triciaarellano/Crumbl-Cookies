@@ -1,3 +1,58 @@
+<?php
+include "dbconnect.php";
+require_once "email_verification.php";
+include "log-function.php"; // Include log function file
+
+if (isset($_POST['sub'])) {
+    $fullname = $_POST['full_name'];
+    $username= $_POST['username'];
+    $password = md5($_POST['password']);
+    $email = $_POST['email'];
+    $user_type = $_POST['role'];
+    $status = "Inactive";
+    $otp = rand(000000, 999999); // random otp
+
+    $usersql = "SELECT * FROM user_table WHERE username = '$username'";
+    $user_result = $conn->query($usersql);
+
+    if ($user_result->num_rows == 0) {
+        $insertsql = "INSERT INTO user_table (full_name, role, username, password, email, otp, status)
+                      VALUES ('$fullname', '$user_type', '$username', '$password', '$email', '$otp', '$status')";
+        $result = $conn->query($insertsql);
+
+        if ($result === TRUE) {
+            // Log activity
+            $action = "Added a new account with username: $username";
+            $log_result = logActivity($conn, $user_id, $action);
+            if ($log_result !== true) {
+                echo "Error logging activity: $log_result";
+            }
+
+            // Send verification email
+            send_verification($fullname, $email, $otp);
+        } else {
+            echo $conn->error;
+        }
+    } else {
+        ?>
+        <script>
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Successfully added",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        </script>
+        <?php
+    }
+
+    // Now execute your select query to fetch active users
+    $selectsql = "SELECT * FROM user_table WHERE status = 'active'";
+    $result = $conn->query($selectsql);
+}
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -529,74 +584,38 @@ tbody td.active {
 
 
 <?php
-include "dbconnect.php";
-require_once "email_verification.php";
-
-if (isset($_POST['sub'])) {
-  $fullname = $_POST['full_name'];
-  $username= $_POST['username'];
-  $password = md5($_POST['password']);
-  $email = $_POST['email'];
-  $user_type = $_POST['role'];
-  $status = "Inactive";
-  $otp = rand(000000, 999999); // random otp
-
-  $usersql = "SELECT * FROM user_table WHERE username = '$username'";
-  $user_result = $conn->query($usersql);
-
-  if ($user_result->num_rows == 0) {
-      $insertsql = "INSERT INTO user_table (full_name, role, username, password, email, otp, status)
-                    VALUES ('$fullname', '$user_type', '$username', '$password', '$email', '$otp', '$status')";
-      $result = $conn->query($insertsql);
-
-      if ($result === TRUE) {
-          send_verification($fullname, $email, $otp);
-      } else {
-          echo $conn->error;
-      }
-  } else {
-      ?>
-      <script>
-          Swal.fire({
-              position: "center",
-              icon: "success",
-              title: "Successfully added",
-              showConfirmButton: false,
-              timer: 1500
-          });
-      </script>
-      <?php
-  }
-
-  // Now execute your select query to fetch active users
-  $selectsql = "SELECT * FROM user_table WHERE status = 'active'";
-  $result = $conn->query($selectsql);
-}
 
     // Handle edit form submission
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
-      $edituser_id = mysqli_real_escape_string($conn, $_POST['edit_user_id']);
-      $editfullname = mysqli_real_escape_string($conn, $_POST['edit_fullname']);
-      $editrole = mysqli_real_escape_string($conn, $_POST['edit_role']);
-      $editusername = mysqli_real_escape_string($conn, $_POST['edit_username']);
-      $editemail = mysqli_real_escape_string($conn, $_POST['edit_email']);
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
+  $edituser_id = mysqli_real_escape_string($conn, $_POST['edit_user_id']);
+  $editfullname = mysqli_real_escape_string($conn, $_POST['edit_fullname']);
+  $editrole = mysqli_real_escape_string($conn, $_POST['edit_role']);
+  $editusername = mysqli_real_escape_string($conn, $_POST['edit_username']);
+  $editemail = mysqli_real_escape_string($conn, $_POST['edit_email']);
 
-      $update_query = "UPDATE user_table SET full_name = '$editfullname', role = '$editrole', username = '$editusername', email = '$editemail' WHERE user_id = '$edituser_id'";
-      if (mysqli_query($conn, $update_query)) {
-          echo "<script>
-              Swal.fire({
-                  title: 'Updated!',
-                  text: 'User information has been updated!',
-                  icon: 'success'
-              });
-          </script>";
-      } else {
-          echo "Error updating record: " . mysqli_error($conn);
+  $update_query = "UPDATE user_table SET full_name = '$editfullname', role = '$editrole', username = '$editusername', email = '$editemail' WHERE user_id = '$edituser_id'";
+  if (mysqli_query($conn, $update_query)) {
+      // Log activity
+      $action = "Edited account with username: $editusername";
+      $log_result = logActivity($conn, $user_id, $action);
+      if ($log_result !== true) {
+          echo "Error logging activity: $log_result";
       }
-  }
 
-  // Default SQL query to fetch only active users
-  $selectsql = "SELECT * FROM user_table WHERE status = 'active' ORDER BY user_id DESC";
+      echo "<script>
+          Swal.fire({
+              title: 'Updated!',
+              text: 'User information has been updated!',
+              icon: 'success'
+          });
+      </script>";
+  } else {
+      echo "Error updating record: " . mysqli_error($conn);
+  }
+}
+
+// Default SQL query to fetch only active users
+$selectsql = "SELECT * FROM user_table WHERE status = 'active' ORDER BY user_id DESC";
 
   // Check if the search input is clicked and not null, change $selectsql syntax
   if (isset($_POST['search']) && $_POST['search'] != NULL) {

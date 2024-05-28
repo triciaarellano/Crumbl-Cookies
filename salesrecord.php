@@ -544,7 +544,7 @@ include "dbconnect.php";
 
 if (isset($_POST['sub'])) {
     $productid = $_POST['product_id'];
-    $quantity = $_POST['quantity_sold'];
+    $quantity = $_POST['total_quantity'];
     $totalamount = $_POST['total_amount'];
     $payment = $_POST['payment_method'];
     $salesdate = date('Y-m-d g:i A', strtotime($fielddata['sales_date']));
@@ -553,7 +553,7 @@ if (isset($_POST['sub'])) {
     $sales_result = $conn->query($salessql);
 
     if ($sales_result->num_rows == 0) {
-        $insertsql = "INSERT INTO join_sales_table (product_id, quantity_sold, total_amount, payment_method, sales_date)
+        $insertsql = "INSERT INTO join_sales_table (product_id, total_quantity, total_amount, payment_method, sales_date)
                         VALUES ('$productid', '$quantity', '$totalamount', '$payment', '$salesdate')";
         $result = $conn->query($insertsql);
 
@@ -635,7 +635,7 @@ if ($result->num_rows > 0) {
         echo "<tr>";
         echo "<td>" . $fielddata['sales_id'] . "</td>";
         echo "<td>" . $fielddata['receipt_number'] . "</td>";
-        echo "<td>" . $fielddata['quantity_sold'] . "</td>";
+        echo "<td>" . $fielddata['total_quantity'] . "</td>";
         echo "<td>" . $fielddata['total_amount'] . "</td>";
         echo "<td>" . $fielddata['payment_method'] . "</td>";
         echo "<td>" . date('Y-m-d g:i A', strtotime($fielddata['sales_date'])) . "</td>";
@@ -658,7 +658,7 @@ if ($result->num_rows > 0) {
         echo "<div class='row'>";
         echo "<div class='col-md-6'>";
         echo "<label for='edit_quantity' class='form-label'>Quantity Sold</label>";
-        echo "<input type='text' class='form-control' id='edit_quantity' name='edit_quantity' value='" . $fielddata['quantity_sold'] . "'>";
+        echo "<input type='text' class='form-control' id='edit_quantity' name='edit_quantity' value='" . $fielddata['total_quantity'] . "'>";
         echo "</div>";
         echo "<div class='col-md-6'>";
         echo "<label for='edit_total_amount' class='form-label'>Total Amount</label>";

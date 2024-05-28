@@ -1,14 +1,24 @@
 <?php
-include "dbconnect.php";
+session_start(); // Ensure session is started
+include "dbconnect.php"; // Include database connection file
+include "log-function.php"; // Include log function file
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset($_POST['quantity']) && isset($_POST['payment_method'])) {
+    // Assuming you have a way to get the user ID from session
+    $user_id = $_SESSION['user_id'] ?? null;
+
     $productIds = $_POST['product_id'];
     $quantities = $_POST['quantity'];
     $paymentMethod = mysqli_real_escape_string($conn, $_POST['payment_method']);
     $salesDate = date('Y-m-d H:i:s');
     $totalAmount = 0;
     $totalQuantity = 0;
+
+    // Generate a unique receipt number for the transaction
+    $receiptNumber = uniqid('rec_');
+
+    // Set the reference number to 'none' initially
+    $referenceNumber = 'none';
 
     // Start transaction
     $conn->begin_transaction();
@@ -47,41 +57,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset
             }
         }
 
-        // Insert into transaction_table first to generate the transaction_id
-        $detailsSql = "INSERT INTO transaction_table (product_id, quantity_sold, transaction_date, status) VALUES ";
-        $values = [];
+        // Insert each product in the transaction_table with the same reference_number and receipt_number
+        $status = ($paymentMethod === 'cash') ? 'paid' : 'pending';
         foreach ($productIds as $index => $productId) {
             $productId = mysqli_real_escape_string($conn, $productId);
             $quantity = (int) $quantities[$index];
-            $status = ($paymentMethod === 'cash') ? 'paid' : 'pending';
-            $values[] = "('$productId', '$quantity', '$salesDate', '$status')";
-        }
-        $detailsSql .= implode(", ", $values);
-        if ($conn->query($detailsSql) !== TRUE) {
-            throw new Exception("Error inserting transaction details: " . $conn->error);
+            $detailsSql = "INSERT INTO transaction_table (product_id, quantity_sold, reference_number, receipt_number, status, transaction_date) VALUES ('$productId', '$quantity', '$referenceNumber', '$receiptNumber', '$status', '$salesDate')";
+            if ($conn->query($detailsSql) !== TRUE) {
+                throw new Exception("Error inserting transaction details: " . $conn->error);
+            }
         }
 
-        // Get the generated transaction_id
+        // Get the first generated transaction_id for reference (not strictly necessary, but useful for redirecting or logging)
         $transactionId = $conn->insert_id;
 
-        // Handle payment method and redirect
-        if ($paymentMethod === 'cash') {
-            // Insert into sales_table using the generated transaction_id
-            $salesSql = "INSERT INTO sales_table (transaction_id, total_amount, payment_method, sales_date) VALUES ('$transactionId', '$totalAmount', '$paymentMethod', '$salesDate')";
-            if ($conn->query($salesSql) === TRUE) {
-                // Commit transaction
-                $conn->commit();
-                header("Location: order-successful.php?transaction_id=$transactionId");
-                exit;
-            } else {
-                throw new Exception("Error inserting sales record: " . $conn->error);
+        // Insert into sales_table using the generated transaction_id, total_amount, payment_method, sales_date, and total_quantity
+        $salesSql = "INSERT INTO sales_table (transaction_id, total_amount, payment_method, sales_date, total_quantity) VALUES ('$transactionId', '$totalAmount', '$paymentMethod', '$salesDate', '$totalQuantity')";
+        if ($conn->query($salesSql) === TRUE) {
+            // Log activity
+            $action = "Placed an order with Transaction ID $transactionId";
+            if ($paymentMethod === 'cash') {
+                $action .= " Cash";
+            } else if ($paymentMethod === 'gcash') {
+                $action .= " GCash";
             }
-        } else if ($paymentMethod === 'gcash') {
+            $log_result = logActivity($conn, $user_id, $action);
+            if ($log_result !== true) {
+                throw new Exception("Error logging activity: $log_result");
+            }
+
             // Commit transaction
             $conn->commit();
-            // Redirect to payment-gcash.php
-            header("Location: payment-gcash.php?transaction_id=$transactionId");
+            if ($paymentMethod === 'cash') {
+                header("Location: order-successful.php?transaction_id=$transactionId");
+            } else if ($paymentMethod === 'gcash') {
+                header("Location: payment-gcash.php?transaction_id=$transactionId");
+            }
             exit;
+        } else {
+            throw new Exception("Error inserting sales record: " . $conn->error);
         }
     } catch (Exception $e) {
         // Rollback transaction on error
@@ -99,6 +113,9 @@ if (isset($_POST['search']) && !empty($_POST['search'])) {
 
 $result = $conn->query($selectsql);
 ?>
+
+
+
 
 <!doctype html>
 <html lang="en">
@@ -201,7 +218,8 @@ body {
     margin-top: 5px;
     margin-left: 10px;
     margin-bottom: 20px;
-    border-bottom: 1px solid #34495e;
+    border-bottom: 1px solid #777;
+    padding-bottom: 10px;
 }
 
 .cart-item {
@@ -447,7 +465,6 @@ body {
   </div>
  </div>
 
- 
 
   <form action="menu-products.php" method="post" class="search-input"></form>
 
@@ -543,18 +560,16 @@ body {
                 <button type="button" class="remove-btn"><i class="bi bi-trash"></i></button>
             `;
 
-            // Add the cart item to the DOM
+
             orderSummary.appendChild(cartItem);
 
-            // Trigger the sliding transition
+
             setTimeout(() => {
                 cartItem.classList.add('cart-item-show');
             }, 10);
 
-            // Update total price
             updateTotalPrice();
 
-            // Event listeners for remove button, increment button, and decrement button
             cartItem.querySelector('.remove-btn').addEventListener('click', () => {
                 cartItem.remove();
                 updateTotalPrice();

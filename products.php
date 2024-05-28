@@ -1,3 +1,10 @@
+<?php
+    include "dbconnect.php";
+    include "log-function.php";
+
+    ?>
+    
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -404,9 +411,8 @@ box-shadow: 0 0.1rem 0.4rem #0002;
 <div class="product-container anim" style="--delay: .3s">
 
     <?php
-    include "dbconnect.php";
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Validate and sanitize inputs
         $productid = isset($_POST['product_id']) ? mysqli_real_escape_string($conn, $_POST['product_id']) : '';
         $productname = isset($_POST['product_name']) ? mysqli_real_escape_string($conn, $_POST['product_name']) : '';
@@ -450,6 +456,13 @@ box-shadow: 0 0.1rem 0.4rem #0002;
             if (isset($_FILES["upload_img"]) && move_uploaded_file($_FILES["upload_img"]["tmp_name"], $target_file)) {
                 $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, img) VALUES ('$productname', '$description', '$price', '$quantity', '$target_file')";
                 if (mysqli_query($conn, $insertsql)) {
+                    // Log activity
+                    $action = "Added new product: $productname";
+                    $log_result = logActivity($conn, $user_id, $action);
+                    if ($log_result !== true) {
+                        echo "Error logging activity: $log_result";
+                    }
+            
                     echo "<script>
                         Swal.fire({
                             title: 'Success!',
@@ -458,20 +471,20 @@ box-shadow: 0 0.1rem 0.4rem #0002;
                         });
                     </script>";
                 } else {
-                  echo "<script>
-                  Swal.fire({
-                      title: 'Error!',
-                      text: 'Failed to add the product!',
-                      icon: 'error'
-                  });
-              </script>";
+                    echo "<script>
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to add the product!',
+                            icon: 'error'
+                        });
+                    </script>";
                 }
-            } else {
-
-            }
         }
-    }
 
+    }
+}
+
+    
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
         $editproduct_id = isset($_POST['edit_product_id']) ? mysqli_real_escape_string($conn, $_POST['edit_product_id']) : '';
         $editproductname = isset($_POST['edit_productname']) ? mysqli_real_escape_string($conn, $_POST['edit_productname']) : '';
@@ -483,6 +496,13 @@ box-shadow: 0 0.1rem 0.4rem #0002;
         if ($editproduct_id && $editproductname && $editdescription && $editprice && $editquantity) {
             $update_query = "UPDATE product_table SET product_name = '$editproductname', description = '$editdescription', price = '$editprice', quantity_available = '$editquantity', status = '$editstatus' WHERE product_id = '$editproduct_id'";
             if (mysqli_query($conn, $update_query)) {
+                // Log activity
+                $action = "Updated product with ID: $editproduct_id";
+                $log_result = logActivity($conn, $user_id, $action);
+                if ($log_result !== true) {
+                    echo "Error logging activity: $log_result";
+                }
+        
                 echo "<script>
                     Swal.fire({
                         title: 'Updated!',
@@ -495,6 +515,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
             }
         }
     }
+
 
     $selectsql = "SELECT * FROM product_table";
     if (isset($_POST['search']) && !empty($_POST['search'])) {
