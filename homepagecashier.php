@@ -67,14 +67,17 @@
     <i class="bi bi-cart icon"></i>
      Our Products
     </a>
-    <a class="sidebar-link" href="orderform.php">
-     <i class="bi bi-receipt icon"></i>
-     Order Form
+    <a class="sidebar-link" href="cashier-transaction.php">
+     <i class="bi bi-receipt"></i>
+     Transactions
     </a>
-
+    <a class="sidebar-link" href="cashier-salesrecord.php">
+     <i class="bi bi-journal icon"></i>
+     Sales Record
+    </a>
    </div>
-   
   </div>
+
   <div class="side-wrapper">
    <div class="side-menu">
 

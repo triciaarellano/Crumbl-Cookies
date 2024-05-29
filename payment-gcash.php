@@ -11,7 +11,7 @@ if (isset($_GET['transaction_id'])) {
 
     if ($transactionResult->num_rows > 0) {
         $transactionRow = $transactionResult->fetch_assoc();
-        // You can now use $transactionRow to display transaction details or process the payment
+        $receiptNumber = $transactionRow['receipt_number']; // Get the receipt number
     } else {
         echo "Transaction not found.";
         exit;
@@ -25,7 +25,8 @@ if (isset($_GET['transaction_id'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reference_number'])) {
     $referenceNumber = mysqli_real_escape_string($conn, $_POST['reference_number']);
 
-    $updateSql = "UPDATE transaction_table SET reference_number = '$referenceNumber', status = 'paid' WHERE transaction_id = '$transactionId'";
+    // Update all transactions with the same receipt number
+    $updateSql = "UPDATE transaction_table SET reference_number = '$referenceNumber', status = 'paid' WHERE receipt_number = '$receiptNumber'";
     if ($conn->query($updateSql) === TRUE) {
         echo "
         <html>
@@ -367,26 +368,26 @@ h2 {
 </div>
 </div>
         <div class='gcash-info'>
-          <div class='gcash-info-content'>
-
+        <div class='gcash-info-content'>
+        <form method="POST" action="">
             <img src='images/gcash-white.png' height='80' class='gcash-image' id='gcash-image'></img>
-            Phone Number
+            <p>Phone Number</p>
             <input class='input-field' id="phone_number" name="phone_number" required></input>
-            Reference Number
+            <p>Reference Number</p>
             <input class='input-field-ref' id="reference_number" name="reference_number" required></input>
             <table class='half-input-table'></table>
             <p>Please proceed with your payment using GCash.</p>
             <p>Transaction ID: <?php echo $transactionId; ?></p>
             <button type='submit' class='pay-btn'>Place Order</button>
-
-          </div>
+        </form>
+        </div>
 
         </div>
       </div>
 </div>
 
-  <!-- Bootstrap JS and dependencies -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

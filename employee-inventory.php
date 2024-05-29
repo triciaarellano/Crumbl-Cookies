@@ -406,7 +406,7 @@ tbody td.active {
   <body>
   
   <div class="sidebar">
-  <a class="logo" href="dashboard.php">
+  <a class="logo" href="employee-dashboard.php">
     <img src="images/logopic.png" alt="Logo">
   </a>
 
@@ -440,6 +440,7 @@ tbody td.active {
    </div>
   </div>
 
+  
   <div class="side-wrapper">
    <div class="side-menu">
 
@@ -598,7 +599,6 @@ if (isset($_POST['search']) && $_POST['search'] != NULL) {
 
 $result = $conn->query($selectsql);
 
-// Function to determine stock status
 function getStockStatus($quantity) {
   return $quantity < 5 ? '<i class="bi bi-exclamation-circle text-danger" title="Low Stock"></i>' : '';
 }
@@ -701,8 +701,6 @@ if ($result->num_rows > 0) {
 
          <script>
 document.addEventListener("DOMContentLoaded", function() {
-
-    // Element selectors
     const userSettings = document.querySelector('.user-settings');
     const dropdownMenu = document.querySelector('.dropdown-menu');
     const sidebarLinks = document.querySelectorAll(".sidebar-link");
@@ -710,36 +708,30 @@ document.addEventListener("DOMContentLoaded", function() {
     const mainContainer = document.querySelector(".main-container");
     const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
 
-    // Toggle dropdown menu visibility
     userSettings.addEventListener('click', function() {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
 
-    // Close the dropdown if the user clicks outside of it
     window.addEventListener('click', function(event) {
         if (!userSettings.contains(event.target)) {
             dropdownMenu.style.display = 'none';
         }
     });
 
-    // Handle sidebar link click
+
     function handleSidebarLinkClick(event) {
-        // Remove 'is-active' class from all sidebar links
         sidebarLinks.forEach(function(link) {
             link.classList.remove("is-active");
         });
-        // Add 'is-active' class to the clicked sidebar link
+
         event.target.classList.add("is-active");
     }
 
-    // Add click event listeners to all sidebar links
     sidebarLinks.forEach(function(link) {
         link.addEventListener("click", handleSidebarLinkClick);
     });
 
-    // Handle window resize
     function handleWindowResize() {
-        // Toggle 'collapse' class based on window width
         if (window.innerWidth > 1090) {
             sidebar.classList.remove("collapse");
         } else {
@@ -747,25 +739,23 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Add resize event listener and initial call
+
     window.addEventListener("resize", handleWindowResize);
     handleWindowResize();
 
-    // Handle logo, logo-expand, and overview click
+
     function handleLogoClick() {
-        // Remove 'show' class and scroll main container to top
+
         mainContainer.classList.remove("show");
         mainContainer.scrollTop = 0;
     }
 
-    // Add click event listeners to logo elements
     logoElements.forEach(function(element) {
         element.addEventListener("click", handleLogoClick);
     });
 
 });
 
-// Refresh button functionality
 document.getElementById('refreshButton').addEventListener('click', function() {
     location.reload();
 });

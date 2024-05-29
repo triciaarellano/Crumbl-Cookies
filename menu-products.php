@@ -63,13 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset
             }
         }
 
-        // Get the first generated transaction_id for reference (not strictly necessary, but useful for redirecting or logging)
         $transactionId = $conn->insert_id;
 
-        // Insert into sales_table using the generated transaction_id, total_amount, payment_method, sales_date, and total_quantity
         $salesSql = "INSERT INTO sales_table (transaction_id, total_amount, payment_method, sales_date, total_quantity) VALUES ('$transactionId', '$totalAmount', '$paymentMethod', '$salesDate', '$totalQuantity')";
         if ($conn->query($salesSql) === TRUE) {
-            // Log activity
+
             $action = "Placed an order with Transaction ID $transactionId";
             if ($paymentMethod === 'cash') {
                 $action .= " Cash";
@@ -81,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset
                 throw new Exception("Error logging activity: $log_result");
             }
 
-            // Commit transaction
             $conn->commit();
             if ($paymentMethod === 'cash') {
                 header("Location: order-successful.php?transaction_id=$transactionId");
@@ -93,13 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id']) && isset
             throw new Exception("Error inserting sales record: " . $conn->error);
         }
     } catch (Exception $e) {
-        // Rollback transaction on error
+
         $conn->rollback();
         echo $e->getMessage();
     }
 }
 
-// Fetch product data, excluding products with zero quantity
 $selectsql = "SELECT * FROM product_table WHERE quantity_available > 0";
 if (isset($_POST['search']) && !empty($_POST['search'])) {
     $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
@@ -440,14 +436,17 @@ body {
     <i class="bi bi-cart icon"></i>
      Our Products
     </a>
-    <a class="sidebar-link" href="orderform.php">
-     <i class="bi bi-receipt icon"></i>
-     Order Form
+    <a class="sidebar-link" href="cashier-transaction.php">
+     <i class="bi bi-receipt"></i>
+     Transactions
     </a>
-
+    <a class="sidebar-link" href="cashier-salesrecord.php">
+     <i class="bi bi-journal icon"></i>
+     Sales Record
+    </a>
    </div>
-   
   </div>
+  
   <div class="side-wrapper">
    <div class="side-menu">
 
@@ -510,8 +509,6 @@ body {
         </div>
     </div>
 </form>
-
-
 
 
 </div> <!-- MAIN CONTAINER CLOSE -->

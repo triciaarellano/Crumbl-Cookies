@@ -532,84 +532,118 @@ tbody td.active {
     </div>
 
 
-<?php
+    <?php
 include "dbconnect.php";
 
-// Handle add transaction form submission
+// Function to decrease the quantity available and check for archiving
+function decreaseProductQuantity($conn, $product_id, $quantity_sold) {
+    // Get current quantity
+    $get_quantity_sql = "SELECT product_name, quantity_available FROM product_table WHERE product_id = '$product_id'";
+    $quantity_result = $conn->query($get_quantity_sql);
+    
+    if ($quantity_result->num_rows > 0) {
+        $row = $quantity_result->fetch_assoc();
+        $current_quantity = $row['quantity_available'];
+        $product_name = $row['product_name'];
+
+        // Calculate new quantity
+        $new_quantity = $current_quantity - $quantity_sold;
+
+        if ($new_quantity < 0) {
+            throw new Exception("Not enough quantity available.");
+        }
+
+        // Update the quantity
+        $update_quantity_sql = "UPDATE product_table SET quantity_available = '$new_quantity' WHERE product_id = '$product_id'";
+        if (!$conn->query($update_quantity_sql)) {
+            throw new Exception("Error updating quantity: " . $conn->error);
+        }
+
+        // Check if quantity is 0 to archive the product
+        if ($new_quantity == 0) {
+            archiveProduct($conn, $product_name);
+        }
+    } else {
+        throw new Exception("Product not found.");
+    }
+}
+
+// Function to archive product
+function archiveProduct($conn, $product_name) {
+    $update_status_sql = "UPDATE product_table SET status = 'Unavailable' WHERE product_name = '$product_name'";
+    if (!$conn->query($update_status_sql)) {
+        throw new Exception("Error archiving product: " . $conn->error);
+    }
+}
+
+// Add transaction form submission
 if (isset($_POST['addTransaction'])) {
-  // Ensure form fields are set
+  
   if (isset($_POST['product_id'], $_POST['quantity_sold'], $_POST['status'], $_POST['transaction_date'], $_POST['total_amount'], $_POST['payment_method'])) {
       $product_id = $_POST['product_id'];
       $quantity_sold = $_POST['quantity_sold'];
-      $reference_number = 'none'; // Default value if not provided
-      $receipt_number = uniqid('rec_'); // Generate unique receipt number
+      $reference_number = 'none'; 
+      $receipt_number = uniqid('rec_');
       $status = $_POST['status'];
       $transaction_date = $_POST['transaction_date'];
       $total_amount = $_POST['total_amount'];
       $payment_method = $_POST['payment_method'];
 
-      // Check for existing transaction record by receipt number
+      // Check if a transaction with the same receipt number already exists
       $transsql = "SELECT * FROM transaction_table WHERE receipt_number = '$receipt_number'";
       $trans_result = $conn->query($transsql);
 
-      if ($trans_result->num_rows == 0) {
-          // Begin transaction
-          $conn->begin_transaction();
+      if ($trans_result->num_rows > 0) {
+          // If a transaction with the same receipt number exists, use the existing reference number
+          $existing_transaction = $trans_result->fetch_assoc();
+          $reference_number = $existing_transaction['reference_number'];
+      }
 
-          try {
-              // Insert new transaction record
-              $insert_trans_sql = "INSERT INTO transaction_table (product_id, quantity_sold, reference_number, receipt_number, status, transaction_date)
-                                  VALUES ('$product_id', '$quantity_sold', '$reference_number', '$receipt_number', '$status', '$transaction_date')";
-              $trans_result = $conn->query($insert_trans_sql);
+      $conn->begin_transaction();
 
-              if ($trans_result === TRUE) {
-                  // Get the transaction_id of the newly inserted transaction
-                  $transaction_id = $conn->insert_id;
+      try {
+          // Insert the transaction with the appropriate reference number
+          $insert_trans_sql = "INSERT INTO transaction_table (product_id, quantity_sold, reference_number, receipt_number, status, transaction_date)
+                              VALUES ('$product_id', '$quantity_sold', '$reference_number', '$receipt_number', '$status', '$transaction_date')";
+          $trans_result = $conn->query($insert_trans_sql);
 
-                  // Insert into sales_table
-                  $insert_sales_sql = "INSERT INTO sales_table (transaction_id, total_quantity, total_amount, payment_method, sales_date)
-                                      VALUES ('$transaction_id', '$quantity_sold', '$total_amount', '$payment_method', '$transaction_date')";
-                  $sales_result = $conn->query($insert_sales_sql);
+          if ($trans_result === TRUE) {
+              $transaction_id = $conn->insert_id;
 
-                  if ($sales_result === TRUE) {
-                      // Commit transaction
-                      $conn->commit();
+              // Insert the sales record
+              $insert_sales_sql = "INSERT INTO sales_table (transaction_id, total_quantity, total_amount, payment_method, sales_date)
+                                  VALUES ('$transaction_id', '$quantity_sold', '$total_amount', '$payment_method', '$transaction_date')";
+              $sales_result = $conn->query($insert_sales_sql);
 
-                      echo "
-                      <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
-                      <script>
-                          Swal.fire({
-                              title: 'Success!',
-                              text: 'Transaction and sales record have been added successfully!',
-                              icon: 'success'
-                          });
-                      </script>";
-                  } else {
-                      throw new Exception("Error in sales table: " . $conn->error);
-                  }
+              if ($sales_result === TRUE) {
+                  // Decrease the product quantity and check for archiving
+                  decreaseProductQuantity($conn, $product_id, $quantity_sold);
+
+                  $conn->commit();
+
+                  echo "
+                  <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+                  <script>
+                      Swal.fire({
+                          title: 'Success!',
+                          text: 'Transaction and sales record have been added successfully!',
+                          icon: 'success'
+                      });
+                  </script>";
               } else {
-                  throw new Exception("Error in transaction table: " . $conn->error);
+                  throw new Exception("Error in sales table: " . $conn->error);
               }
-          } catch (Exception $e) {
-              // Rollback transaction on error
-              $conn->rollback();
-              echo "
-              <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
-              <script>
-                  Swal.fire({
-                      title: 'Error!',
-                      text: '" . $e->getMessage() . "',
-                      icon: 'error'
-                  });
-              </script>";
+          } else {
+              throw new Exception("Error in transaction table: " . $conn->error);
           }
-      } else {
+      } catch (Exception $e) {
+          $conn->rollback();
           echo "
           <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
           <script>
               Swal.fire({
                   title: 'Error!',
-                  text: 'A transaction record with this receipt number already exists.',
+                  text: '" . $e->getMessage() . "',
                   icon: 'error'
               });
           </script>";
@@ -711,7 +745,6 @@ if ($result->num_rows > 0) {
             }
         });
 
-        //sidebar link click
         function handleSidebarLinkClick(event) {
             sidebarLinks.forEach(function(link) {
                 link.classList.remove("is-active");

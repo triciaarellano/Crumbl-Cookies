@@ -46,6 +46,24 @@
 	background-position: center;
 }
 
+.sub-block {
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	width:50%;
+	height: 20vh;
+	margin-top: 45px;
+	padding: 30px;
+	border-radius: 20px;
+	align-self: stretch;
+	overflow: hidden;
+	position: relative;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sub-block + .sub-block {
+	margin-left: 20px;
+}
 
 </style>
 </head>
@@ -98,7 +116,6 @@
    </div>
   </div>
  </div>
-
 
  <div class="wrapper-top">
   <div class="header-dashboard">
@@ -246,38 +263,6 @@
 
         </div>
 
-        <div class="sub-block anim" style="--delay: .5s">
-            
-        <div class="circle" style="background-color: #c8b1ff;">
-              <i class="bi bi-person" style="color: #fff; font-size: 30px; margin-left: 12px; margin-bottom: 4px;"></i>
-            </div>
-        
-            <div class="sub-block__title">
-                <div class="small-text">
-                  TOTAL
-                </div>
-                <div class="large-text">
-                  USERS
-                </div>
-          </div>
-
-            <div class="sub-block__contents">
-                <div class="product-number">
-
-                <?php 
-
-            $user_count_query = "SELECT * FROM user_table WHERE status = 'Active'";
-            $user_query = mysqli_query($conn, $user_count_query);
-            if ($user_total = mysqli_num_rows($user_query)) {
-              echo "<div class='number'>" . $user_total . "</div> <div class='item-text'>users</div>";
-            } else {
-            }
-
-            ?>
-                  </div>
-              </div>
-
-            </div>
     </div>
 </div>
       

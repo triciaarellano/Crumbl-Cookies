@@ -47,7 +47,6 @@ if (isset($_POST['sub'])) {
         <?php
     }
 
-    // Now execute your select query to fetch active users
     $selectsql = "SELECT * FROM user_table WHERE status = 'active'";
     $result = $conn->query($selectsql);
 }

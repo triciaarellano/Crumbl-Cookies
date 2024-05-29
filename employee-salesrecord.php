@@ -1,9 +1,15 @@
+<?php
+include "dbconnect.php";
+date_default_timezone_set("Asia/Manila");
+
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Audit Trail</title>
+    <title>Sales Record</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -379,12 +385,24 @@ tbody td.active {
   background-color: pink;
 }
 
-.unavailable-status {
-  color: red;
-}
-
 .form-label {
   color: #333;
+}
+
+
+
+.fielddata-quantity .bi {
+    margin-left: 10px;
+}
+
+.available-status {
+    color: green;
+    font-weight: bold;
+}
+
+.unavailable-status {
+    color: red;
+    font-weight: bold;
 }
 
 </style>
@@ -394,7 +412,7 @@ tbody td.active {
   <body>
   
   <div class="sidebar">
-  <a class="logo" href="dashboard.php">
+  <a class="logo" href="employee-dashboard.php">
     <img src="images/logopic.png" alt="Logo">
   </a>
 
@@ -428,6 +446,7 @@ tbody td.active {
    </div>
   </div>
 
+  
   <div class="side-wrapper">
    <div class="side-menu">
 
@@ -438,7 +457,6 @@ tbody td.active {
    </div>
   </div>
  </div>
-
 
  <div class="wrapper-table">
   <div class="header">
@@ -465,102 +483,264 @@ tbody td.active {
 
 
   <div class="main-container">
-   <div class="main-header anim" style="--delay: 0s">Audit Trail</div>
+   <div class="main-header anim" style="--delay: 0s">Sales Record</div>
+</div>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="pinkModal" tabindex="-1" aria-labelledby="pinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="pinkModalLabel">Add Sales</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form Inside Modal -->
+                <form action="salesrecord.php" method="post">
+                    <div class="mb-3">
+                        <label for="receipt_number" class="form-label">Receipt Number</label>
+                        <input type="text" class="form-control" id="receipt_number" name="receipt_number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="payment_method" class="form-label">Payment Method</label>
+                        <select class="form-select" id="payment_method" name="payment_method" required>
+                            <option value="Cash">Cash</option>
+                            <option value="GCash">GCash</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="quantity_sold" class="form-label">Quantity Sold</label>
+                                <input type="text" class="form-control" id="quantity_sold" name="quantity_sold" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="total_amount" class="form-label">Total Amount</label>
+                                <input type="text" class="form-control" id="total_amount" name="total_amount" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sales_date" class="form-label">Sales Date</label>
+                        <input type="date" class="form-control" id="sales_date" name="sales_date" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="sub" id="sub">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 <?php
-require_once "dbconnect.php";
 
-// LOG IN TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+// Handle add sales record form submission
 if (isset($_POST['sub'])) {
-    $username = $_POST['username'];
-    $password = md5($_POST['password']); //encrypted
 
+    if (isset($_POST['receipt_number'], $_POST['quantity_sold'], $_POST['total_amount'], $_POST['payment_method'], $_POST['sales_date'])) {
+        $receipt_number = $_POST['receipt_number'];
+        $quantity = $_POST['quantity_sold'];
+        $totalamount = $_POST['total_amount'];
+        $payment = $_POST['payment_method'];
+        $salesdate = $_POST['sales_date'];
 
-    $loginsql = "SELECT * FROM user_table WHERE username = '".$username."' AND password = '".$password."'";
-    $result = $conn->query($loginsql);
+        $salessql = "SELECT * FROM sales_table WHERE receipt_number = '$receipt_number'";
+        $sales_result = $conn->query($salessql);
 
+        if ($sales_result->num_rows == 0) {
 
+            $insertsql = "INSERT INTO sales_table (total_quantity, total_amount, payment_method, sales_date)
+                          VALUES ('$quantity', '$totalamount', '$payment', '$salesdate')";
+            $result = $conn->query($insertsql);
+            
+            $transaction_id = $conn->insert_id;
 
-    //check if there is a matching record
-    if ($result->num_rows == 1) {
-        $fielddata = $result->fetch_assoc();
-        $user_type = $fielddata['role']; // will get the user type of the matching record
-        //user's full name
-        $fullname = $fielddata['fullname'];
-        $user_id = $_SESSION['user_id'] = $fielddata['User_ID'];
+            if ($result === TRUE) {
 
+                $insert_trans_sql = "INSERT INTO transaction_table (transaction_id, product_id, quantity_sold, reference_number, receipt_number, status, transaction_date)
+                                     VALUES ('$transaction_id', NULL, '$quantity', NULL, '$receipt_number', 'Completed', '$salesdate')";
+                $trans_result = $conn->query($insert_trans_sql);
 
-        $_SESSION['user'] = $fullname; //user's fullname inserted to a session variable
-        $_SESSION['type'] = $user_type;
-
-
-        $logsql = "INSERT INTO logs_table (user_id, action, DateTime) VALUES ($user_id, 'Logged IN', NOW())";
-        $conn->query($logsql);
+                if ($trans_result === TRUE) {
+                    echo "
+                    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+                    <script>
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Product sales have been added successfully!',
+                            icon: 'success'
+                        });
+                    </script>";
+                } else {
+                    echo "Error in transaction table: " . $conn->error;
+                }
+            } else {
+                echo "Error in sales table: " . $conn->error;
+            }
+        } else {
+            echo "
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+            <script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'A sales record with this receipt number already exists.',
+                    icon: 'error'
+                });
+            </script>";
+        }
+    } else {
+        echo "
+        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+        <script>
+            Swal.fire({
+                title: 'Error!',
+                text: 'All form fields are required.',
+                icon: 'error'
+            });
+        </script>";
     }
 }
 
+// Handle edit form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
+  $editreceipt_number = mysqli_real_escape_string($conn, $_POST['editreceipt_number']);
+  $editquantity = mysqli_real_escape_string($conn, $_POST['edit_quantity']);
+  $edittotalamount = mysqli_real_escape_string($conn, $_POST['edit_total_amount']);
+  $editpayment = mysqli_real_escape_string($conn, $_POST['edit_payment_method']);
+  $editsalesdate = mysqli_real_escape_string($conn, $_POST['edit_sales_date']);
 
-// Check if the search input is clicked and not null, change $selectsql syntax
-if (isset($_POST['search']) && $_POST['search'] != NULL) {
-    $searchinput = $_POST['search'];
-    $selectsql = "SELECT * FROM join_logs_user WHERE log_id LIKE '%$searchinput%' OR user_id LIKE '%$searchinput%' OR action LIKE '%$searchinput%' OR DateTime LIKE '%$searchinput%'";
-} else {
+  $update_query = "UPDATE join_sales_table SET 
+                   total_quantity = '$editquantity', 
+                   total_amount = '$edittotalamount', 
+                   payment_method = '$editpayment', 
+                   sales_date = '$editsalesdate' 
+                   WHERE receipt_number = '$editreceipt_number'";
 
-    $selectsql = "SELECT * FROM join_logs_user ORDER BY log_id DESC";
+  if (mysqli_query($conn, $update_query)) {
+      echo "
+      <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+      <script>
+          Swal.fire({
+              title: 'Updated!',
+              text: 'Product sales has been updated!',
+              icon: 'success'
+          });
+      </script>";
+  } else {
+      echo "Error updating record: " . mysqli_error($conn);
+  }
 }
 
+
+$selectsql = "SELECT * FROM join_sales_table ORDER BY sales_id DESC";
+
+if (isset($_POST['search']) && $_POST['search'] != NULL) {
+  $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
+  $selectsql = "SELECT * FROM join_sales_table WHERE 
+                sales_id LIKE '%$searchinput%' OR 
+                receipt_number LIKE '%$searchinput%' OR 
+                payment_method LIKE '%$searchinput%'";
+}
 
 $result = $conn->query($selectsql);
 
 // Check if table is not empty
 if ($result->num_rows > 0) {
-    echo "<main class='table anim' style='--delay: .4s' id='join_logs_user'>";
-    echo "<section class='table__header anim' style='--delay: .4s'>";
-    echo "<div class='input-group'>";
-    echo "<input type='search' name='search' class='search-input' placeholder='Search User'>";
-    echo "</div>";
-    echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
-    echo "</section>";
-    echo "<section class='table__body'>";
-    echo "<table>";
-    echo "<thead>";
-    echo "<tr>";
-    echo "<th>Log ID<span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Role<span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Username<span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Action<span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "<th>Date and Time<span class='icon-arrow'>&UpArrow;</span></th>";
-    echo "</tr>";
-    echo "</thead>";
-    echo "<tbody>";
-    foreach ($result as $fielddata) {
-        echo "<tr>";
-        echo "<td>" . $fielddata['log_id'] . "</td>";
-        echo "<td>" . $fielddata['role'] . "</td>";
-        echo "<td>" . $fielddata['username'] . "</td>";
-        echo "<td>" . $fielddata['action'] . "</td>";
-        echo "<td>" . date('Y-m-d h:i:s', strtotime($fielddata['DateTime'])) . "</td>";
-        echo "</tr>";
-    }
-    echo "</tbody>";
-    echo "</table>";
-    echo "</section>";
-    echo "</main>";
+  echo "<main class='table anim' style='--delay: .4s' id='user_table'>";
+  echo "<section class='table__header anim' style='--delay: .2s'>";
+  echo "<div class='input-group'>";
+  echo "<input type='search' name='search' class='search-input' placeholder='Search Products'>";
+  echo "</div>";
+  echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Sales</button>";
+  echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
+  echo "</section>";
+  echo "<section class='table__body'>";
+  echo "<table>";
+  echo "<thead>";
+  echo "<tr>";
+  echo "<th>Sales ID <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Receipt Number <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Quantity Sold <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Total Amount <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Payment Method <span class='icon-arrow'>&UpArrow;</span></th>";
+  echo "<th>Sales Date</th>";
+  echo "<th>Action</th>";
+  echo "</tr>";
+  echo "</thead>";
+  echo "<tbody>";
+
+  while ($fielddata = $result->fetch_assoc()) {
+      echo "<tr>";
+      echo "<td>" . $fielddata['sales_id'] . "</td>";
+      echo "<td>" . $fielddata['receipt_number'] . "</td>";
+      echo "<td>" . $fielddata['total_quantity'] . "</td>";
+      echo "<td>" . $fielddata['total_amount'] . "</td>";
+      echo "<td>" . $fielddata['payment_method'] . "</td>";
+      echo "<td>" . date('Y-m-d', strtotime($fielddata['sales_date'])) . "</td>";
+      echo "<td>";
+      echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['sales_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['sales_id'] . "'><i class='bi bi-pencil-square'></i></button>";
+      echo "</td>";
+      echo "</tr>";
+
+      // Edit form collapse for each user
+      echo "<tr>";
+      echo "<td colspan='7' class='border-0'>";
+      echo "<div class='collapse' id='collapseEdit_" . $fielddata['sales_id'] . "'>";
+      echo "<div class='card card-body'>";
+      echo "<form action='' method='post'>";
+      echo "<div class='mb-3'>";
+      echo "<label for='editreceipt_number' class='form-label'>Receipt Number</label>";
+      echo "<input type='text' class='form-control' id='editreceipt_number' name='editreceipt_number' value='" . $fielddata['receipt_number'] . "'>";
+      echo "</div>";
+      echo "<div class='mb-3'>";
+      echo "<div class='row'>";
+      echo "<div class='col-md-6'>";
+      echo "<label for='edit_quantity' class='form-label'>Quantity Sold</label>";
+      echo "<input type='text' class='form-control' id='edit_quantity' name='edit_quantity' value='" . $fielddata['total_quantity'] . "'>";
+      echo "</div>";
+      echo "<div class='col-md-6'>";
+      echo "<label for='edit_total_amount' class='form-label'>Total Amount</label>";
+      echo "<input type='text' class='form-control' id='edit_total_amount' name='edit_total_amount' value='" . $fielddata['total_amount'] . "'>";
+      echo "</div>";
+      echo "</div>"; // close .row
+      echo "<div class='mb-3'>";
+      echo "<label for='edit_payment_method' class='form-label'>Payment Method</label>";
+      echo "<input type='text' class='form-control' id='edit_payment_method' name='edit_payment_method' value='" . $fielddata['payment_method'] . "'>";
+      echo "</div>";
+      echo "<div class='mb-3'>";
+      echo "<label for='edit_sales_date' class='form-label'>Sales Date</label>";
+      echo "<input type='text' class='form-control' id='edit_sales_date' name='edit_sales_date' value='" . $fielddata['sales_date'] . "'>";
+      echo "</div>";
+      echo "<input type='hidden' name='editreceipt_number' value='" . $fielddata['receipt_number'] . "'>";
+      echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
+      echo "</form>";
+      echo "</div>";
+      echo "</div>";
+      echo "</td>";
+      echo "</tr>";
+  }
+
+  echo "</tbody>";
+  echo "</table>";
+  echo "</section>";
+  echo "</main>";
 } else {
-    echo "No records found";
+  echo "No records found";
 }
 ?>
-
 
 
          <script src='script.js'></script>
 
          <script>
-document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
 
-    // Element selectors
     const userSettings = document.querySelector('.user-settings');
     const dropdownMenu = document.querySelector('.dropdown-menu');
     const sidebarLinks = document.querySelectorAll(".sidebar-link");
@@ -568,36 +748,30 @@ document.addEventListener("DOMContentLoaded", function() {
     const mainContainer = document.querySelector(".main-container");
     const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
 
-    // Toggle dropdown menu visibility
     userSettings.addEventListener('click', function() {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
 
-    // Close the dropdown if the user clicks outside of it
     window.addEventListener('click', function(event) {
         if (!userSettings.contains(event.target)) {
             dropdownMenu.style.display = 'none';
         }
     });
 
-    // Handle sidebar link click
     function handleSidebarLinkClick(event) {
-        // Remove 'is-active' class from all sidebar links
         sidebarLinks.forEach(function(link) {
             link.classList.remove("is-active");
         });
-        // Add 'is-active' class to the clicked sidebar link
+
         event.target.classList.add("is-active");
     }
 
-    // Add click event listeners to all sidebar links
     sidebarLinks.forEach(function(link) {
         link.addEventListener("click", handleSidebarLinkClick);
     });
 
-    // Handle window resize
+
     function handleWindowResize() {
-        // Toggle 'collapse' class based on window width
         if (window.innerWidth > 1090) {
             sidebar.classList.remove("collapse");
         } else {
@@ -605,25 +779,21 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Add resize event listener and initial call
     window.addEventListener("resize", handleWindowResize);
     handleWindowResize();
 
-    // Handle logo, logo-expand, and overview click
     function handleLogoClick() {
-        // Remove 'show' class and scroll main container to top
         mainContainer.classList.remove("show");
         mainContainer.scrollTop = 0;
     }
 
-    // Add click event listeners to logo elements
     logoElements.forEach(function(element) {
         element.addEventListener("click", handleLogoClick);
     });
 
 });
 
-// Refresh button functionality
+// refresh button function
 document.getElementById('refreshButton').addEventListener('click', function() {
     location.reload();
 });

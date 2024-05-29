@@ -523,43 +523,55 @@ tbody td.active {
 include "dbconnect.php";
 
 if (isset($_POST['sub'])) {
-    $productname = $_POST['product_name'];
-    $quantity = $_POST['quantity'];
-    $status = $_POST['status'];
+  $productname = $_POST['product_name'];
+  $quantity = $_POST['quantity'];
+  $status = $_POST['status'];
 
-    // Set status to 'Unavailable' if quantity is 0
-    if ($quantity == 0) {
-        $status = 'Unavailable';
-    }
+  if ($quantity == 0) {
+      $status = 'Unavailable';
+  }
 
-    // Check if the product already exists in the product_table
-    $productsql = "SELECT * FROM product_table WHERE product_name = '$productname'";
-    $product_result = $conn->query($productsql);
+  $productsql = "SELECT * FROM product_table WHERE product_name = '$productname'";
+  $product_result = $conn->query($productsql);
 
-    if ($product_result->num_rows == 0) {
-        // Insert new product
-        $insertsql = "INSERT INTO product_table (product_name, quantity_available, status)
-                      VALUES ('$productname', '$quantity', '$status')";
-        $result = $conn->query($insertsql);
+  if ($product_result->num_rows == 0) {
+      $insertsql = "INSERT INTO product_table (product_name, quantity_available, status)
+                    VALUES ('$productname', '$quantity', '$status')";
+      $result = $conn->query($insertsql);
 
-        if ($result === TRUE) {
-            echo "<script>Swal.fire({ title: 'Success!', text: 'Product has been added successfully!', icon: 'success' });</script>";
-        } else {
-            echo $conn->error;
-        }
-    } else {
+      if ($result === TRUE) {
+          ?>
+          <script>
+              Swal.fire({
+                  title: 'Success!',
+                  text: 'Product has been added successfully!',
+                  icon: 'success'
+              });
+          </script>
+          <?php
+      } else {
+          echo $conn->error;
+      }
+  } else {
+      $updatesql = "UPDATE product_table 
+                    SET quantity_available = '$quantity', status = '$status'
+                    WHERE product_name = '$productname'";
+      $result = $conn->query($updatesql);
 
-        $updatesql = "UPDATE product_table 
-                      SET quantity_available = '$quantity', status = '$status'
-                      WHERE product_name = '$productname'";
-        $result = $conn->query($updatesql);
-
-        if ($result === TRUE) {
-            echo "<script>Swal.fire({ title: 'Success!', text: 'Product has been updated successfully!', icon: 'success' });</script>";
-        } else {
-            echo $conn->error;
-        }
-    }
+      if ($result === TRUE) {
+          ?>
+          <script>
+              Swal.fire({
+                  title: 'Success!',
+                  text: 'Product has been updated successfully!',
+                  icon: 'success'
+              });
+          </script>
+          <?php
+      } else {
+          echo $conn->error;
+      }
+  }
 }
 
 // // Handle edit form submission
@@ -695,18 +707,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const userSettings = document.querySelector('.user-settings');
     const dropdownMenu = document.querySelector('.dropdown-menu');
+    const sidebarLinks = document.querySelectorAll(".sidebar-link");
+    const sidebar = document.querySelector(".sidebar");
+    const mainContainer = document.querySelector(".main-container");
+    const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
 
     userSettings.addEventListener('click', function() {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
-
+t
     window.addEventListener('click', function(event) {
         if (!userSettings.contains(event.target)) {
             dropdownMenu.style.display = 'none';
         }
     });
 
-    const sidebarLinks = document.querySelectorAll(".sidebar-link");
 
     function handleSidebarLinkClick(event) {
         sidebarLinks.forEach(function(link) {
@@ -719,9 +734,8 @@ document.addEventListener("DOMContentLoaded", function() {
         link.addEventListener("click", handleSidebarLinkClick);
     });
 
-    const sidebar = document.querySelector(".sidebar");
-
     function handleWindowResize() {
+
         if (window.innerWidth > 1090) {
             sidebar.classList.remove("collapse");
         } else {
@@ -732,9 +746,6 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener("resize", handleWindowResize);
     handleWindowResize();
 
-    const mainContainer = document.querySelector(".main-container");
-    const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
-
     function handleLogoClick() {
         mainContainer.classList.remove("show");
         mainContainer.scrollTop = 0;
@@ -744,39 +755,17 @@ document.addEventListener("DOMContentLoaded", function() {
         element.addEventListener("click", handleLogoClick);
     });
 
-    // quantity and status functionality for product form
-    const quantityInput = document.getElementById('quantity');
-    const statusSelect = document.getElementById('status');
-
-    quantityInput.addEventListener('input', function() {
-        const quantity = this.value;
-
-        if (quantity == 0) {
-            statusSelect.value = 'Unavailable';
-            statusSelect.disabled = true;
-        } else {
-            statusSelect.disabled = false;
-        }
-    });
-
-    document.getElementById('productForm').addEventListener('submit', function(event) {
-        const quantity = document.getElementById('quantity').value;
-
-        if (quantity == 0) {
-            statusSelect.value = 'Unavailable';
-        }
-    });
-
-    // refresh button function
-    document.getElementById('refreshButton').addEventListener('click', function() {
-        location.reload();
-    });
 });
+
+// refresh button function
+document.getElementById('refreshButton').addEventListener('click', function() {
+    location.reload();
+});
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-        
+    
   
 </body>
  

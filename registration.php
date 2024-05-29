@@ -2,28 +2,22 @@
 require_once "dbconnect.php";
 require_once "email_verification.php";
 
-
 if (isset($_POST['sub'])) {
     $fullname = $_POST['full_name'];
     $usertype= $_POST['role'];
     $email = $_POST['email'];
     $username = $_POST['username'];
-    $password = md5($_POST['password']);
+    $password = md5($_POST['password']); // Consider using a more secure hashing method like password_hash
 
     $status = "Inactive";
 
+    $otp = rand(000000,999999); // Random OTP
 
-    $otp = rand(000000,999999); //random otp
+    // Using prepared statements
+    $stmt = $conn->prepare("INSERT INTO user_table (full_name, role, email, username, password, otp, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssss", $fullname, $usertype, $email, $username, $password, $otp, $status);
 
-
-    $insertsql = "INSERT INTO user_table (full_name, role, email, username, password, otp, status)
-                  VALUES ('$fullname', 'Employee', '$email', '$username', '$password','$otp','$status')";
-
-
-    $result = $conn->query($insertsql);
-
-
-    if ($result === TRUE) {
+    if ($stmt->execute()) {
         ?>
         <script>
             Swal.fire({
@@ -38,15 +32,14 @@ if (isset($_POST['sub'])) {
                 window.location.href = "email_verification.php";
             }, 1500);
         </script>
-
         <?php
-
-
-        send_verification($fullname,$email,$otp);
-
+        send_verification($fullname, $email, $otp);
     } else {
-        echo $conn->error; 
+        echo "Error: " . $stmt->error;
     }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
 

@@ -36,69 +36,44 @@ if (isset($_POST['sub'])) {
                 echo "Error inserting log entry: " . $conn->error;
             }
 
-           // sweetalert ng successful login
-           
-           echo "
-           <html>
-           <head>
-               <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
-           </head>
-           <body>
-               <script>
-                   document.addEventListener('DOMContentLoaded', function() {
-                       Swal.fire({
-                           icon: 'success',
-                           title: 'Login Successful!',
-                           text: 'Welcome back, $fullname!',
-                           showConfirmButton: false,
-                           timer: 2000
-                       }).then(function() {
-                           window.location.href = '";
-                           if ($user_type == 'Employee') {
-                               echo "employee-dashboard.php";
-                           } elseif ($user_type == 'Cashier') {
-                               echo "homepagecashier.php";
-                           } elseif ($user_type == 'Admin') {
-                               echo "dashboard.php";
-                           } else {
-                               echo "Unknown user role.";
-                               exit;
-                           }
-                           echo "';
-                       });
-                   });
-               </script>
-           </body>
-           </html>
-           ";
-
-           exit;
-       } else {
-           echo "User ID not found.";
-       }
-   } else {
-       $error = 'Wrong username or password!';
-       echo "
-       <html>
-       <head>
-           <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
-       </head>
-       <body>
-           <script>
-               document.addEventListener('DOMContentLoaded', function() {
-                   Swal.fire({
-                       icon: 'error',
-                       title: 'Oops...',
-                       text: 'Wrong username or password!'
-                   });
-               });
-           </script>
-       </body>
-       </html>
-       ";
-   }    
+            if ($user_type == 'Employee') {
+                header("Location: employee-dashboard.php");
+            } elseif ($user_type == 'Cashier') {
+                header("Location: homepagecashier.php");
+            } elseif ($user_type == 'Admin') {
+                header("Location: dashboard.php");
+            } else {
+                echo "Unknown user role.";
+                exit;
+            }
+            exit;
+        } else {
+            echo "User ID not found.";
+        }
+    } else {
+        $error = 'Wrong username or password!';
+        echo "
+        <html>
+        <head>
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+        </head>
+        <body>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Wrong username or password!'
+                    });
+                });
+            </script>
+        </body>
+        </html>
+        ";
+    }    
 }
 ?>
+
 
 <html lang="en">
 <head>

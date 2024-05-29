@@ -2,8 +2,7 @@
     include "dbconnect.php";
     include "log-function.php";
 
-    ?>
-    
+    ?>  
 
 <!doctype html>
 <html lang="en">
@@ -275,7 +274,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
   <body>
   
   <div class="sidebar">
-  <a class="logo" href="dashboard.php">
+  <a class="logo" href="employee-dashboard.php">
     <img src="images/logopic.png" alt="Logo">
   </a>
 
@@ -309,6 +308,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
    </div>
   </div>
 
+  
   <div class="side-wrapper">
    <div class="side-menu">
 
@@ -316,7 +316,6 @@ box-shadow: 0 0.1rem 0.4rem #0002;
      <i class="bi bi-box-arrow-right icon"></i>
      Log out
     </a>
-
    </div>
   </div>
  </div>
@@ -405,21 +404,18 @@ box-shadow: 0 0.1rem 0.4rem #0002;
     <?php
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Validate and sanitize inputs
         $productid = isset($_POST['product_id']) ? mysqli_real_escape_string($conn, $_POST['product_id']) : '';
         $productname = isset($_POST['product_name']) ? mysqli_real_escape_string($conn, $_POST['product_name']) : '';
         $description = isset($_POST['description']) ? mysqli_real_escape_string($conn, $_POST['description']) : '';
         $price = isset($_POST['price']) ? mysqli_real_escape_string($conn, $_POST['price']) : '';
         $quantity = isset($_POST['quantity']) ? mysqli_real_escape_string($conn, $_POST['quantity']) : '';
 
-        // Handle file upload
         $target_dir = "uploads/";
         $target_file = $target_dir . basename($_FILES["upload_img"]["name"] ?? '');
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
         $maxFileSize = 5 * 1024 * 1024; // 5MB
 
-        // Check if image file is a actual image or fake image
         if (isset($_FILES["upload_img"]) && $_FILES["upload_img"]["tmp_name"]) {
             $check = getimagesize($_FILES["upload_img"]["tmp_name"]);
             if ($check !== false) {
@@ -430,13 +426,11 @@ box-shadow: 0 0.1rem 0.4rem #0002;
             }
         }
 
-        // Check file size
         if (isset($_FILES["upload_img"]) && $_FILES["upload_img"]["size"] > $maxFileSize) {
             echo "Sorry, your file is too large.";
             $uploadOk = 0;
         }
 
-        // Allow certain file formats
         if ($imageFileType && !in_array($imageFileType, ["jpg", "png", "jpeg", "gif"])) {
             echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
             $uploadOk = 0;
@@ -448,7 +442,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
             if (isset($_FILES["upload_img"]) && move_uploaded_file($_FILES["upload_img"]["tmp_name"], $target_file)) {
                 $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, img) VALUES ('$productname', '$description', '$price', '$quantity', '$target_file')";
                 if (mysqli_query($conn, $insertsql)) {
-                    // Log activity
+
                     $action = "Added new product: $productname";
                     $log_result = logActivity($conn, $user_id, $action);
                     if ($log_result !== true) {
@@ -509,7 +503,7 @@ box-shadow: 0 0.1rem 0.4rem #0002;
     }
 
 
-    $selectsql = "SELECT * FROM product_table";
+    $selectsql = "SELECT * FROM product_table ORDER BY product_id DESC";
     if (isset($_POST['search']) && !empty($_POST['search'])) {
         $searchinput = mysqli_real_escape_string($conn, $_POST['search']);
         $selectsql = "SELECT * FROM product_table WHERE product_id LIKE '%$searchinput%' OR product_name LIKE '%$searchinput%' OR description LIKE '%$searchinput%'";
@@ -517,7 +511,6 @@ box-shadow: 0 0.1rem 0.4rem #0002;
 
     $result = $conn->query($selectsql);
 
-    // Function to determine stock status
     function getStockStatus($quantity) {
         return $quantity < 5 ? '<i class="bi bi-exclamation-circle text-danger" title="Low Stock"></i>' : '';
     }
@@ -581,93 +574,86 @@ box-shadow: 0 0.1rem 0.4rem #0002;
          <script>
          document.addEventListener("DOMContentLoaded", function() {
 
-const userSettings = document.querySelector('.user-settings');
-const dropdownMenu = document.querySelector('.dropdown-menu');
-const search = document.querySelector(".search-input"),
-productContainer = document.querySelector(".product-container"),
-productItems = productContainer.querySelectorAll(".fielddata-item");
+                const userSettings = document.querySelector('.user-settings');
+                const dropdownMenu = document.querySelector('.dropdown-menu');
+                const search = document.querySelector(".search-input"),
+                productContainer = document.querySelector(".product-container"),
+                productItems = productContainer.querySelectorAll(".fielddata-item");
 
-        search.addEventListener("input", searchProducts);
+                        search.addEventListener("input", searchProducts);
 
-        function searchProducts() {
-            const searchValue = search.value.toLowerCase();
-            productItems.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                item.style.display = text.includes(searchValue) ? '' : 'none';
-            });
-        }
+                        function searchProducts() {
+                            const searchValue = search.value.toLowerCase();
+                            productItems.forEach(item => {
+                                const text = item.textContent.toLowerCase();
+                                item.style.display = text.includes(searchValue) ? '' : 'none';
+                            });
+                        }
 
-userSettings.addEventListener('click', function() {
-dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-});
+                userSettings.addEventListener('click', function() {
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                });
 
-// Close the dropdown if the user clicks outside of it
-window.addEventListener('click', function(event) {
-if (!userSettings.contains(event.target)) {
-dropdownMenu.style.display = 'none';
-}
-});
 
-// to handle sidebar link click
-function handleSidebarLinkClick(event) {
-// remove 'is-active' class from all sidebar links
-document.querySelectorAll(".sidebar-link").forEach(function(link) {
-link.classList.remove("is-active");
-});
-// add 'is-active' class to the clicked sidebar link
-event.target.classList.add("is-active");
-}
+                window.addEventListener('click', function(event) {
+                if (!userSettings.contains(event.target)) {
+                dropdownMenu.style.display = 'none';
+                }
+                });
 
-// add click event listeners to all sidebar links
-document.querySelectorAll(".sidebar-link").forEach(function(link) {
-link.addEventListener("click", handleSidebarLinkClick);
-});
 
-// to handle window resize
-function handleWindowResize() {
-// If window width is greater than 1090px
-if (window.innerWidth > 1090) {
-// remove 'collapse' class from sidebar
-document.querySelector(".sidebar").classList.remove("collapse");
-} else {
-// add 'collapse' class to sidebar
-document.querySelector(".sidebar").classList.add("collapse");
-}
-}
+                function handleSidebarLinkClick(event) {
+                document.querySelectorAll(".sidebar-link").forEach(function(link) {
+                link.classList.remove("is-active");
+                });
 
-window.addEventListener("resize", handleWindowResize);
-handleWindowResize();
+                event.target.classList.add("is-active");
+                }
 
-// to handle logo, logo-expand, and overview click
-function handleLogoClick() {
-// remove 'show' class from main container
-document.querySelector(".main-container").classList.remove("show");
-// scroll main container to top
-document.querySelector(".main-container").scrollTop = 0;
-}
+                document.querySelectorAll(".sidebar-link").forEach(function(link) {
+                link.addEventListener("click", handleSidebarLinkClick);
+                });
 
-// add click event listeners to logo, logo-expand, and overview
-document.querySelectorAll(".logo, .logo-expand, .sidebar-link").forEach(function(element) {
-element.addEventListener("click", handleLogoClick);
-});
 
-});
+                function handleWindowResize() {
+                if (window.innerWidth > 1090) {
 
-document.getElementById('refreshButton').addEventListener('click', function() {
-location.reload();
-});
+                document.querySelector(".sidebar").classList.remove("collapse");
+                } else {
 
-//preview image
-function previewImg(event){
-var display = document.getElementById("preview_img");
-display.src = URL.createObjectURL(event.target.files[0]);
-}
+                document.querySelector(".sidebar").classList.add("collapse");
+                }
+                }
+
+                window.addEventListener("resize", handleWindowResize);
+                handleWindowResize();
+
+                function handleLogoClick() {
+                document.querySelector(".main-container").classList.remove("show");
+                document.querySelector(".main-container").scrollTop = 0;
+                }
+
+                document.querySelectorAll(".logo, .logo-expand, .sidebar-link").forEach(function(element) {
+                element.addEventListener("click", handleLogoClick);
+                });
+
+                });
+
+                document.getElementById('refreshButton').addEventListener('click', function() {
+                location.reload();
+                });
+
+                //preview image
+                function previewImg(event){
+                var display = document.getElementById("preview_img");
+                display.src = URL.createObjectURL(event.target.files[0]);
+                }
 
           </script>
 
   </main>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
 </body>
  
