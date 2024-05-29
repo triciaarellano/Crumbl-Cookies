@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reference_number'])) {
                     Swal.fire({
                         position: 'center',
                         icon: 'success',
-                        title: 'You have paid successfully!',
+                        title: 'Payment received!',
                         showConfirmButton: false,
                         timer: 1500,
                         willClose: () => {
@@ -371,7 +371,7 @@ h2 {
 
             <img src='images/gcash-white.png' height='80' class='gcash-image' id='gcash-image'></img>
             Phone Number
-            <input class='input-field'></input>
+            <input class='input-field' id="phone_number" name="phone_number" required></input>
             Reference Number
             <input class='input-field-ref' id="reference_number" name="reference_number" required></input>
             <table class='half-input-table'></table>

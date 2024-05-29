@@ -18,6 +18,12 @@ if (isset($_GET['transaction_id'])) {
     echo "Transaction ID is missing.";
     exit;
 }
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Location: menu-products.php');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -248,65 +254,27 @@ h2 {
 </head>
 <body>
     
-    <form method="POST" action="">
-
+<form method="POST" action="">
         <div class='container'>
-  <div class='window'>
-    <div class='order-info'>
-      <div class='order-info-content'>
-        <!-- <h2>Order Summary</h2>
-                <div class='line'></div>
-        <table class='order-table'>
-          <tbody>
-            <tr>
-              <td><img src='images/cookie-login.png' class='full-width'></img> 
-              </td>
-              <td>
-                <br> <span class='thin'>Testing</span>
-                <br> Dito yung description?<br> <span class='thin small'>Quantity<br><br></span>
-              </td>
-
-            </tr>
-            <tr>
-              <td>
-                <div class='price'>Price</div>
-              </td>
-            </tr>
-          </tbody>
-
-        </table>
-
-        <div class='line'></div>
-        <div class='total'>
-          <span style='float:left;'>
-            TOTAL
-          </span>
-          <span style='float:right; text-align:right;'>
-            PHP435.55
-          </span>
-        </div> -->
-</div>
-</div>
-        <div class='gcash-info'>
-          <div class='gcash-info-content'>
-
-          <h1>Order Successful</h1>
- 
-    <p>Your receipt number is: <strong><?php echo $receiptNumber; ?></strong></p>
-    <p>Transaction Details:</p>
-
-        Transaction ID: <?php echo $transactionRow['transaction_id']; ?>
-        <br>
-        Date: <?php echo $transactionRow['transaction_date']; ?>
-
-
-            <button type='submit' class='pay-btn'>Place Order</button>
-
-          </div>
-
+            <div class='window'>
+                <div class='order-info'>
+                    <div class='order-info-content'>
+                    </div>
+                </div>
+                <div class='gcash-info'>
+                    <div class='gcash-info-content'>
+                    <h1>Order Successful</h1>
+                        <p>Your receipt number is: <strong><?php echo $receiptNumber; ?></strong></p>
+                        <p>Transaction Details:</p>
+                        Transaction ID: <?php echo $transactionRow['transaction_id']; ?><br>
+                        Date: <?php echo $transactionRow['transaction_date']; ?>
+                        <button type='submit' class='pay-btn'>Go to Menu</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-</div>
+    </form>
+
 
   <!-- Bootstrap JS and dependencies -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

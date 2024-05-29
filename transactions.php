@@ -476,10 +476,156 @@ tbody td.active {
    <div class="main-header anim" style="--delay: 0s">Transactions</div>
 </div>
 
+<!-- Add Transaction Modal -->
+<div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addTransactionModalLabel">Add Transaction</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form Inside Modal -->
+                    <form action="transactions.php" method="post">
+                        <div class="mb-3">
+                            <label for="product_id" class="form-label">Product ID</label>
+                            <input type="text" class="form-control" id="product_id" name="product_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity_sold" class="form-label">Quantity Sold</label>
+                            <input type="text" class="form-control" id="quantity_sold" name="quantity_sold" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reference_number" class="form-label">Reference Number</label>
+                            <input type="text" class="form-control" id="reference_number" name="reference_number">
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option value="Paid">Paid</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="transaction_date" class="form-label">Transaction Date</label>
+                            <input type="date" class="form-control" id="transaction_date" name="transaction_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_amount" class="form-label">Total Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="total_amount" name="total_amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="payment_method" class="form-label">Payment Method</label>
+                            <select class="form-select" id="payment_method" name="payment_method" required>
+                                <option value="Cash">Cash</option>
+                                <option value="GCash">GCash</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" name="addTransaction" id="addTransaction">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <?php
 include "dbconnect.php";
 
+// Handle add transaction form submission
+if (isset($_POST['addTransaction'])) {
+  // Ensure form fields are set
+  if (isset($_POST['product_id'], $_POST['quantity_sold'], $_POST['status'], $_POST['transaction_date'], $_POST['total_amount'], $_POST['payment_method'])) {
+      $product_id = $_POST['product_id'];
+      $quantity_sold = $_POST['quantity_sold'];
+      $reference_number = 'none'; // Default value if not provided
+      $receipt_number = uniqid('rec_'); // Generate unique receipt number
+      $status = $_POST['status'];
+      $transaction_date = $_POST['transaction_date'];
+      $total_amount = $_POST['total_amount'];
+      $payment_method = $_POST['payment_method'];
+
+      // Check for existing transaction record by receipt number
+      $transsql = "SELECT * FROM transaction_table WHERE receipt_number = '$receipt_number'";
+      $trans_result = $conn->query($transsql);
+
+      if ($trans_result->num_rows == 0) {
+          // Begin transaction
+          $conn->begin_transaction();
+
+          try {
+              // Insert new transaction record
+              $insert_trans_sql = "INSERT INTO transaction_table (product_id, quantity_sold, reference_number, receipt_number, status, transaction_date)
+                                  VALUES ('$product_id', '$quantity_sold', '$reference_number', '$receipt_number', '$status', '$transaction_date')";
+              $trans_result = $conn->query($insert_trans_sql);
+
+              if ($trans_result === TRUE) {
+                  // Get the transaction_id of the newly inserted transaction
+                  $transaction_id = $conn->insert_id;
+
+                  // Insert into sales_table
+                  $insert_sales_sql = "INSERT INTO sales_table (transaction_id, total_quantity, total_amount, payment_method, sales_date)
+                                      VALUES ('$transaction_id', '$quantity_sold', '$total_amount', '$payment_method', '$transaction_date')";
+                  $sales_result = $conn->query($insert_sales_sql);
+
+                  if ($sales_result === TRUE) {
+                      // Commit transaction
+                      $conn->commit();
+
+                      echo "
+                      <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+                      <script>
+                          Swal.fire({
+                              title: 'Success!',
+                              text: 'Transaction and sales record have been added successfully!',
+                              icon: 'success'
+                          });
+                      </script>";
+                  } else {
+                      throw new Exception("Error in sales table: " . $conn->error);
+                  }
+              } else {
+                  throw new Exception("Error in transaction table: " . $conn->error);
+              }
+          } catch (Exception $e) {
+              // Rollback transaction on error
+              $conn->rollback();
+              echo "
+              <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+              <script>
+                  Swal.fire({
+                      title: 'Error!',
+                      text: '" . $e->getMessage() . "',
+                      icon: 'error'
+                  });
+              </script>";
+          }
+      } else {
+          echo "
+          <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+          <script>
+              Swal.fire({
+                  title: 'Error!',
+                  text: 'A transaction record with this receipt number already exists.',
+                  icon: 'error'
+              });
+          </script>";
+      }
+  } else {
+      echo "
+      <script src='https://cdn.jsdelivr.net/npm/sweetalert2@10'></script>
+      <script>
+          Swal.fire({
+              title: 'Error!',
+              text: 'All form fields are required.',
+              icon: 'error'
+          });
+      </script>";
+  }
+}
 
 $selectsql = "SELECT * FROM join_transaction_table ORDER BY transaction_id DESC";
 
@@ -499,7 +645,7 @@ if ($result->num_rows > 0) {
   echo "<div class='input-group'>";
   echo "<input type='search' name='search' class='search-input' placeholder='Search Transactions'>";
   echo "</div>";
-  echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#pinkModal'> Add Transaction</button>";
+  echo "<button type='button' class='btn btn-pink bi bi-plus' data-bs-toggle='modal' data-bs-target='#addTransactionModal'> Add Transaction</button>";
   echo "<button id='refreshButton' class='btn-refresh'><i class='bi bi-arrow-clockwise'></i></button>";
   echo "</section>";
   echo "<section class='table__body'>";
@@ -527,7 +673,7 @@ if ($result->num_rows > 0) {
         echo "<td>" . $fielddata['reference_number'] . "</td>";
         echo "<td>" . $fielddata['receipt_number'] . "</td>";
         echo "<td>" . $fielddata['status'] . "</td>";
-        echo "<td>" . date('Y-m-d g:i A', strtotime($fielddata['transaction_date'])) . "</td>";
+        echo "<td>" . date('Y-m-d', strtotime($fielddata['transaction_date'])) . "</td>";
         echo "</tr>";
 
         }
@@ -546,80 +692,69 @@ if ($result->num_rows > 0) {
          <script src='script.js'></script>
 
          <script>
-document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
+        const userSettings = document.querySelector('.user-settings');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        const sidebarLinks = document.querySelectorAll(".sidebar-link");
+        const sidebar = document.querySelector(".sidebar");
+        const mainContainer = document.querySelector(".main-container");
+        const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
 
-    // Element selectors
-    const userSettings = document.querySelector('.user-settings');
-    const dropdownMenu = document.querySelector('.dropdown-menu');
-    const sidebarLinks = document.querySelectorAll(".sidebar-link");
-    const sidebar = document.querySelector(".sidebar");
-    const mainContainer = document.querySelector(".main-container");
-    const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
 
-    // Toggle dropdown menu visibility
-    userSettings.addEventListener('click', function() {
-        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // Close the dropdown if the user clicks outside of it
-    window.addEventListener('click', function(event) {
-        if (!userSettings.contains(event.target)) {
-            dropdownMenu.style.display = 'none';
-        }
-    });
-
-    // Handle sidebar link click
-    function handleSidebarLinkClick(event) {
-        // Remove 'is-active' class from all sidebar links
-        sidebarLinks.forEach(function(link) {
-            link.classList.remove("is-active");
+        userSettings.addEventListener('click', function() {
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
         });
-        // Add 'is-active' class to the clicked sidebar link
-        event.target.classList.add("is-active");
-    }
 
-    // Add click event listeners to all sidebar links
-    sidebarLinks.forEach(function(link) {
-        link.addEventListener("click", handleSidebarLinkClick);
-    });
+        window.addEventListener('click', function(event) {
+            if (!userSettings.contains(event.target)) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
 
-    // Handle window resize
-    function handleWindowResize() {
-        // Toggle 'collapse' class based on window width
-        if (window.innerWidth > 1090) {
-            sidebar.classList.remove("collapse");
-        } else {
-            sidebar.classList.add("collapse");
+        //sidebar link click
+        function handleSidebarLinkClick(event) {
+            sidebarLinks.forEach(function(link) {
+                link.classList.remove("is-active");
+            });
+
+            event.target.classList.add("is-active");
         }
-    }
 
-    // Add resize event listener and initial call
-    window.addEventListener("resize", handleWindowResize);
-    handleWindowResize();
+        sidebarLinks.forEach(function(link) {
+            link.addEventListener("click", handleSidebarLinkClick);
+        });
 
-    // Handle logo, logo-expand, and overview click
-    function handleLogoClick() {
-        // Remove 'show' class and scroll main container to top
-        mainContainer.classList.remove("show");
-        mainContainer.scrollTop = 0;
-    }
 
-    // Add click event listeners to logo elements
-    logoElements.forEach(function(element) {
-        element.addEventListener("click", handleLogoClick);
+        function handleWindowResize() {
+            if (window.innerWidth > 1090) {
+                sidebar.classList.remove("collapse");
+            } else {
+                sidebar.classList.add("collapse");
+            }
+        }
+
+        window.addEventListener("resize", handleWindowResize);
+        handleWindowResize();
+
+        function handleLogoClick() {
+
+            mainContainer.classList.remove("show");
+            mainContainer.scrollTop = 0;
+        }
+
+        logoElements.forEach(function(element) {
+            element.addEventListener("click", handleLogoClick);
+        });
+
     });
 
-});
-
-// Refresh button functionality
-document.getElementById('refreshButton').addEventListener('click', function() {
-    location.reload();
-});
+    // refresh button function
+    document.getElementById('refreshButton').addEventListener('click', function() {
+        location.reload();
+    });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-        
   
 </body>
  

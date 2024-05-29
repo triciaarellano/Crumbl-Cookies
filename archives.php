@@ -486,35 +486,27 @@ tbody td.active {
             </div>
             <div class="modal-body">
                 <!-- Form Inside Modal -->
-                <form action="archives.php" method="post">
-                <div class="mb-3">
+                <form action="archives.php" method="post" id="productForm">
+                    <div class="mb-3">
                         <label for="product_name" class="form-label">Product name</label>
                         <input type="text" class="form-control" id="product_name" name="product_name" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <select class="form-select" id="status" name="status" required>
-                            <option value="Available">Available</option>
-                            <option value="Unavailable">Unavailable</option>
-                        </select>
-                    </div>
                     <div class="row">
-                    <div class="col">
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
-                        <input type="text" class="form-control" id="price" name="price" required>
-                    </div>
-                    </div>
-                    <div class="col">
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Quantity</label>
-                        <input type="text" class="form-control" id="quantity" name="quantity" required>
-                    </div>
-                    </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" required></textarea>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status" required>
+                                    <option value="Available">Available</option>
+                                    <option value="Unavailable">Unavailable</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" required>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -532,57 +524,66 @@ include "dbconnect.php";
 
 if (isset($_POST['sub'])) {
     $productname = $_POST['product_name'];
-    $price = $_POST['price'];
     $quantity = $_POST['quantity'];
-    $description = $_POST['description'];
-    $status = ""; 
+    $status = $_POST['status'];
 
+    // Set status to 'Unavailable' if quantity is 0
+    if ($quantity == 0) {
+        $status = 'Unavailable';
+    }
+
+    // Check if the product already exists in the product_table
     $productsql = "SELECT * FROM product_table WHERE product_name = '$productname'";
     $product_result = $conn->query($productsql);
 
     if ($product_result->num_rows == 0) {
-        $insertsql = "INSERT INTO product_table (product_name, description, price, quantity_available, status)
-                        VALUES ('$productname', '$description', '$price', '$quantity', '$status')";
+        // Insert new product
+        $insertsql = "INSERT INTO product_table (product_name, quantity_available, status)
+                      VALUES ('$productname', '$quantity', '$status')";
         $result = $conn->query($insertsql);
 
         if ($result === TRUE) {
-            ?>
-            <script>
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Product has been added successfully!',
-                    icon: 'success'
-                });
-            </script>
-            <?php
+            echo "<script>Swal.fire({ title: 'Success!', text: 'Product has been added successfully!', icon: 'success' });</script>";
+        } else {
+            echo $conn->error;
+        }
+    } else {
+
+        $updatesql = "UPDATE product_table 
+                      SET quantity_available = '$quantity', status = '$status'
+                      WHERE product_name = '$productname'";
+        $result = $conn->query($updatesql);
+
+        if ($result === TRUE) {
+            echo "<script>Swal.fire({ title: 'Success!', text: 'Product has been updated successfully!', icon: 'success' });</script>";
         } else {
             echo $conn->error;
         }
     }
 }
 
-// Handle edit form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
-    $editproduct_id = mysqli_real_escape_string($conn, $_POST['edit_product_id']);
-    $editproductname = mysqli_real_escape_string($conn, $_POST['edit_productname']);
-    $editdescription = mysqli_real_escape_string($conn, $_POST['edit_description']);
-    $editprice = mysqli_real_escape_string($conn, $_POST['edit_price']);
-    $editquantity = mysqli_real_escape_string($conn, $_POST['edit_quantity']);
-    $editstatus = mysqli_real_escape_string($conn, $_POST['edit_status']);
+// // Handle edit form submission
+// if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_submit'])) {
+//     $editproduct_id = mysqli_real_escape_string($conn, $_POST['edit_product_id']);
+//     $editproductname = mysqli_real_escape_string($conn, $_POST['edit_productname']);
+//     $editdescription = mysqli_real_escape_string($conn, $_POST['edit_description']);
+//     $editprice = mysqli_real_escape_string($conn, $_POST['edit_price']);
+//     $editquantity = mysqli_real_escape_string($conn, $_POST['edit_quantity']);
+//     $editstatus = mysqli_real_escape_string($conn, $_POST['edit_status']);
 
-    $update_query = "UPDATE product_table SET product_name = '$editproductname', description = '$editdescription', price = '$editprice', quantity_available = '$editquantity', status = '$editstatus' WHERE product_id = '$editproduct_id'";
-    if (mysqli_query($conn, $update_query)) {
-        echo "<script>
-            Swal.fire({
-                title: 'Updated!',
-                text: 'Product information has been updated!',
-                icon: 'success'
-            });
-        </script>";
-    } else {
-        echo "Error updating record: " . mysqli_error($conn);
-    }
-}
+//     $update_query = "UPDATE product_table SET product_name = '$editproductname', description = '$editdescription', price = '$editprice', quantity_available = '$editquantity', status = '$editstatus' WHERE product_id = '$editproduct_id'";
+//     if (mysqli_query($conn, $update_query)) {
+//         echo "<script>
+//             Swal.fire({
+//                 title: 'Updated!',
+//                 text: 'Product information has been updated!',
+//                 icon: 'success'
+//             });
+//         </script>";
+//     } else {
+//         echo "Error updating record: " . mysqli_error($conn);
+//     }
+// }
 
 // Default SQL query to fetch only unavailable products
 $selectsql = "SELECT * FROM product_table WHERE status = 'Unavailable' ORDER BY product_id DESC";
@@ -616,7 +617,7 @@ if ($result->num_rows > 0) {
   echo "<th>Price <span class='icon-arrow'>&UpArrow;</span></th>";
   echo "<th>Quantity <span class='icon-arrow'>&UpArrow;</span></th>";
   echo "<th>Status</th>";
-  echo "<th>Action</th>";
+  // echo "<th>Action</th>";
   echo "</tr>";
   echo "</thead>";
   echo "<tbody>";
@@ -630,50 +631,50 @@ if ($result->num_rows > 0) {
         echo "<td>" . $fielddata['quantity_available'] . "</td>";
         echo "<td class='unavailable-status'>" . $fielddata['status'] . "</td>";
         echo "<td>";
-        echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['product_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['product_id'] . "'><i class='bi bi-pencil-square'></i></button>";
+        // echo "<button class='edit-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseEdit_" . $fielddata['product_id'] . "' aria-expanded='false' aria-controls='collapseEdit_" . $fielddata['product_id'] . "'><i class='bi bi-pencil-square'></i></button>";
         echo "</td>";
         echo "</tr>";
 
-         // Edit form collapse for each user
-        echo "<tr>";
-        echo "<td colspan='7' class='border-0'>";
-        echo "<div class='collapse' id='collapseEdit_" . $fielddata['product_id'] . "'>";
-        echo "<div class='card card-body'>";
-        echo "<form action='' method='post'>";
-        echo "<div class='mb-3'>";
-        echo "<label for='edit_productname' class='form-label'>Product Name</label>";
-        echo "<input type='text' class='form-control' id='edit_productname' name='edit_productname' value='" . $fielddata['product_name'] . "'>";
-        echo "</div>";
-        echo "<div class='mb-3'>";
-        echo "<div class='row'>";
-        echo "<div class='col-md-6'>";
-        echo "<label for='edit_price' class='form-label'>Price</label>";
-        echo "<input type='text' class='form-control' id='edit_price' name='edit_price' value='" . $fielddata['price'] . "'>";
-        echo "</div>";
-        echo "<div class='col-md-6'>";
-        echo "<label for='edit_quantity' class='form-label'>Quantity</label>";
-        echo "<input type='text' class='form-control' id='edit_quantity' name='edit_quantity' value='" . $fielddata['quantity_available'] . "'>";
-        echo "</div>";
-        echo "</div>"; // close .row
-        echo "<div class='mb-3'>";
-        echo "<label for='edit_status' class='form-label'>Status</label>";
-        echo "<select class='form-select' id='edit_status' name='edit_status'>";
-        echo "<option value='Available'" . ($fielddata['status'] == 'Available' ? ' selected' : '') . ">Available</option>";
-        echo "<option value='Unavailable'" . ($fielddata['status'] == 'Unavailable' ? ' selected' : '') . ">Unavailable</option>";
-        echo "</select>";
-        echo "</div>";
-        echo "</div>"; // close mb3
-        echo "<div class='mb-3'>";
-        echo "<label for='edit_description' class='form-label'>Description</label>";
-        echo "<textarea class='form-control' id='edit_description' name='edit_description'>" . $fielddata['description'] . "</textarea>"; 
-        echo "</div>";
-        echo "<input type='hidden' name='edit_product_id' value='" . $fielddata['product_id'] . "'>";
-        echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
-        echo "</form>";
-        echo "</div>";
-        echo "</div>";
-        echo "</td>";
-        echo "</tr>";
+        //  // Edit form collapse for each user
+        // echo "<tr>";
+        // echo "<td colspan='7' class='border-0'>";
+        // echo "<div class='collapse' id='collapseEdit_" . $fielddata['product_id'] . "'>";
+        // echo "<div class='card card-body'>";
+        // echo "<form action='' method='post'>";
+        // echo "<div class='mb-3'>";
+        // echo "<label for='edit_productname' class='form-label'>Product Name</label>";
+        // echo "<input type='text' class='form-control' id='edit_productname' name='edit_productname' value='" . $fielddata['product_name'] . "'>";
+        // echo "</div>";
+        // echo "<div class='mb-3'>";
+        // echo "<div class='row'>";
+        // echo "<div class='col-md-6'>";
+        // echo "<label for='edit_price' class='form-label'>Price</label>";
+        // echo "<input type='text' class='form-control' id='edit_price' name='edit_price' value='" . $fielddata['price'] . "'>";
+        // echo "</div>";
+        // echo "<div class='col-md-6'>";
+        // echo "<label for='edit_quantity' class='form-label'>Quantity</label>";
+        // echo "<input type='text' class='form-control' id='edit_quantity' name='edit_quantity' value='" . $fielddata['quantity_available'] . "'>";
+        // echo "</div>";
+        // echo "</div>"; // close .row
+        // echo "<div class='mb-3'>";
+        // echo "<label for='edit_status' class='form-label'>Status</label>";
+        // echo "<select class='form-select' id='edit_status' name='edit_status'>";
+        // echo "<option value='Available'" . ($fielddata['status'] == 'Available' ? ' selected' : '') . ">Available</option>";
+        // echo "<option value='Unavailable'" . ($fielddata['status'] == 'Unavailable' ? ' selected' : '') . ">Unavailable</option>";
+        // echo "</select>";
+        // echo "</div>";
+        // echo "</div>"; // close mb3
+        // echo "<div class='mb-3'>";
+        // echo "<label for='edit_description' class='form-label'>Description</label>";
+        // echo "<textarea class='form-control' id='edit_description' name='edit_description'>" . $fielddata['description'] . "</textarea>"; 
+        // echo "</div>";
+        // echo "<input type='hidden' name='edit_product_id' value='" . $fielddata['product_id'] . "'>";
+        // echo "<button type='submit' name='edit_submit' class='btn btn-primary'>Save changes</button>";
+        // echo "</form>";
+        // echo "</div>";
+        // echo "</div>";
+        // echo "</td>";
+        // echo "</tr>";
         }
 
         echo "</tbody>";
@@ -692,44 +693,35 @@ if ($result->num_rows > 0) {
          <script>
 document.addEventListener("DOMContentLoaded", function() {
 
-    // Element selectors
     const userSettings = document.querySelector('.user-settings');
     const dropdownMenu = document.querySelector('.dropdown-menu');
-    const sidebarLinks = document.querySelectorAll(".sidebar-link");
-    const sidebar = document.querySelector(".sidebar");
-    const mainContainer = document.querySelector(".main-container");
-    const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
 
-    // Toggle dropdown menu visibility
     userSettings.addEventListener('click', function() {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
 
-    // Close the dropdown if the user clicks outside of it
     window.addEventListener('click', function(event) {
         if (!userSettings.contains(event.target)) {
             dropdownMenu.style.display = 'none';
         }
     });
 
-    // Handle sidebar link click
+    const sidebarLinks = document.querySelectorAll(".sidebar-link");
+
     function handleSidebarLinkClick(event) {
-        // Remove 'is-active' class from all sidebar links
         sidebarLinks.forEach(function(link) {
             link.classList.remove("is-active");
         });
-        // Add 'is-active' class to the clicked sidebar link
         event.target.classList.add("is-active");
     }
 
-    // Add click event listeners to all sidebar links
     sidebarLinks.forEach(function(link) {
         link.addEventListener("click", handleSidebarLinkClick);
     });
 
-    // Handle window resize
+    const sidebar = document.querySelector(".sidebar");
+
     function handleWindowResize() {
-        // Toggle 'collapse' class based on window width
         if (window.innerWidth > 1090) {
             sidebar.classList.remove("collapse");
         } else {
@@ -737,27 +729,48 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Add resize event listener and initial call
     window.addEventListener("resize", handleWindowResize);
     handleWindowResize();
 
-    // Handle logo, logo-expand, and overview click
+    const mainContainer = document.querySelector(".main-container");
+    const logoElements = document.querySelectorAll(".logo, .logo-expand, .sidebar-link");
+
     function handleLogoClick() {
-        // Remove 'show' class and scroll main container to top
         mainContainer.classList.remove("show");
         mainContainer.scrollTop = 0;
     }
 
-    // Add click event listeners to logo elements
     logoElements.forEach(function(element) {
         element.addEventListener("click", handleLogoClick);
     });
 
-});
+    // quantity and status functionality for product form
+    const quantityInput = document.getElementById('quantity');
+    const statusSelect = document.getElementById('status');
 
-// Refresh button functionality
-document.getElementById('refreshButton').addEventListener('click', function() {
-    location.reload();
+    quantityInput.addEventListener('input', function() {
+        const quantity = this.value;
+
+        if (quantity == 0) {
+            statusSelect.value = 'Unavailable';
+            statusSelect.disabled = true;
+        } else {
+            statusSelect.disabled = false;
+        }
+    });
+
+    document.getElementById('productForm').addEventListener('submit', function(event) {
+        const quantity = document.getElementById('quantity').value;
+
+        if (quantity == 0) {
+            statusSelect.value = 'Unavailable';
+        }
+    });
+
+    // refresh button function
+    document.getElementById('refreshButton').addEventListener('click', function() {
+        location.reload();
+    });
 });
 </script>
 
